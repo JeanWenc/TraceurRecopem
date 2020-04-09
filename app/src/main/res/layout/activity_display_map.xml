@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".controller.DisplayMapActivity">
+
+
+    <org.osmdroid.views.MapView android:id="@+id/activity_display_map_map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/activity_display_map_show_track_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"/>
+
+        <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_display_map_ic_center_map"
+        android:src="@drawable/ic_center_map"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:tint="@color/colorPrimary"
+        android:background="#ffffffff"
+        android:cropToPadding="true"
+        />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_display_map_ic_record_track"
+        android:src="@drawable/ic_record_track"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="35dp"
+        android:layout_marginRight="10dp"
+        android:tint="#787878ff"
+        android:background="#ffffffff"
+        android:cropToPadding="true"
+        />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_display_map_ic_show_beacon"
+        android:src="@drawable/ic_show_beacon"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:tint="#787878ff"
+        android:background="#ffffffff"
+        android:cropToPadding="true"
+        />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_display_map_ic_my_tracks"
+        android:src="@drawable/ic_my_tracks"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="10dp"
+        android:tint="@color/colorPrimary"
+        android:background="#ffffffff"
+        android:cropToPadding="true"
+        />
+
+
+</RelativeLayout>
