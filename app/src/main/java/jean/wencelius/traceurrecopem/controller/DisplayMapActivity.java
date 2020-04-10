@@ -1,5 +1,6 @@
 package jean.wencelius.traceurrecopem.controller;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -96,13 +97,22 @@ public class DisplayMapActivity extends AppCompatActivity {
         currentTrackIdText = AppPreferences.getDefaultsString(PREF_KEY_CURRENT_TRACK_ID,getApplicationContext()) ;
         currentTrackId=Integer.parseInt(currentTrackIdText);
 
+        if(savedInstanceState != null){
+            IS_RECORDING = savedInstanceState.getBoolean(STATE_IS_TRACKING);
+        }else{
+            IS_RECORDING = false;
+        }
 
         IS_RECORDING = false;
+
+
         IS_BEACON_SHOWING=false;
 
         mGpsLoggerServiceIntent = new Intent(this, gpsLogger.class);
 
     }
+
+
 
     public void onResume(){
         super.onResume();
@@ -330,7 +340,7 @@ public class DisplayMapActivity extends AppCompatActivity {
         }
     }
 
-    public long getCurrentTrackId() {
+    public int getCurrentTrackId() {
         return this.currentTrackId;
     }
 

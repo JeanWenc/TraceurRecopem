@@ -24,10 +24,14 @@ import androidx.core.content.ContextCompat;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.DisplayMapActivity;
+import jean.wencelius.traceurrecopem.model.DataHelper;
 import jean.wencelius.traceurrecopem.model.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 public class gpsLogger extends Service implements LocationListener {
+
+    /**Data helper.*/
+    private DataHelper dataHelper;
 
     /** LocationManager*/
     private LocationManager lmgr;
@@ -38,7 +42,7 @@ public class gpsLogger extends Service implements LocationListener {
     private boolean isGpsEnabled = false;
 
     /**Current Track ID*/
-    private long currentTrackId = -1;
+    private int currentTrackId = -1;
 
     /**the interval (in ms) to log GPS fixes defined in the preferences*/
     private long gpsLoggingInterval;
@@ -113,7 +117,7 @@ public class gpsLogger extends Service implements LocationListener {
                     if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         lastLocation = lmgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         if (lastLocation != null) {
-                            Long trackId = extras.getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+                            Long trackId = extras.getInt(TrackContentProvider.Schema.COL_TRACK_ID);
                             String uuid = extras.getString(recopemValues.INTENT_KEY_UUID);
                             String name = extras.getString(recopemValues.INTENT_KEY_NAME);
 
@@ -218,7 +222,7 @@ public class gpsLogger extends Service implements LocationListener {
     /**
      * Start GPS tracking.
      */
-    private void startTracking(long trackId) {
+    private void startTracking(int trackId) {
         currentTrackId = trackId;
 
         // Refresh notification with correct Track ID
