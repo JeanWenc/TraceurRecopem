@@ -250,7 +250,7 @@ public class gpsLogger extends Service implements LocationListener {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Traceur ReCoPeM";
+            CharSequence name = getResources().getString(R.string.app_name_w_space);
             String description = "Display when tracking in Background";
             int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
@@ -272,8 +272,8 @@ public class gpsLogger extends Service implements LocationListener {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_recopem)
-                .setContentTitle("Enregristrement tracé #" +currentTrackId)
-                .setContentText("Tapez ici pour ouvrir l'application.")
+                .setContentTitle(getResources().getString(R.string.tracking_notification_title) +currentTrackId)
+                .setContentText(getResources().getString(R.string.tracking_notification_content))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);

@@ -303,15 +303,15 @@ public class DisplayMapActivity extends AppCompatActivity {
         if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             // GPS isn't enabled. Offer user to go enable it
             new AlertDialog.Builder(this)
-                    .setTitle("GPS Eteint")
+                    .setTitle(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_title))
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setMessage("Le GPS est éteint, il faut l'allumer.")
-                    .setCancelable(true).setPositiveButton("ALLUMER GPS", new DialogInterface.OnClickListener() {
+                    .setMessage(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_content))
+                    .setCancelable(true).setPositiveButton(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         }
-                    }).setNegativeButton("", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_no), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();

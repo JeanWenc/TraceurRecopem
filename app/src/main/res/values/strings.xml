@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">TraceurRecopem</string>
+    <string name="app_name_w_space">Traceur Recopem</string>
+
+    <!-->NOTIFICATION<-->
+    <string name="tracking_notification_title">Enregristrement tracé #</string>
+    <string name="tracking_notification_content">"Tapez ici pour ouvrir l'application."</string>
+
+    <!-->DIALOGS<-->
+    <string name="activity_display_map_dialog_GPS_disabled_title">GPS Eteint</string>
+    <string name="activity_display_map_dialog_GPS_disabled_content">"Le GPS est éteint, il faut l'allumer."</string>
+    <string name="activity_display_map_dialog_GPS_disabled_yes">ALLUMER GPS</string>
+    <string name="activity_display_map_dialog_GPS_disabled_no">""</string>
 </resources>
