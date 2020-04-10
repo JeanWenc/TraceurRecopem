@@ -30,6 +30,8 @@ import jean.wencelius.traceurrecopem.recopemValues;
 
 public class gpsLogger extends Service implements LocationListener {
 
+    public int pointCount;
+
     /**Data helper.*/
     private DataHelper dataHelper;
 
@@ -143,6 +145,8 @@ public class gpsLogger extends Service implements LocationListener {
     public void onCreate() {
         //dataHelper = new DataHelper(this);
 
+        pointCount=0;
+
         gpsLoggingInterval = 5000;
         gpsLoggingMinDistance=5;
 
@@ -175,9 +179,10 @@ public class gpsLogger extends Service implements LocationListener {
             lastLocation = location;
             //lastNbSatellites = countSatellites();
 
-            /**if (isTracking) {
-                dataHelper.track(currentTrackId, location);
-            }*/
+            if (isTracking) {
+                //dataHelper.track(currentTrackId, location);
+                pointCount++;
+            }
         }
     }
 
@@ -266,7 +271,7 @@ public class gpsLogger extends Service implements LocationListener {
 
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_recopem_sub)
+                .setSmallIcon(R.drawable.ic_recopem)
                 .setContentTitle("Enregristrement tracé #" +currentTrackId)
                 .setContentText("Tapez ici pour ouvrir l'application.")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -279,4 +284,9 @@ public class gpsLogger extends Service implements LocationListener {
         NotificationManager nmgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nmgr.cancel(NOTIFICATION_ID);
     }
+
+    public int getPointCount() {
+        return this.pointCount;
+    }
+
 }

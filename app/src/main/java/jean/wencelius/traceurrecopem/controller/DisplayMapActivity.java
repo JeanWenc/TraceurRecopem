@@ -69,6 +69,7 @@ public class DisplayMapActivity extends AppCompatActivity {
     public String currentTrackIdText;
 
     public TextView mShowTrackId;
+    public TextView mShowPointCount;
     private ImageButton btCenterMap;
     private ImageButton btRecordTrack;
     private ImageButton btShowBeacon;
@@ -86,6 +87,8 @@ public class DisplayMapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display_map);
 
         mShowTrackId = (TextView) findViewById(R.id.activity_display_map_show_track_id);
+        mShowPointCount = (TextView) findViewById(R.id.activity_display_map_show_point_count);
+
         mMap = (MapView) findViewById(R.id.activity_display_map_map);
         btCenterMap = (ImageButton) findViewById(R.id.activity_display_map_ic_center_map);
         btRecordTrack = (ImageButton) findViewById(R.id.activity_display_map_ic_record_track);
@@ -243,6 +246,9 @@ public class DisplayMapActivity extends AppCompatActivity {
 
                     String currentTrackIdTextNew = Integer.toString(currentTrackId);
                     AppPreferences.setDefaultsString(PREF_KEY_CURRENT_TRACK_ID, currentTrackIdTextNew, getApplicationContext());
+
+                    String fulltext = "Nb points = " + Integer.toString(mGpsLogger.getPointCount());
+                    mShowPointCount.setText(fulltext);
                 }
             }
         });
