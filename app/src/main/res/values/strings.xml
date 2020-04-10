@@ -2,6 +2,12 @@
     <string name="app_name">TraceurRecopem</string>
     <string name="app_name_w_space">Traceur Recopem</string>
 
+
+    <string name="trackmgr_exporting_prepare">Preparing export&#8230;</string>
+    <string name="trackmgr_exporting">Exporting track #{0}&#8230;</string>
+    <string name="trackmgr_export_error">Unable to export track: {0}</string>
+    <string name="trackmgr_exportall_confirm">All tracks will be exported, which could take a long time. Are you sure?</string>
+
     <!-->NOTIFICATION<-->
     <string name="tracking_notification_title">Enregristrement tracé #</string>
     <string name="tracking_notification_content">"Tapez ici pour ouvrir l'application."</string>
@@ -11,4 +17,17 @@
     <string name="activity_display_map_dialog_GPS_disabled_content">"Le GPS est éteint, il faut l'allumer."</string>
     <string name="activity_display_map_dialog_GPS_disabled_yes">ALLUMER GPS</string>
     <string name="activity_display_map_dialog_GPS_disabled_no">""</string>
+
+    <!-->ERRORS<-->
+    <string name="error_create_track_dir">Unable to create track folder %s</string>
+    <string name="error_externalstorage_not_writable">Unable to write to external storage.</string>
+
+    <!-- GPX -->
+    <string name="gpx_track_name">Tracked with Traceur ReCoPeM</string>
+    <string name="gpx_hdop_approximation_cmt">Warning: HDOP values aren\'t the HDOP as returned by the GPS device. They\'re approximated from the location accuracy in meters.</string>
+
+    <!-- VARIOUS -->
+    <string name="various_unit_meters">m</string>
+    <string name="various_accuracy">Accuracy</string>
+
 </resources>

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Created by Jean Wencélius on 09/04/2020.
  */
@@ -19,6 +21,20 @@ public class DataHelper {
     /*** ContentResolver to interact with content provider*/
     private ContentResolver contentResolver;
 
+    /**
+     * GPX file extension.
+     */
+    public static final String EXTENSION_GPX = ".gpx";
+
+    /**
+     * JPG file extension
+     */
+    public static final String EXTENSION_JPG = ".jpg";
+
+    /**
+     * Formatter for various files (GPX, media)
+     */
+    public static final SimpleDateFormat FILENAME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
     /**Constructor.
      @param c Application context.

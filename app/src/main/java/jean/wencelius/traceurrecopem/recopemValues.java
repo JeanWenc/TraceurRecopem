@@ -1,5 +1,7 @@
 package jean.wencelius.traceurrecopem;
 
+import android.os.Environment;
+
 /**
  * Created by Jean Wencélius on 09/04/2020.
  */
@@ -35,4 +37,17 @@ public class recopemValues {
      * Key for extra data "uuid" in Intent
      */
     public final static String INTENT_KEY_UUID = "uuid";
+
+    public final static String KEY_STORAGE_DIR = "logging.storage.dir";
+    public final static String VAL_STORAGE_DIR = "RecopemTracks";
+
+    public final static String KEY_OUTPUT_FILENAME = "gpx.filename";
+    public final static String VAL_OUTPUT_FILENAME_NAME = "name";
+
+
+    /** Device string identifiers */
+    public static final class Devices {
+        public static final String NEXUS_S = "Nexus S";
+    }
+
 }
