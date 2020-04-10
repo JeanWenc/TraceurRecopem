@@ -6,6 +6,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import jean.wencelius.traceurrecopem.controller.DisplayMapActivity;
+import jean.wencelius.traceurrecopem.model.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 /**
@@ -22,8 +23,7 @@ public class gpsLoggerServiceConnection implements ServiceConnection {
     public void onServiceConnected(ComponentName name, IBinder service) {
         activity.setGpsLogger(((gpsLogger.gpsLoggerBinder) service).getService());
         Intent intent = new Intent(recopemValues.INTENT_START_TRACKING);
-        //intent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, activity.getCurrentTrackId());
-        intent.putExtra("TRACK_ID", activity.getCurrentTrackId());
+        intent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, activity.getCurrentTrackId());
         activity.sendBroadcast(intent);
     }
 

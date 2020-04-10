@@ -1,0 +1,103 @@
+package jean.wencelius.traceurrecopem.model;
+
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
+import android.location.Location;
+import android.net.Uri;
+
+/**
+ * Created by Jean Wencélius on 09/04/2020.
+ */
+public class DataHelper {
+    private static final String TAG = DataHelper.class.getSimpleName();
+
+    /**Context*/
+    private Context context;
+
+    /*** ContentResolver to interact with content provider*/
+    private ContentResolver contentResolver;
+
+
+    /**Constructor.
+     @param c Application context.
+     */
+    public DataHelper(Context c) {
+        context = c;
+        contentResolver = c.getContentResolver();
+    }
+
+    public void track(long trackId, Location location) {
+
+        ContentValues values = new ContentValues();
+        values.put(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+        values.put(TrackContentProvider.Schema.COL_LATITUDE, location.getLatitude());
+        values.put(TrackContentProvider.Schema.COL_LONGITUDE, location.getLongitude());
+
+        if (location.hasAccuracy()) {
+            values.put(TrackContentProvider.Schema.COL_ACCURACY, location.getAccuracy());
+        }
+        if (location.hasSpeed()) {
+            values.put(TrackContentProvider.Schema.COL_SPEED, location.getSpeed());
+        }
+
+        values.put(TrackContentProvider.Schema.COL_TIMESTAMP, location.getTime());
+
+        Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+        contentResolver.insert(Uri.withAppendedPath(trackUri, TrackContentProvider.Schema.TBL_TRACKPOINT + "s"), values);
+    }
+
+
+
+    /**
+     * Tracks a way point with link
+     *
+     * @param trackId
+     *				Id of the track
+     * @param location
+     *				Location of waypoint
+
+     * @param name
+     *				Name of waypoint
+
+     * @param uuid
+     * 			    Unique id of the waypoint
+
+     */
+    public void wayPoint(long trackId, Location location, String name, String uuid) {
+
+        // location should not be null, but sometime is.
+        // TODO investigate this issue.
+        if (location != null) {
+            ContentValues values = new ContentValues();
+            values.put(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+            values.put(TrackContentProvider.Schema.COL_LATITUDE, location.getLatitude());
+            values.put(TrackContentProvider.Schema.COL_LONGITUDE, location.getLongitude());
+            values.put(TrackContentProvider.Schema.COL_NAME, name);
+
+            if (uuid != null) {
+                values.put(TrackContentProvider.Schema.COL_UUID, uuid);
+            }
+
+            if (location.hasAccuracy()) {
+                values.put(TrackContentProvider.Schema.COL_ACCURACY, location.getAccuracy());
+            }
+
+            values.put(TrackContentProvider.Schema.COL_TIMESTAMP, location.getTime());
+
+            Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+            contentResolver.insert(Uri.withAppendedPath(trackUri, TrackContentProvider.Schema.TBL_WAYPOINT + "s"), values);
+        }
+    }
+
+    /** Stop tracking by making the track inactive
+     * @param trackId Id of the track
+     */
+    public void stopTracking(long trackId) {
+        Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+        ContentValues values = new ContentValues();
+        values.put(TrackContentProvider.Schema.COL_ACTIVE, TrackContentProvider.Schema.VAL_TRACK_INACTIVE);
+        contentResolver.update(trackUri, values, null, null);
+    }
+}

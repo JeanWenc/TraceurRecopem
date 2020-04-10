@@ -1,6 +1,10 @@
 package jean.wencelius.traceurrecopem.controller.service;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,11 +15,16 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.controller.DisplayMapActivity;
+import jean.wencelius.traceurrecopem.model.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 public class gpsLogger extends Service implements LocationListener {
@@ -117,7 +126,7 @@ public class gpsLogger extends Service implements LocationListener {
                 Bundle extras = intent.getExtras();
                 if (extras != null) {
                     //**TODO: Retrieve trackId value*/
-                    int trackId = extras.getInt("TRACK_ID");
+                    int trackId = extras.getInt(TrackContentProvider.Schema.COL_TRACK_ID);
                     startTracking(trackId);
                 }
             } else if (recopemValues.INTENT_STOP_TRACKING.equals(intent.getAction()) ) {
@@ -169,6 +178,29 @@ public class gpsLogger extends Service implements LocationListener {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        createNotificationChannel();
+        startForeground(NOTIFICATION_ID, getNotification());
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (isTracking) {
+            // If we're currently tracking, save user data.
+            stopTrackingAndSave();
+        }
+        // Unregister listener
+        lmgr.removeUpdates(this);
+        // Unregister broadcast receiver
+        unregisterReceiver(receiver);
+        // Cancel any existing notification
+        stopNotifyBackgroundService();
+        super.onDestroy();
+    }
+
+    @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // Not interested in provider status
     }
@@ -187,20 +219,60 @@ public class gpsLogger extends Service implements LocationListener {
      * Start GPS tracking.
      */
     private void startTracking(long trackId) {
-        /**currentTrackId = trackId;
-        Log.v(TAG, "Starting track logging for track #" + trackId);
+        currentTrackId = trackId;
+
         // Refresh notification with correct Track ID
         NotificationManager nmgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nmgr.notify(NOTIFICATION_ID, getNotification());
-        isTracking = true;*/
+        isTracking = true;
     }
 
     /**
      * Stops GPS Logging
      */
     private void stopTrackingAndSave() {
-        /**isTracking = false;
-        dataHelper.stopTracking(currentTrackId);
-        this.stopSelf();*/
+        isTracking = false;
+        //dataHelper.stopTracking(currentTrackId);
+        this.stopSelf();
+    }
+
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Traceur ReCoPeM";
+            String description = "Display when tracking in Background";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    /**Builds the notification to display when tracking in background.*/
+    private Notification getNotification() {
+
+        Intent startDisplayMapActivity = new Intent(this, DisplayMapActivity.class);
+        startDisplayMapActivity.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, currentTrackId);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, startDisplayMapActivity, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_recopem_sub)
+                .setContentTitle("Enregristrement tracé #" +currentTrackId)
+                .setContentText("Tapez ici pour ouvrir l'application.")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true);
+        return mBuilder.build();
+    }
+
+    private void stopNotifyBackgroundService() {
+        NotificationManager nmgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nmgr.cancel(NOTIFICATION_ID);
     }
 }

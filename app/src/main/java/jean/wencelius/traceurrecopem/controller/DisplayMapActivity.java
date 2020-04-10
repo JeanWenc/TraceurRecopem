@@ -100,7 +100,18 @@ public class DisplayMapActivity extends AppCompatActivity {
         IS_RECORDING = false;
         IS_BEACON_SHOWING=false;
 
+        mGpsLoggerServiceIntent = new Intent(this, gpsLogger.class);
+
+    }
+
+    public void onResume(){
+        super.onResume();
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         //Checking if proper permissions, and if not requesting them
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //Permission not yet granted => Request permission
             ActivityCompat.requestPermissions(this,
@@ -110,14 +121,7 @@ public class DisplayMapActivity extends AppCompatActivity {
             //Permission already granted
             showMap();
         }
-    }
 
-    public void onResume(){
-        super.onResume();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         mMap.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
     public void onPause(){
@@ -126,8 +130,18 @@ public class DisplayMapActivity extends AppCompatActivity {
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().save(this, prefs);
+        if (mGpsLogger != null) {
+            if (!mGpsLogger.isTracking()) {
+                unbindService(gpsLoggerConnection);
+                stopService(mGpsLoggerServiceIntent);
+            } else {
+                unbindService(gpsLoggerConnection);
+            }
+        }
+
         mMap.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
+
 
     //What happens after requesting permission? (Optional)
     @Override
@@ -310,12 +324,10 @@ public class DisplayMapActivity extends AppCompatActivity {
 
     private void stopTrackLoggerForNewTrack(){
         System.out.println("TrackRecordingStopped");
-
         if (mGpsLogger.isTracking()) {
             Intent intent = new Intent(recopemValues.INTENT_STOP_TRACKING);
             sendBroadcast(intent);
         }
-
     }
 
     public long getCurrentTrackId() {

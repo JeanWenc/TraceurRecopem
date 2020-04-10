@@ -17,6 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:name=".model.TrackContentProvider"
+            android:authorities="traceurrecopem.provider"
+            android:enabled="false"
+            android:exported="false"></provider>
+
         <service
             android:name=".controller.service.gpsLogger"
             android:exported="false">
