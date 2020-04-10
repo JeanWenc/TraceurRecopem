@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,19 +39,26 @@ import java.io.InputStream;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.service.gpsLogger;
+import jean.wencelius.traceurrecopem.controller.service.gpsLoggerServiceConnection;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
+import jean.wencelius.traceurrecopem.recopemValues;
 
 public class DisplayMapActivity extends AppCompatActivity {
-    private static final String TAG = DisplayMapActivity.class.getSimpleName();
 
     private static final String STATE_IS_TRACKING = "isTracking";
 
     /**GPS Logger service, to receive events and be able to update UI.*/
     private gpsLogger mGpsLogger;
 
+    /**GPS Logger service intent, to be used in start/stopService();*/
+    private Intent mGpsLoggerServiceIntent;
+
     /**Flag to check GPS status at startup.*/
     private boolean checkGPSFlag = true;
     public static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
+
+    /** Handles the bind to the GPS Logger service*/
+    private ServiceConnection gpsLoggerConnection = new gpsLoggerServiceConnection(this);
 
     public static final String PREF_KEY_CURRENT_TRACK_ID = "PREF_KEY_CURRENT_TRACK_ID";
 
@@ -203,7 +211,7 @@ public class DisplayMapActivity extends AppCompatActivity {
 
                     IS_RECORDING=true;
                 }else{
-                    //stopTrackLoggerForNewTrack();
+                    stopTrackLoggerForNewTrack();
 
                     btRecordTrack.setColorFilter(Color.argb(255, 120, 120, 120));
 
@@ -290,7 +298,6 @@ public class DisplayMapActivity extends AppCompatActivity {
              checkGPSProvider();
          }
 
-        /**
          // Start GPS Logger service
          startService(mGpsLoggerServiceIntent);
 
@@ -298,18 +305,17 @@ public class DisplayMapActivity extends AppCompatActivity {
          // We can't use BIND_AUTO_CREATE here, because when we'll ubound
          // later, we want to keep the service alive in background
          bindService(mGpsLoggerServiceIntent, gpsLoggerConnection, 0);
-         */
+
     }
 
     private void stopTrackLoggerForNewTrack(){
         System.out.println("TrackRecordingStopped");
 
-        /**if (mGpsLogger.isTracking()) {
+        if (mGpsLogger.isTracking()) {
+            Intent intent = new Intent(recopemValues.INTENT_STOP_TRACKING);
+            sendBroadcast(intent);
+        }
 
-         Intent intent = new Intent(recopemValues.INTENT_STOP_TRACKING);
-         sendBroadcast(intent);
-         }
-         **/
     }
 
     public long getCurrentTrackId() {
@@ -334,8 +340,6 @@ public class DisplayMapActivity extends AppCompatActivity {
         if(mGpsLogger != null){
             outState.putBoolean(STATE_IS_TRACKING, mGpsLogger.isTracking());
         }
-
         super.onSaveInstanceState(outState);
     }
-
 }
