@@ -37,14 +37,19 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.controller.service.gpsLogger;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 
 public class DisplayMapActivity extends AppCompatActivity {
     private static final String TAG = DisplayMapActivity.class.getSimpleName();
 
+    private static final String STATE_IS_TRACKING = "isTracking";
+
+    /**GPS Logger service, to receive events and be able to update UI.*/
+    private gpsLogger mGpsLogger;
+
     /**Flag to check GPS status at startup.*/
     private boolean checkGPSFlag = true;
-
     public static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
 
     public static final String PREF_KEY_CURRENT_TRACK_ID = "PREF_KEY_CURRENT_TRACK_ID";
@@ -293,7 +298,7 @@ public class DisplayMapActivity extends AppCompatActivity {
          // We can't use BIND_AUTO_CREATE here, because when we'll ubound
          // later, we want to keep the service alive in background
          bindService(mGpsLoggerServiceIntent, gpsLoggerConnection, 0);
-         **/
+         */
     }
 
     private void stopTrackLoggerForNewTrack(){
@@ -311,5 +316,26 @@ public class DisplayMapActivity extends AppCompatActivity {
         return this.currentTrackId;
     }
 
+    /**Getter for gpsLogger @return Activity */
+    public gpsLogger getGpsLogger() {
+        return mGpsLogger;
+     }
+
+    /**Setter for gpsLogger
+     * @param l
+     */
+    public void setGpsLogger(gpsLogger l) {
+        this.mGpsLogger = l;
+     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // Save the fact that we are currently tracking or not
+        if(mGpsLogger != null){
+            outState.putBoolean(STATE_IS_TRACKING, mGpsLogger.isTracking());
+        }
+
+        super.onSaveInstanceState(outState);
+    }
 
 }
