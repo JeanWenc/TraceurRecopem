@@ -23,6 +23,7 @@ import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.DatabaseHelper;
 import jean.wencelius.traceurrecopem.exception.CreateTrackException;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.model.AppPreferences;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -123,24 +124,23 @@ public class MenuActivity extends AppCompatActivity {
      */
     private long createNewTrack() throws CreateTrackException{
         Date startDate = new Date();
-        //int mDay  = mCalendar.get(Calendar.DAY_OF_WEEK);
-        //String mSimpleDate = Integer.toString(mCalendar.get(Calendar.YEAR))+"/"+Integer.toString(mCalendar.get(Calendar.MONTH)+1)+"/"+Integer.toString(mCalendar.get(Calendar.DATE));
+        int mDay  = mCalendar.get(Calendar.DAY_OF_WEEK);
+        String mSimpleDate = Integer.toString(mCalendar.get(Calendar.YEAR))+"/"+Integer.toString(mCalendar.get(Calendar.MONTH)+1)+"/"+Integer.toString(mCalendar.get(Calendar.DATE));
 
         // Create entry in TRACK table
         ContentValues values = new ContentValues();
         values.put(TrackContentProvider.Schema.COL_NAME, "");
-        //values.put(TrackContentProvider.Schema.COL_INF_ID, AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext()));
+        values.put(TrackContentProvider.Schema.COL_INF_ID, AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext()));
         values.put(TrackContentProvider.Schema.COL_START_DATE, startDate.getTime());
-        //values.put(TrackContentProvider.Schema.RECOPEM_TRACK_ID,AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext())+"_"+mSimpleDate);
-        //values.put(TrackContentProvider.Schema.COL_GPS_METHOD,"AndroidApp");
-        //values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDay+1);
+        values.put(TrackContentProvider.Schema.COL_RECOPEM_TRACK_ID,AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext())+"_"+mSimpleDate);
+        values.put(TrackContentProvider.Schema.COL_GPS_METHOD,"AndroidApp");
+        values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDay+1);
 
         values.put(TrackContentProvider.Schema.COL_ACTIVE, TrackContentProvider.Schema.VAL_TRACK_ACTIVE);
 
         Uri trackUri = getContentResolver().insert(TrackContentProvider.CONTENT_URI_TRACK, values);
 
         long trackId = ContentUris.parseId(trackUri);
-        //Long trackId = (long) 1;
 
         return trackId;
     }

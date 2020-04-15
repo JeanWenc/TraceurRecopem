@@ -48,7 +48,7 @@ public class TrackListAdapter extends CursorAdapter {
     private View bind(Cursor cursor, View v, Context context) {
         TextView vId = (TextView) v.findViewById(R.id.trackmgr_item_id);
         TextView vNameOrStartDate = (TextView) v.findViewById(R.id.trackmgr_item_nameordate);
-        //TextView vTps = (TextView) v.findViewById(R.id.trackmgr_item_tps);
+        TextView vTps = (TextView) v.findViewById(R.id.trackmgr_item_tps);
         //ImageView vStatus = (ImageView) v.findViewById(R.id.trackmgr_item_statusicon);
 
         // Is track active ?
@@ -73,7 +73,7 @@ public class TrackListAdapter extends CursorAdapter {
 
         // Bind WP count, TP count, name
         Track t = Track.build(trackId, cursor, context.getContentResolver(), false);
-        //vTps.setText(Integer.toString(t.getTpCount()));
+        vTps.setText(Integer.toString(t.getTpCount()));
         vNameOrStartDate.setText(t.getName());
 
         return v;

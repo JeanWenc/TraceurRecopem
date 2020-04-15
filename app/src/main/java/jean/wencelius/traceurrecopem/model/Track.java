@@ -75,7 +75,7 @@ public class Track {
         /**
          * TODO: keep the below eventually, but look at how it's calculated
          */
-        //out.tpCount = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_TRACKPOINT_COUNT));
+        out.tpCount = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_TRACKPOINT_COUNT));
 
         //out.wpCount = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_WAYPOINT_COUNT));
 

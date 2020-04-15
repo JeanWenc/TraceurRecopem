@@ -143,7 +143,7 @@ public class gpsLogger extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
-        //dataHelper = new DataHelper(this);
+        dataHelper = new DataHelper(this);
 
         pointCount=0;
 
@@ -180,7 +180,7 @@ public class gpsLogger extends Service implements LocationListener {
             //lastNbSatellites = countSatellites();
 
             if (isTracking) {
-                //dataHelper.track(currentTrackId, location);
+                dataHelper.track(currentTrackId, location);
                 pointCount++;
             }
         }
@@ -241,7 +241,7 @@ public class gpsLogger extends Service implements LocationListener {
      */
     private void stopTrackingAndSave() {
         isTracking = false;
-        //dataHelper.stopTracking(currentTrackId);
+        dataHelper.stopTracking(currentTrackId);
         this.stopSelf();
     }
 
