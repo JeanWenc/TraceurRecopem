@@ -1,4 +1,4 @@
-package jean.wencelius.traceurrecopem.controller.service;
+package jean.wencelius.traceurrecopem.service;
 
 import android.Manifest;
 import android.app.Notification;
@@ -24,8 +24,8 @@ import androidx.core.content.ContextCompat;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.DisplayMapActivity;
-import jean.wencelius.traceurrecopem.model.DataHelper;
-import jean.wencelius.traceurrecopem.model.TrackContentProvider;
+import jean.wencelius.traceurrecopem.db.DataHelper;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 public class gpsLogger extends Service implements LocationListener {
@@ -44,7 +44,7 @@ public class gpsLogger extends Service implements LocationListener {
     private boolean isGpsEnabled = false;
 
     /**Current Track ID*/
-    private int currentTrackId = -1;
+    private long currentTrackId = -1;
 
     /**the interval (in ms) to log GPS fixes defined in the preferences*/
     private long gpsLoggingInterval;
@@ -132,7 +132,7 @@ public class gpsLogger extends Service implements LocationListener {
                 Bundle extras = intent.getExtras();
                 if (extras != null) {
                     //**TODO: Retrieve trackId value*/
-                    int trackId = extras.getInt(TrackContentProvider.Schema.COL_TRACK_ID);
+                    long trackId = extras.getLong(TrackContentProvider.Schema.COL_TRACK_ID);
                     startTracking(trackId);
                 }
             } else if (recopemValues.INTENT_STOP_TRACKING.equals(intent.getAction()) ) {
@@ -152,7 +152,7 @@ public class gpsLogger extends Service implements LocationListener {
 
         // Register our broadcast receiver
         IntentFilter filter = new IntentFilter();
-    //    filter.addAction(recopemValues.INTENT_TRACK_WP);
+        //filter.addAction(recopemValues.INTENT_TRACK_WP);
         filter.addAction(recopemValues.INTENT_START_TRACKING);
         filter.addAction(recopemValues.INTENT_STOP_TRACKING);
         registerReceiver(receiver, filter);
@@ -227,7 +227,7 @@ public class gpsLogger extends Service implements LocationListener {
     /**
      * Start GPS tracking.
      */
-    private void startTracking(int trackId) {
+    private void startTracking(long trackId) {
         currentTrackId = trackId;
 
         // Refresh notification with correct Track ID

@@ -1,4 +1,4 @@
-package jean.wencelius.traceurrecopem.model;
+package jean.wencelius.traceurrecopem.db;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -20,10 +20,10 @@ import jean.wencelius.traceurrecopem.recopemValues;
 public class TrackContentProvider extends ContentProvider {
     private static final String TAG = TrackContentProvider.class.getSimpleName();
 
-    /*** Authority for Uris*/
+    /**Authority for Uris*/
     public static final String AUTHORITY = recopemValues.class.getPackage().getName() + ".provider";
 
-    /**Uri for track*/
+    /** Uri for track*/
     public static final Uri CONTENT_URI_TRACK = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_TRACK);
 
     /**Uri for the active track*/
@@ -35,11 +35,17 @@ public class TrackContentProvider extends ContentProvider {
     /**tables and joins to be used within a query to get the important informations of a track*/
     private static final String TRACK_TABLES = Schema.TBL_TRACK + " left join " + Schema.TBL_TRACKPOINT + " on " + Schema.TBL_TRACK + "." + Schema.COL_ID + " = " + Schema.TBL_TRACKPOINT + "." + Schema.COL_TRACK_ID;
 
-    /*** the projection to be used to get the important informations of a track*/
+    /**the projection to be used to get the important informations of a track*/
     private static final String[] TRACK_TABLES_PROJECTION = {
             Schema.TBL_TRACK + "." + Schema.COL_ID + " as " + Schema.COL_ID,
             Schema.COL_ACTIVE,
+            //Schema.COL_DIR,
+            //Schema.COL_EXPORT_DATE,
+            //Schema.COL_OSM_UPLOAD_DATE,
             Schema.TBL_TRACK + "." + Schema.COL_NAME + " as "+ Schema.COL_NAME,
+            //Schema.COL_DESCRIPTION,
+            //Schema.COL_TAGS,
+            //Schema.COL_OSM_VISIBILITY,
             Schema.COL_START_DATE,
             "count(" + Schema.TBL_TRACKPOINT + "." + Schema.COL_ID + ") as " + Schema.COL_TRACKPOINT_COUNT,
             "(SELECT count("+Schema.TBL_WAYPOINT+"."+Schema.COL_TRACK_ID+") FROM "+Schema.TBL_WAYPOINT+" WHERE "+Schema.TBL_WAYPOINT+"."+Schema.COL_TRACK_ID+" = " + Schema.TBL_TRACK + "." + Schema.COL_ID + ") as " + Schema.COL_WAYPOINT_COUNT
@@ -59,6 +65,7 @@ public class TrackContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_WAYPOINT + "s", Schema.URI_CODE_TRACK_WAYPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_TRACKPOINT + "s", Schema.URI_CODE_TRACK_TRACKPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_WAYPOINT + "/uuid/*", Schema.URI_CODE_WAYPOINT_UUID);
+
     }
 
     /**
@@ -101,8 +108,9 @@ public class TrackContentProvider extends ContentProvider {
                 "end" );
     }
 
-
-    /**Database Helper*/
+    /**
+     * Database Helper
+     */
     private DatabaseHelper dbHelper;
 
     @Override
@@ -111,9 +119,122 @@ public class TrackContentProvider extends ContentProvider {
         return true;
     }
 
-    @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selectionIn, @Nullable String[] selectionArgsIn, @Nullable String sortOrder) {
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+
+        int count;
+        // Select which data type to delete
+        switch (uriMatcher.match(uri)) {
+            case Schema.URI_CODE_TRACK:
+                count = dbHelper.getWritableDatabase().delete(Schema.TBL_TRACK, selection, selectionArgs);
+                break;
+            case Schema.URI_CODE_TRACK_ID:
+                // the URI matches a specific track, delete all related entities
+                String trackId = Long.toString(ContentUris.parseId(uri));
+                dbHelper.getWritableDatabase().delete(Schema.TBL_WAYPOINT, Schema.COL_TRACK_ID + " = ?", new String[] {trackId});
+                dbHelper.getWritableDatabase().delete(Schema.TBL_TRACKPOINT, Schema.COL_TRACK_ID + " = ?", new String[] {trackId});
+                count = dbHelper.getWritableDatabase().delete(Schema.TBL_TRACK, Schema.COL_ID + " = ?", new String[] {trackId});
+                break;
+            case Schema.URI_CODE_WAYPOINT_UUID:
+                String uuid = uri.getLastPathSegment();
+                if(uuid != null){
+                    count = dbHelper.getWritableDatabase().delete(Schema.TBL_WAYPOINT, Schema.COL_UUID + " = ?", new String[]{uuid});
+                }else{
+                    count = 0;
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
+    }
+
+    /**
+     * Match and get the URI type, if recognized:
+     * Matches {@link Schema#URI_CODE_TRACK_TRACKPOINTS}, {@link Schema#URI_CODE_TRACK_WAYPOINTS},
+     * or {@link Schema#URI_CODE_TRACK}.
+     * @throws IllegalArgumentException if not matched
+     */
+    @Override
+    public String getType(Uri uri) throws IllegalArgumentException {
+
+        // Select which type to return
+        switch (uriMatcher.match(uri)) {
+            case Schema.URI_CODE_TRACK_TRACKPOINTS:
+                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
+                        + Schema.TBL_TRACKPOINT;
+            case Schema.URI_CODE_TRACK_WAYPOINTS:
+                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
+                        + Schema.TBL_WAYPOINT;
+            case Schema.URI_CODE_TRACK:
+                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
+                        + Schema.TBL_TRACK;
+            default:
+                throw new IllegalArgumentException("Unknown URL " + uri);
+        }
+    }
+
+    @Override
+    public Uri insert(Uri uri, ContentValues values) {
+
+        // Select which data type to insert
+        switch (uriMatcher.match(uri)) {
+            case Schema.URI_CODE_TRACK_TRACKPOINTS:
+                // Check that mandatory columns are present.
+                if (values.containsKey(Schema.COL_TRACK_ID) && values.containsKey(Schema.COL_LONGITUDE)
+                        && values.containsKey(Schema.COL_LATITUDE) && values.containsKey(Schema.COL_TIMESTAMP)) {
+
+                    long rowId = dbHelper.getWritableDatabase().insert(Schema.TBL_TRACKPOINT, null, values);
+                    if (rowId > 0) {
+                        Uri trackpointUri = ContentUris.withAppendedId(uri, rowId);
+                        getContext().getContentResolver().notifyChange(trackpointUri, null);
+                        return trackpointUri;
+                    }
+                } else {
+                    throw new IllegalArgumentException("values should provide " + Schema.COL_LONGITUDE + ", "
+                            + Schema.COL_LATITUDE + ", " + Schema.COL_TIMESTAMP);
+                }
+                break;
+            case Schema.URI_CODE_TRACK_WAYPOINTS:
+                // Check that mandatory columns are present.
+                if (values.containsKey(Schema.COL_TRACK_ID) && values.containsKey(Schema.COL_LONGITUDE)
+                        && values.containsKey(Schema.COL_LATITUDE) && values.containsKey(Schema.COL_TIMESTAMP) ) {
+
+                    long rowId = dbHelper.getWritableDatabase().insert(Schema.TBL_WAYPOINT, null, values);
+                    if (rowId > 0) {
+                        Uri waypointUri = ContentUris.withAppendedId(uri, rowId);
+                        getContext().getContentResolver().notifyChange(waypointUri, null);
+                        return waypointUri;
+                    }
+                } else {
+                    throw new IllegalArgumentException("values should provide " + Schema.COL_LONGITUDE + ", "
+                            + Schema.COL_LATITUDE + ", " + Schema.COL_TIMESTAMP);
+                }
+                break;
+            case Schema.URI_CODE_TRACK:
+                if (values.containsKey(Schema.COL_START_DATE)) {
+                    long rowId = dbHelper.getWritableDatabase().insert(Schema.TBL_TRACK, null, values);
+                    if (rowId > 0) {
+                        Uri trackUri = ContentUris.withAppendedId(CONTENT_URI_TRACK, rowId);
+                        getContext().getContentResolver().notifyChange(trackUri, null);
+                        return trackUri;
+                    }
+                } else {
+                    throw new IllegalArgumentException("values should provide " + Schema.COL_START_DATE);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+
+        return null;
+    }
+
+
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selectionIn, String[] selectionArgsIn, String sortOrder) {
 
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String selection = selectionIn;
@@ -217,118 +338,8 @@ public class TrackContentProvider extends ContentProvider {
         return c;
     }
 
-    @Nullable
     @Override
-    public String getType(@NonNull Uri uri) {
-
-
-        // Select which type to return
-        switch (uriMatcher.match(uri)) {
-            case Schema.URI_CODE_TRACK_TRACKPOINTS:
-                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
-                        + Schema.TBL_TRACKPOINT;
-            case Schema.URI_CODE_TRACK_WAYPOINTS:
-                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
-                        + Schema.TBL_WAYPOINT;
-            case Schema.URI_CODE_TRACK:
-                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
-                        + Schema.TBL_TRACK;
-            default:
-                throw new IllegalArgumentException("Unknown URL " + uri);
-        }
-    }
-
-    @Nullable
-    @Override
-    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-
-        // Select which data type to insert
-        switch (uriMatcher.match(uri)) {
-            case Schema.URI_CODE_TRACK_TRACKPOINTS:
-                // Check that mandatory columns are present.
-                if (values.containsKey(Schema.COL_TRACK_ID) && values.containsKey(Schema.COL_LONGITUDE)
-                        && values.containsKey(Schema.COL_LATITUDE) && values.containsKey(Schema.COL_TIMESTAMP)) {
-
-                    long rowId = dbHelper.getWritableDatabase().insert(Schema.TBL_TRACKPOINT, null, values);
-                    if (rowId > 0) {
-                        Uri trackpointUri = ContentUris.withAppendedId(uri, rowId);
-                        getContext().getContentResolver().notifyChange(trackpointUri, null);
-                        return trackpointUri;
-                    }
-                } else {
-                    throw new IllegalArgumentException("values should provide " + Schema.COL_LONGITUDE + ", "
-                            + Schema.COL_LATITUDE + ", " + Schema.COL_TIMESTAMP);
-                }
-                break;
-            case Schema.URI_CODE_TRACK_WAYPOINTS:
-                // Check that mandatory columns are present.
-                if (values.containsKey(Schema.COL_TRACK_ID) && values.containsKey(Schema.COL_LONGITUDE)
-                        && values.containsKey(Schema.COL_LATITUDE) && values.containsKey(Schema.COL_TIMESTAMP) ) {
-
-                    long rowId = dbHelper.getWritableDatabase().insert(Schema.TBL_WAYPOINT, null, values);
-                    if (rowId > 0) {
-                        Uri waypointUri = ContentUris.withAppendedId(uri, rowId);
-                        getContext().getContentResolver().notifyChange(waypointUri, null);
-                        return waypointUri;
-                    }
-                } else {
-                    throw new IllegalArgumentException("values should provide " + Schema.COL_LONGITUDE + ", "
-                            + Schema.COL_LATITUDE + ", " + Schema.COL_TIMESTAMP);
-                }
-                break;
-            case Schema.URI_CODE_TRACK:
-                if (values.containsKey(Schema.COL_START_DATE)) {
-                    long rowId = dbHelper.getWritableDatabase().insert(Schema.TBL_TRACK, null, values);
-                    if (rowId > 0) {
-                        Uri trackUri = ContentUris.withAppendedId(CONTENT_URI_TRACK, rowId);
-                        getContext().getContentResolver().notifyChange(trackUri, null);
-                        return trackUri;
-                    }
-                } else {
-                    throw new IllegalArgumentException("values should provide " + Schema.COL_START_DATE);
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
-        }
-
-        return null;
-    }
-
-    @Override
-    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-
-        int count;
-        // Select which data type to delete
-        switch (uriMatcher.match(uri)) {
-            case Schema.URI_CODE_TRACK:
-                count = dbHelper.getWritableDatabase().delete(Schema.TBL_TRACK, selection, selectionArgs);
-                break;
-            case Schema.URI_CODE_TRACK_ID:
-                // the URI matches a specific track, delete all related entities
-                String trackId = Long.toString(ContentUris.parseId(uri));
-                dbHelper.getWritableDatabase().delete(Schema.TBL_WAYPOINT, Schema.COL_TRACK_ID + " = ?", new String[] {trackId});
-                dbHelper.getWritableDatabase().delete(Schema.TBL_TRACKPOINT, Schema.COL_TRACK_ID + " = ?", new String[] {trackId});
-                count = dbHelper.getWritableDatabase().delete(Schema.TBL_TRACK, Schema.COL_ID + " = ?", new String[] {trackId});
-                break;
-            case Schema.URI_CODE_WAYPOINT_UUID:
-                String uuid = uri.getLastPathSegment();
-                if(uuid != null){
-                    count = dbHelper.getWritableDatabase().delete(Schema.TBL_WAYPOINT, Schema.COL_UUID + " = ?", new String[]{uuid});
-                }else{
-                    count = 0;
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
-        }
-
-        getContext().getContentResolver().notifyChange(uri, null);
-        return count;
-    }
-
-    @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selectionIn, @Nullable String[] selectionArgsIn) {
+    public int update(Uri uri, ContentValues values, String selectionIn, String[] selectionArgsIn) {
 
         String table;
         String selection = selectionIn;
@@ -373,6 +384,7 @@ public class TrackContentProvider extends ContentProvider {
         int rows = dbHelper.getWritableDatabase().update(table, values, selection, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
         return rows;
+
     }
 
 
@@ -395,10 +407,18 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_NAME = "name";
         public static final String COL_START_DATE = "start_date";
 
+        //JW: Should be deleted
+        public static final String COL_ELEVATION = "elevation";
+        public static final String COL_NBSATELLITES = "nb_satellites";
+        public static final String COL_DESCRIPTION = "description";
+        public static final String COL_TAGS = "tags";
+        public static final String COL_OSM_VISIBILITY = "osm_visibility";
+        public static final String COL_LINK = "link";
+
         //Specific to Jean
         public static final String COL_PIC_PATH ="path_to_pictures";
         public static final String COL_INF_ID = "Inf_ID";
-        public static final String RECOPEM_TRACK_ID = "Track_ID";
+        public static final String COL_RECOPEM_TRACK_ID = "Track_ID";
         public static final String COL_GPS_METHOD = "GPS_data_coll_method";
         public static final String COL_GPS_COMMENTS = "GPS_comments";
         public static final String COL_WEEKDAY = "Weekday";
@@ -435,8 +455,12 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_MOON_SET = "Moon_set";
 
         @Deprecated
-        //public static final String COL_DIR = "directory";
+        public static final String COL_DIR = "directory";
         public static final String COL_ACTIVE = "active";
+        public static final String COL_EXPORT_DATE = "export_date";
+        public static final String COL_OSM_UPLOAD_DATE = "osm_upload_date";
+        public static final String COL_COMPASS = "compass_heading";
+        public static final String COL_COMPASS_ACCURACY = "compass_accuracy";
 
         // virtual colums that are used in some sqls but dont exist in database
         public static final String COL_TRACKPOINT_COUNT = "tp_count";

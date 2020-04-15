@@ -11,7 +11,7 @@ import java.util.Date;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.exception.ExportTrackException;
-import jean.wencelius.traceurrecopem.model.DataHelper;
+import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 /**

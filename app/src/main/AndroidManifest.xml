@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jean.wencelius.traceurrecopem">
-
+    package="jean.wencelius.traceurrecopem"
+    android:installLocation="auto">
     <!-- DANGEROUS PERMISSIONS -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -17,20 +17,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".controller.TrackListActivity"></activity>
+
         <provider
-            android:name=".model.TrackContentProvider"
-            android:authorities="traceurrecopem.provider"
-            android:enabled="false"
-            android:exported="false"></provider>
+            android:name=".db.TrackContentProvider"
+            android:authorities="jean.wencelius.traceurrecopem.provider"
+            android:enabled="true"
+            android:exported="false" />
 
-        <service
-            android:name=".controller.service.gpsLogger"
-            android:exported="false">
-            <intent-filter>
-                <action android:name=".intent.GPS_SERVICE" />
-            </intent-filter>
-        </service>
-
+        <activity android:name=".controller.MenuActivity" />
         <activity android:name=".controller.DisplayMapActivity" />
         <activity android:name=".controller.LoginActivity" />
         <activity android:name=".controller.MainActivity">
@@ -40,6 +35,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.gpsLogger"
+            android:exported="false">
+            <intent-filter>
+                <action android:name=".intent.GPS_SERVICE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

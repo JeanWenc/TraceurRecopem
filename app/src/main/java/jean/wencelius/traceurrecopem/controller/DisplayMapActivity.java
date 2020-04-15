@@ -1,29 +1,24 @@
 package jean.wencelius.traceurrecopem.controller;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -40,12 +35,16 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.service.gpsLogger;
-import jean.wencelius.traceurrecopem.controller.service.gpsLoggerServiceConnection;
-import jean.wencelius.traceurrecopem.model.AppPreferences;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.service.gpsLogger;
+import jean.wencelius.traceurrecopem.service.gpsLoggerServiceConnection;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 public class DisplayMapActivity extends AppCompatActivity {
+
+    /**
+     * TODO: Make sure that when on this activity cannot go back. Or Make sure that app remembers that is_tracking
+     */
 
     private static final String STATE_IS_TRACKING = "isTracking";
 
@@ -57,35 +56,32 @@ public class DisplayMapActivity extends AppCompatActivity {
 
     /**Flag to check GPS status at startup.*/
     private boolean checkGPSFlag = true;
-    public static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
 
     /** Handles the bind to the GPS Logger service*/
     private ServiceConnection gpsLoggerConnection = new gpsLoggerServiceConnection(this);
 
-    public static final String PREF_KEY_CURRENT_TRACK_ID = "PREF_KEY_CURRENT_TRACK_ID";
-
-    private Boolean IS_RECORDING;
     private Boolean IS_BEACON_SHOWING;
-    public int currentTrackId;
-    public String currentTrackIdText;
+
+    public long currentTrackId;
 
     public TextView mShowTrackId;
     public TextView mShowPointCount;
     private ImageButton btCenterMap;
     private ImageButton btRecordTrack;
     private ImageButton btShowBeacon;
-    private ImageButton btMyTracks;
+    public ImageButton btMyTracks;
     MapView mMap = null;
 
     private MyLocationNewOverlay mLocationOverlay;
 
     private Bitmap mPersonIcon;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_map);
+
+        currentTrackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
 
         mShowTrackId = (TextView) findViewById(R.id.activity_display_map_show_track_id);
         mShowPointCount = (TextView) findViewById(R.id.activity_display_map_show_point_count);
@@ -96,27 +92,14 @@ public class DisplayMapActivity extends AppCompatActivity {
         btMyTracks = (ImageButton) findViewById(R.id.activity_display_map_ic_my_tracks);
         btShowBeacon = (ImageButton) findViewById(R.id.activity_display_map_ic_show_beacon);
 
+        btMyTracks.setEnabled(false);
+
         mPersonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_menu_mylocation);
-
-        currentTrackIdText = AppPreferences.getDefaultsString(PREF_KEY_CURRENT_TRACK_ID,getApplicationContext()) ;
-        currentTrackId=Integer.parseInt(currentTrackIdText);
-
-        if(savedInstanceState != null){
-            IS_RECORDING = savedInstanceState.getBoolean(STATE_IS_TRACKING);
-        }else{
-            IS_RECORDING = false;
-        }
-
-        IS_RECORDING = false;
-
 
         IS_BEACON_SHOWING=false;
 
         mGpsLoggerServiceIntent = new Intent(this, gpsLogger.class);
-
     }
-
-
 
     public void onResume(){
         super.onResume();
@@ -126,15 +109,12 @@ public class DisplayMapActivity extends AppCompatActivity {
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         //Checking if proper permissions, and if not requesting them
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //Permission not yet granted => Request permission
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_DANGEROUS_PERMISSIONS_REQUESTS);
-        } else {
-            //Permission already granted
-            showMap();
-        }
+        showMap();
+
+        startTrackLoggerForNewTrack();
+
+        String fulltext = "Enregistrement tracé # "+ Long.toString(currentTrackId);
+        mShowTrackId.setText(fulltext);
 
         mMap.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
@@ -154,25 +134,6 @@ public class DisplayMapActivity extends AppCompatActivity {
         }
 
         mMap.onPause();  //needed for compass, my location overlays, v6.0.0 and up
-    }
-
-
-    //What happens after requesting permission? (Optional)
-    @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_DANGEROUS_PERMISSIONS_REQUESTS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    showMap();
-                } else {
-                    //** TODO: Gérer cette éventualité là.*/
-                }
-                return;
-            }
-        }
     }
 
     public void showMap(){
@@ -223,34 +184,21 @@ public class DisplayMapActivity extends AppCompatActivity {
         btRecordTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                if(!IS_RECORDING){
-                    startTrackLoggerForNewTrack();
+                stopTrackLoggerForNewTrack();
+                btRecordTrack.setColorFilter(Color.argb(255, 120, 120, 120));
+                String fulltext = "Nb points = " + Integer.toString(mGpsLogger.getPointCount());
+                mShowPointCount.setText(fulltext);
+                btMyTracks.setEnabled(true);
+                Toast.makeText(DisplayMapActivity.this, "Tracé enregistré. Mauururu !",Toast.LENGTH_SHORT).show();
 
-                    btRecordTrack.setColorFilter(Color.argb(255, 255, 0, 0));
-
-                    if(currentTrackIdText!=null){
-                        currentTrackId++;
-                    }else{
-                        currentTrackId=1;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run(){
+                        Intent menuActivityIntent = new Intent(DisplayMapActivity.this, MenuActivity.class);
+                        startActivity(menuActivityIntent);
                     }
+                },2000); //LENGTH_SHORT is usually 2 second long
 
-                    String fulltext = "Enregistrement tracé # "+ Integer.toString(currentTrackId);
-                    mShowTrackId.setText(fulltext);
-
-                    IS_RECORDING=true;
-                }else{
-                    stopTrackLoggerForNewTrack();
-
-                    btRecordTrack.setColorFilter(Color.argb(255, 120, 120, 120));
-
-                    IS_RECORDING=false;
-
-                    String currentTrackIdTextNew = Integer.toString(currentTrackId);
-                    AppPreferences.setDefaultsString(PREF_KEY_CURRENT_TRACK_ID, currentTrackIdTextNew, getApplicationContext());
-
-                    String fulltext = "Nb points = " + Integer.toString(mGpsLogger.getPointCount());
-                    mShowPointCount.setText(fulltext);
-                }
             }
         });
 
@@ -267,12 +215,14 @@ public class DisplayMapActivity extends AppCompatActivity {
              }
          });
 
-        btMyTracks.setOnClickListener(new View.OnClickListener(){
+        /**btMyTracks.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                //User clicked button
+                Intent displayTrackListActivityIntent = new Intent(DisplayMapActivity.this, TrackListActivity.class);
+                startActivity(displayTrackListActivityIntent);
             }
-        });
-
+        });*/
     }
 
     public File getFileFromAssets(String aFileName) throws IOException {
@@ -323,11 +273,11 @@ public class DisplayMapActivity extends AppCompatActivity {
     }
 
     private void startTrackLoggerForNewTrack(){
-        System.out.println("TrackRecordingStarted");
-
          if (checkGPSFlag){
              checkGPSProvider();
          }
+
+         mGpsLoggerServiceIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID,currentTrackId);
 
          // Start GPS Logger service
          startService(mGpsLoggerServiceIntent);
@@ -336,7 +286,6 @@ public class DisplayMapActivity extends AppCompatActivity {
          // We can't use BIND_AUTO_CREATE here, because when we'll ubound
          // later, we want to keep the service alive in background
          bindService(mGpsLoggerServiceIntent, gpsLoggerConnection, 0);
-
     }
 
     private void stopTrackLoggerForNewTrack(){
@@ -347,7 +296,7 @@ public class DisplayMapActivity extends AppCompatActivity {
         }
     }
 
-    public int getCurrentTrackId() {
+    public long getCurrentTrackId() {
         return this.currentTrackId;
     }
 
@@ -368,6 +317,7 @@ public class DisplayMapActivity extends AppCompatActivity {
         // Save the fact that we are currently tracking or not
         if(mGpsLogger != null){
             outState.putBoolean(STATE_IS_TRACKING, mGpsLogger.isTracking());
+            outState.putLong(TrackContentProvider.Schema.COL_TRACK_ID,currentTrackId);
         }
         super.onSaveInstanceState(outState);
     }

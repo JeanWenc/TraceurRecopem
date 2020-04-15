@@ -55,10 +55,11 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="35dp"
         android:layout_marginRight="10dp"
-        android:tint="#787878ff"
+        android:tint="@android:color/holo_red_dark"
         android:background="#ffffffff"
         android:cropToPadding="true"
         />
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,6 +73,7 @@
         android:background="#ffffffff"
         android:cropToPadding="true"
         />
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

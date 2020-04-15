@@ -1,4 +1,4 @@
-package jean.wencelius.traceurrecopem.controller.service;
+package jean.wencelius.traceurrecopem.service;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import jean.wencelius.traceurrecopem.controller.DisplayMapActivity;
-import jean.wencelius.traceurrecopem.model.TrackContentProvider;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 /**

@@ -12,8 +12,6 @@ import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.view.View;
 
 import androidx.core.content.ContextCompat;
 
@@ -22,18 +20,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.exception.ExportTrackException;
-import jean.wencelius.traceurrecopem.model.DataHelper;
-import jean.wencelius.traceurrecopem.model.TrackContentProvider;
-import jean.wencelius.traceurrecopem.utils.FileSystemUtils;
+import jean.wencelius.traceurrecopem.db.DataHelper;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 /**
  * Created by Jean Wencélius on 09/04/2020.

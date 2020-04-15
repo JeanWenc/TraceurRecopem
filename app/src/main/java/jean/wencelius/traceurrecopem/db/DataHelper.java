@@ -1,4 +1,4 @@
-package jean.wencelius.traceurrecopem.model;
+package jean.wencelius.traceurrecopem.db;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -63,8 +63,6 @@ public class DataHelper {
         Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
         contentResolver.insert(Uri.withAppendedPath(trackUri, TrackContentProvider.Schema.TBL_TRACKPOINT + "s"), values);
     }
-
-
 
     /**
      * Tracks a way point with link

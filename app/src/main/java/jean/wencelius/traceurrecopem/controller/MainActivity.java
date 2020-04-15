@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int SPLASH_TIME = 3000;
 
-    private String mFisherName;
+    public String mFisherName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
             String fulltext = "Ia Ora " + mFisherName + " !";
             mGreetingText.setText(fulltext);
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
 
         Thread timer = new Thread() {
             public void run() {
@@ -39,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
                     if (mFisherName!=null){
-                        Intent displayMapActivityIntent = new Intent(MainActivity.this, DisplayMapActivity.class);
-                        startActivity(displayMapActivityIntent);
+                        Intent menuActivityIntent = new Intent(MainActivity.this, MenuActivity.class);
+                        startActivity(menuActivityIntent);
                     }else{
                         Intent loginActivityIntent = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(loginActivityIntent);
@@ -50,6 +55,5 @@ public class MainActivity extends AppCompatActivity {
         };//end timerThread
 
         timer.start();
-
     }
 }

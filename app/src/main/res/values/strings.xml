@@ -3,10 +3,17 @@
     <string name="app_name_w_space">Traceur Recopem</string>
 
 
+    <string name="trackmgr_tracklist">Liste des tracés</string>
+    <string name="trackmgr_empty">Aucun tracé enregistré</string>
     <string name="trackmgr_exporting_prepare">Preparing export&#8230;</string>
     <string name="trackmgr_exporting">Exporting track #{0}&#8230;</string>
     <string name="trackmgr_export_error">Unable to export track: {0}</string>
     <string name="trackmgr_exportall_confirm">All tracks will be exported, which could take a long time. Are you sure?</string>
+    <string name="trackmgr_newtrack_error">Unable to create a new track: {0}</string>
+
+    <!-- Track list -->
+    <string name="track_status">Track status indicator</string>
+    <string name="trackmgr_trackpoints_count">Trackpoints: </string>
 
     <!-->NOTIFICATION<-->
     <string name="tracking_notification_title">Enregristrement tracé #</string>
@@ -29,5 +36,13 @@
     <!-- VARIOUS -->
     <string name="various_unit_meters">m</string>
     <string name="various_accuracy">Accuracy</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+
+
+    <string name="osm_visibility_private">Private</string>
+    <string name="osm_visibility_public">Public</string>
+    <string name="osm_visibility_trackable">Trackable</string>
+    <string name="osm_visibility_identifiable">Identifiable</string>
 
 </resources>

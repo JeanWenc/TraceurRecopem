@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".controller.MenuActivity">
+
+    <Button
+        android:id="@+id/activity_menu_start_tracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Je vais à la peche\n\nLancer traceur"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:padding="5dp"
+        android:background="@color/colorAccent"/>
+
+    <Button
+        android:id="@+id/activity_menu_see_my_tracks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Liste de mes tracés"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:padding="5dp"
+        android:background="@color/colorAccent"/>
+
+    <Button
+        android:id="@+id/activity_menu_see_simple_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Regarder la carte\n\nSans lancer traceur"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:padding="5dp"
+        android:background="@color/colorAccent"/>
+
+</LinearLayout>
