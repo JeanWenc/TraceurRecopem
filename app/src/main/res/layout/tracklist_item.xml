@@ -9,6 +9,7 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
     android:background="@color/colorAccent"
+    android:id="@+id/tracklist_item_mainlayout"
     >
 
     <TextView android:id="@+id/tracklist_item_id"
@@ -43,29 +44,83 @@
             android:layout_width="wrap_content"
             style="@android:style/TextAppearance.Medium"/>
 
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:id="@+id/tracklist_item_recopem_id"
+            android:layout_below="@id/tracklist_item_nameordate"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="3dp"
+            android:textStyle="bold"
+            style="@android:style/TextAppearance.Small"
+            android:text="{RecopID}"
+            android:layout_width="wrap_content"/>
+
         <TextView
             android:layout_height="wrap_content"
             android:id="@+id/tracklist_item_gpsmethod"
             android:layout_below="@id/tracklist_item_nameordate"
+            android:layout_toRightOf="@id/tracklist_item_recopem_id"
             android:layout_marginLeft="8dp"
             android:textStyle="bold"
             android:layout_marginRight="3dp"
             style="@android:style/TextAppearance.Small"
-            android:text="Méthode tracé = "
+            android:text="Meth. tracé = "
             android:layout_width="wrap_content"/>
         <TextView
             android:layout_height="wrap_content"
-            android:text="{GPS or MANUEL}"
-            android:id="@+id/trackmgr_item_gpsmethod_which"
+            android:text="{GPS/MANUEL}"
+            android:id="@+id/tracklist_item_gpsmethod_which"
             android:layout_below="@id/tracklist_item_nameordate"
             android:layout_toRightOf="@id/tracklist_item_gpsmethod"
+            style="@android:style/TextAppearance.Small"
+            android:layout_width="wrap_content"/>
+
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="3dp"
+            android:text="Questions = "
+            android:textStyle="bold"
+            android:id="@+id/tracklist_item_data"
+            android:layout_below="@id/tracklist_item_recopem_id"
+            style="@android:style/TextAppearance.Small"
+            />
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="{false}"
+            android:id="@+id/tracklist_item_data_value"
+            android:layout_below="@id/tracklist_item_gpsmethod"
+            android:layout_toRightOf="@id/tracklist_item_data"
+            style="@android:style/TextAppearance.Small"
+            android:layout_width="wrap_content"/>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="3dp"
+            android:text="Photos = "
+            android:textStyle="bold"
+            android:id="@+id/tracklist_item_pictures"
+            android:layout_below="@id/tracklist_item_gpsmethod"
+            android:layout_toRightOf="@id/tracklist_item_data_value"
+            style="@android:style/TextAppearance.Small"
+            />
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="{none/manuel/camera}"
+            android:id="@+id/tracklist_item_pictures_value"
+            android:layout_below="@id/tracklist_item_gpsmethod"
+            android:layout_toRightOf="@id/tracklist_item_pictures"
             style="@android:style/TextAppearance.Small"
             android:layout_width="wrap_content"/>
 
         <TextView
             android:layout_height="wrap_content"
             android:id="@+id/tracklist_item_trackpoints"
-            android:layout_below="@id/tracklist_item_gpsmethod"
+            android:layout_below="@id/tracklist_item_data"
             android:layout_marginLeft="8dp"
             android:textStyle="bold"
             android:layout_marginRight="3dp"
@@ -76,19 +131,19 @@
             android:layout_height="wrap_content"
             android:text="{y}"
             android:id="@+id/tracklist_item_tps"
-            android:layout_below="@id/tracklist_item_gpsmethod"
+            android:layout_below="@id/tracklist_item_data"
             android:layout_toRightOf="@id/tracklist_item_trackpoints"
             style="@android:style/TextAppearance.Small"
             android:layout_width="wrap_content"/>
     </RelativeLayout>
 
-   <!--<ImageView android:id="@+id/trackmgr_item_statusicon"
-        android:layout_height="fill_parent" android:layout_width="wrap_content"
-        android:src="@android:drawable/presence_online"
-        android:paddingLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_marginLeft="3dp"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:paddingRight="3dp"
-        android:contentDescription="@string/track_status" />-->
+    <!--<ImageView android:id="@+id/trackmgr_item_statusicon"
+         android:layout_height="fill_parent" android:layout_width="wrap_content"
+         android:src="@android:drawable/presence_online"
+         android:paddingLeft="3dp"
+         android:layout_marginRight="3dp"
+         android:layout_marginLeft="3dp"
+         android:layout_gravity="center_horizontal|center_vertical"
+         android:paddingRight="3dp"
+         android:contentDescription="@string/track_status" />-->
 </LinearLayout>

@@ -137,7 +137,9 @@ public class MenuActivity extends AppCompatActivity {
         values.put(TrackContentProvider.Schema.COL_START_DATE, startDate.getTime());
         values.put(TrackContentProvider.Schema.COL_RECOPEM_TRACK_ID, mRecopemId);
         values.put(TrackContentProvider.Schema.COL_GPS_METHOD,"GPS");
-        values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDay+1);
+        values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDay);
+        values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
+        values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"none"); // other values should be Camera or Manuel
 
         values.put(TrackContentProvider.Schema.COL_ACTIVE, TrackContentProvider.Schema.VAL_TRACK_ACTIVE);
 

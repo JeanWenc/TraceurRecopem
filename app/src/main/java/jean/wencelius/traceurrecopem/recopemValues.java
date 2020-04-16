@@ -54,25 +54,25 @@ public class recopemValues {
         String mWeekdayString = new String();
         switch (intWeekday){
             case 1:
+                mWeekdayString = "Dimanche";
+                break;
+            case 2 :
                 mWeekdayString = "Lundi";
                 break;
-            case 2:
+            case 3:
                 mWeekdayString = "Mardi";
                 break;
-            case 3:
+            case 4:
                 mWeekdayString = "Mercredi";
                 break;
-            case 4:
+            case 5:
                 mWeekdayString = "Jeudi";
                 break;
-            case 5:
+            case 6:
                 mWeekdayString = "Vendredi";
                 break;
-            case 6:
-                mWeekdayString = "Samedi";
-                break;
             case 7:
-                mWeekdayString = "Dimanche";
+                mWeekdayString = "Samedi";
                 break;
         }
         return mWeekdayString;

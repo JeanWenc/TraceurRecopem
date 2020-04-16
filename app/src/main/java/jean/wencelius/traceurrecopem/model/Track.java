@@ -47,6 +47,11 @@ public class Track {
     private String weekday;
     private String gpsMethod;
     private int tpCount, wpCount;
+
+    private String recopemId;
+    private String dataAdded;
+    private String picAdded;
+
     private long trackDate;
     private long trackId;
 
@@ -71,20 +76,22 @@ public class Track {
 
         out.trackId = trackId;
         out.cr = cr;
-        out.trackDate = tc.getLong(tc.getColumnIndex(TrackContentProvider.Schema.COL_START_DATE));
 
         int mIntWeekday = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_WEEKDAY));
         out.weekday = recopemValues.getWeekdayString(mIntWeekday);
 
+        out.name = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_NAME));
+        out.trackDate = tc.getLong(tc.getColumnIndex(TrackContentProvider.Schema.COL_START_DATE));
+
         out.gpsMethod = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_GPS_METHOD));
 
-        out.name = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_NAME));
+        out.recopemId = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_RECOPEM_TRACK_ID));
 
-        /**
-         * TODO: keep the below eventually, but look at how it's calculated
-         */
+        out.dataAdded = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
+
+        out.picAdded = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
+
         out.tpCount = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_TRACKPOINT_COUNT));
-
         //out.wpCount = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_WAYPOINT_COUNT));
 
         if(withExtraInformation){
@@ -118,6 +125,18 @@ public class Track {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setRecopemId (String recopemId) {
+        this.recopemId = recopemId;
+    }
+
+    public void setDataAdded (String dataAdded) {
+        this.dataAdded = dataAdded;
+    }
+
+    public void setPicAdded (String picAdded){
+        this.picAdded = picAdded;
     }
 
     public void setWeekday(String weekday) {
@@ -195,6 +214,18 @@ public class Track {
 
     public String getGpsMethod(){
         return gpsMethod;
+    }
+
+    public String getRecopemId(){
+        return recopemId;
+    }
+
+    public String getDataAdded(){
+        return dataAdded;
+    }
+
+    public String getPicAdded(){
+        return picAdded;
     }
 
     public String getDescription() {

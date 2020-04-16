@@ -2,11 +2,13 @@ package jean.wencelius.traceurrecopem.db;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import jean.wencelius.traceurrecopem.R;
@@ -49,7 +51,12 @@ public class TrackListAdapter extends CursorAdapter {
         TextView vId = (TextView) v.findViewById(R.id.tracklist_item_id);
         TextView vWeekday = (TextView) v.findViewById(R.id.tracklist_item_weekday);
         TextView vNameOrStartDate = (TextView) v.findViewById(R.id.tracklist_item_nameordate);
-        TextView vGpsMethod = (TextView) v.findViewById(R.id.trackmgr_item_gpsmethod_which);
+        TextView vGpsMethod = (TextView) v.findViewById(R.id.tracklist_item_gpsmethod_which);
+        TextView vRecopemId = (TextView) v.findViewById(R.id.tracklist_item_recopem_id);
+        TextView vDataAdded = (TextView) v.findViewById(R.id.tracklist_item_data_value);
+        TextView vPicAdded = (TextView) v.findViewById(R.id.tracklist_item_pictures_value);
+        LinearLayout vMainLayout = (LinearLayout) v.findViewById(R.id.tracklist_item_mainlayout);
+
         TextView vTps = (TextView) v.findViewById(R.id.tracklist_item_tps);
         //ImageView vStatus = (ImageView) v.findViewById(R.id.trackmgr_item_statusicon);
 
@@ -79,6 +86,22 @@ public class TrackListAdapter extends CursorAdapter {
         vGpsMethod.setText(t.getGpsMethod());
         vTps.setText(Integer.toString(t.getTpCount()));
         vNameOrStartDate.setText(t.getName());
+
+        vRecopemId.setText(t.getRecopemId());
+
+        String mDataAdded = t.getDataAdded();
+        String mPicAdded = t.getPicAdded();
+
+        vDataAdded.setText(mDataAdded);
+        vPicAdded.setText(mPicAdded);
+
+        if(mDataAdded.equals("false") && mPicAdded.equals("none")){
+            vMainLayout.setBackgroundColor(Color.parseColor("#FF0000"));
+        }else if(mDataAdded.equals("true") && !mPicAdded.equals("none")){
+            vMainLayout.setBackgroundColor(Color.parseColor("#00FF00"));
+        }else{
+            vMainLayout.setBackgroundColor(Color.parseColor("#FFFF00"));
+        }
 
         return v;
     }
