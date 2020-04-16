@@ -17,8 +17,10 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:padding="5dp"
-        android:background="@color/colorAccent"/>
+        android:padding="15dp"
+        android:textStyle="bold"
+        android:background="@color/colorPrimaryDark"
+        />
 
     <Button
         android:id="@+id/activity_menu_see_my_tracks"
@@ -26,11 +28,12 @@
         android:layout_height="wrap_content"
         android:text="Liste de mes tracés"
         android:textColor="@android:color/white"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:padding="5dp"
-        android:background="@color/colorAccent"/>
+        android:background="@color/colorAccent"
+        />
 
     <Button
         android:id="@+id/activity_menu_see_simple_map"
