@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -42,10 +44,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 
 public class MapAndTrackActivity extends AppCompatActivity {
 
-    /**
-     * TODO: Make sure that when on this activity cannot go back. Or Make sure that app remembers that is_tracking
-     */
-
     private static final String STATE_IS_TRACKING = "isTracking";
 
     /**GPS Logger service, to receive events and be able to update UI.*/
@@ -66,10 +64,11 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
     public TextView mShowTrackId;
     public TextView mShowPointCount;
+
+    //private ImageButton btRecordTrack;
+
     private ImageButton btCenterMap;
-    private ImageButton btRecordTrack;
     private ImageButton btShowBeacon;
-    public ImageButton btMyTracks;
     MapView mMap = null;
 
     private MyLocationNewOverlay mLocationOverlay;
@@ -87,12 +86,11 @@ public class MapAndTrackActivity extends AppCompatActivity {
         mShowPointCount = (TextView) findViewById(R.id.activity_display_map_show_point_count);
 
         mMap = (MapView) findViewById(R.id.activity_display_map_map);
-        btCenterMap = (ImageButton) findViewById(R.id.activity_display_map_ic_center_map);
-        btRecordTrack = (ImageButton) findViewById(R.id.activity_display_map_ic_record_track);
-        btMyTracks = (ImageButton) findViewById(R.id.activity_display_map_ic_my_tracks);
-        btShowBeacon = (ImageButton) findViewById(R.id.activity_display_map_ic_show_beacon);
 
-        btMyTracks.setEnabled(false);
+        //btRecordTrack = (ImageButton) findViewById(R.id.activity_display_map_ic_record_track);
+
+        btCenterMap = (ImageButton) findViewById(R.id.activity_display_map_ic_center_map);
+        btShowBeacon = (ImageButton) findViewById(R.id.activity_display_map_ic_show_beacon);
 
         mPersonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_menu_mylocation);
 
@@ -134,6 +132,45 @@ public class MapAndTrackActivity extends AppCompatActivity {
         }
 
         mMap.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mapandtrack_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.activity_map_and_track_stop_recording:
+                stopTrackLoggerForNewTrack();
+
+                String fulltext = "Nb points = " + Integer.toString(mGpsLogger.getPointCount());
+                mShowPointCount.setText(fulltext);
+
+                Toast.makeText(MapAndTrackActivity.this, "Tracé enregistré. Mauururu !",Toast.LENGTH_SHORT).show();
+
+                mShowTrackId.setTextColor(Color.BLACK);
+
+                item.setVisible(false);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run(){
+                        Intent menuActivityIntent = new Intent(MapAndTrackActivity.this, MenuActivity.class);
+                        startActivity(menuActivityIntent);
+                    }
+                },2000); //LENGTH_SHORT is usually 2 second long
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void showMap(){
@@ -181,14 +218,14 @@ public class MapAndTrackActivity extends AppCompatActivity {
             }
         });
 
-        btRecordTrack.setOnClickListener(new View.OnClickListener() {
+        /**btRecordTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 stopTrackLoggerForNewTrack();
                 btRecordTrack.setColorFilter(Color.argb(255, 120, 120, 120));
                 String fulltext = "Nb points = " + Integer.toString(mGpsLogger.getPointCount());
                 mShowPointCount.setText(fulltext);
-                btMyTracks.setEnabled(true);
+
                 Toast.makeText(MapAndTrackActivity.this, "Tracé enregistré. Mauururu !",Toast.LENGTH_SHORT).show();
 
                 new Handler().postDelayed(new Runnable() {
@@ -200,7 +237,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
                 },2000); //LENGTH_SHORT is usually 2 second long
 
             }
-        });
+        });*/
 
          btShowBeacon.setOnClickListener(new View.OnClickListener() {
              @Override
@@ -209,20 +246,11 @@ public class MapAndTrackActivity extends AppCompatActivity {
                      btShowBeacon.setColorFilter(Color.argb(255, 0, 255, 0));
                      IS_BEACON_SHOWING=true;
                  }else{
-                     btShowBeacon.setColorFilter(Color.argb(255, 120, 120, 120));
+                     btShowBeacon.setColorFilter(Color.argb(255, 18, 81, 140));
                      IS_BEACON_SHOWING=false;
                  }
              }
          });
-
-        /**btMyTracks.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                //User clicked button
-                Intent displayTrackListActivityIntent = new Intent(MapAndTrackActivity.this, TrackListActivity.class);
-                startActivity(displayTrackListActivityIntent);
-            }
-        });*/
     }
 
     public File getFileFromAssets(String aFileName) throws IOException {

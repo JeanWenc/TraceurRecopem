@@ -114,6 +114,14 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(TrackListActivityIntent);
             }
         });
+
+        mSimpleMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent MapAloneActivityIntent = new Intent(MenuActivity.this, MapAloneActivity.class);
+                startActivity(MapAloneActivityIntent);
+            }
+        });
     }
     /**
      * Creates a new track, in DB and on SD card
