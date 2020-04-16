@@ -23,7 +23,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.DisplayMapActivity;
+import jean.wencelius.traceurrecopem.controller.MapAndTrackActivity;
 import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
@@ -265,7 +265,7 @@ public class gpsLogger extends Service implements LocationListener {
     /**Builds the notification to display when tracking in background.*/
     private Notification getNotification() {
 
-        Intent startDisplayMapActivity = new Intent(this, DisplayMapActivity.class);
+        Intent startDisplayMapActivity = new Intent(this, MapAndTrackActivity.class);
         startDisplayMapActivity.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, currentTrackId);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, startDisplayMapActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import jean.wencelius.traceurrecopem.controller.DisplayMapActivity;
+import jean.wencelius.traceurrecopem.controller.MapAndTrackActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
@@ -13,9 +13,9 @@ import jean.wencelius.traceurrecopem.recopemValues;
  * Created by Jean Wencélius on 09/04/2020.
  */
 public class gpsLoggerServiceConnection implements ServiceConnection {
-    private DisplayMapActivity activity;
+    private MapAndTrackActivity activity;
 
-    public gpsLoggerServiceConnection(DisplayMapActivity dma){
+    public gpsLoggerServiceConnection(MapAndTrackActivity dma){
         activity = dma;
     }
 

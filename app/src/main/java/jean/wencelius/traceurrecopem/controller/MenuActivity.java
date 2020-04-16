@@ -9,7 +9,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +19,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.db.DatabaseHelper;
 import jean.wencelius.traceurrecopem.exception.CreateTrackException;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
@@ -95,7 +93,7 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 try{
-                    Intent i = new Intent(MenuActivity.this, DisplayMapActivity.class);
+                    Intent i = new Intent(MenuActivity.this, MapAndTrackActivity.class);
                     // New track
                     currentTrackId = createNewTrack();
                     i.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, currentTrackId);
@@ -148,5 +146,10 @@ public class MenuActivity extends AppCompatActivity {
         long trackId = ContentUris.parseId(trackUri);
 
         return trackId;
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

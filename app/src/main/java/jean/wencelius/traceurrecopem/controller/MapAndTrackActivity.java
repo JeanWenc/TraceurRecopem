@@ -40,7 +40,7 @@ import jean.wencelius.traceurrecopem.service.gpsLogger;
 import jean.wencelius.traceurrecopem.service.gpsLoggerServiceConnection;
 import jean.wencelius.traceurrecopem.recopemValues;
 
-public class DisplayMapActivity extends AppCompatActivity {
+public class MapAndTrackActivity extends AppCompatActivity {
 
     /**
      * TODO: Make sure that when on this activity cannot go back. Or Make sure that app remembers that is_tracking
@@ -79,7 +79,7 @@ public class DisplayMapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display_map);
+        setContentView(R.layout.activity_map_and_track);
 
         currentTrackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
 
@@ -189,12 +189,12 @@ public class DisplayMapActivity extends AppCompatActivity {
                 String fulltext = "Nb points = " + Integer.toString(mGpsLogger.getPointCount());
                 mShowPointCount.setText(fulltext);
                 btMyTracks.setEnabled(true);
-                Toast.makeText(DisplayMapActivity.this, "Tracé enregistré. Mauururu !",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapAndTrackActivity.this, "Tracé enregistré. Mauururu !",Toast.LENGTH_SHORT).show();
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run(){
-                        Intent menuActivityIntent = new Intent(DisplayMapActivity.this, MenuActivity.class);
+                        Intent menuActivityIntent = new Intent(MapAndTrackActivity.this, MenuActivity.class);
                         startActivity(menuActivityIntent);
                     }
                 },2000); //LENGTH_SHORT is usually 2 second long
@@ -219,7 +219,7 @@ public class DisplayMapActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 //User clicked button
-                Intent displayTrackListActivityIntent = new Intent(DisplayMapActivity.this, TrackListActivity.class);
+                Intent displayTrackListActivityIntent = new Intent(MapAndTrackActivity.this, TrackListActivity.class);
                 startActivity(displayTrackListActivityIntent);
             }
         });*/
@@ -320,5 +320,10 @@ public class DisplayMapActivity extends AppCompatActivity {
             outState.putLong(TrackContentProvider.Schema.COL_TRACK_ID,currentTrackId);
         }
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
