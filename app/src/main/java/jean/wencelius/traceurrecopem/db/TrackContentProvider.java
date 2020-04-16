@@ -47,6 +47,8 @@ public class TrackContentProvider extends ContentProvider {
             //Schema.COL_TAGS,
             //Schema.COL_OSM_VISIBILITY,
             Schema.COL_START_DATE,
+            Schema.COL_GPS_METHOD,
+            Schema.COL_WEEKDAY,
             "count(" + Schema.TBL_TRACKPOINT + "." + Schema.COL_ID + ") as " + Schema.COL_TRACKPOINT_COUNT,
             "(SELECT count("+Schema.TBL_WAYPOINT+"."+Schema.COL_TRACK_ID+") FROM "+Schema.TBL_WAYPOINT+" WHERE "+Schema.TBL_WAYPOINT+"."+Schema.COL_TRACK_ID+" = " + Schema.TBL_TRACK + "." + Schema.COL_ID + ") as " + Schema.COL_WAYPOINT_COUNT
     };

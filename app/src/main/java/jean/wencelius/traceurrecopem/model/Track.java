@@ -8,6 +8,7 @@ import java.util.Date;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.recopemValues;
 
 /**
  * Created by Jean Wencélius on 10/04/2020.
@@ -43,6 +44,8 @@ public class Track {
 
     private String name;
     private String description;
+    private String weekday;
+    private String gpsMethod;
     private int tpCount, wpCount;
     private long trackDate;
     private long trackId;
@@ -69,6 +72,11 @@ public class Track {
         out.trackId = trackId;
         out.cr = cr;
         out.trackDate = tc.getLong(tc.getColumnIndex(TrackContentProvider.Schema.COL_START_DATE));
+
+        int mIntWeekday = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_WEEKDAY));
+        out.weekday = recopemValues.getWeekdayString(mIntWeekday);
+
+        out.gpsMethod = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_GPS_METHOD));
 
         out.name = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_NAME));
 
@@ -110,6 +118,14 @@ public class Track {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setWeekday(String weekday) {
+        this.weekday = weekday;
+    }
+
+    public void setGpsMethod(String gpsMethod) {
+        this.gpsMethod = gpsMethod;
     }
 
     public void setDescription(String description) {
@@ -171,6 +187,14 @@ public class Track {
             // Use start date as name
             return DATE_FORMAT.format(new Date(trackDate));
         }
+    }
+
+    public String getWeekday() {
+        return weekday;
+    }
+
+    public String getGpsMethod(){
+        return gpsMethod;
     }
 
     public String getDescription() {

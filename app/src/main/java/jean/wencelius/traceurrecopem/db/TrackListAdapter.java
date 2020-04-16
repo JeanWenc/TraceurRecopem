@@ -46,9 +46,11 @@ public class TrackListAdapter extends CursorAdapter {
      * @return The relative view with data bound.
      */
     private View bind(Cursor cursor, View v, Context context) {
-        TextView vId = (TextView) v.findViewById(R.id.trackmgr_item_id);
-        TextView vNameOrStartDate = (TextView) v.findViewById(R.id.trackmgr_item_nameordate);
-        TextView vTps = (TextView) v.findViewById(R.id.trackmgr_item_tps);
+        TextView vId = (TextView) v.findViewById(R.id.tracklist_item_id);
+        TextView vWeekday = (TextView) v.findViewById(R.id.tracklist_item_weekday);
+        TextView vNameOrStartDate = (TextView) v.findViewById(R.id.tracklist_item_nameordate);
+        TextView vGpsMethod = (TextView) v.findViewById(R.id.trackmgr_item_gpsmethod_which);
+        TextView vTps = (TextView) v.findViewById(R.id.tracklist_item_tps);
         //ImageView vStatus = (ImageView) v.findViewById(R.id.trackmgr_item_statusicon);
 
         // Is track active ?
@@ -73,6 +75,8 @@ public class TrackListAdapter extends CursorAdapter {
 
         // Bind WP count, TP count, name
         Track t = Track.build(trackId, cursor, context.getContentResolver(), false);
+        vWeekday.setText(t.getWeekday());
+        vGpsMethod.setText(t.getGpsMethod());
         vTps.setText(Integer.toString(t.getTpCount()));
         vNameOrStartDate.setText(t.getName());
 

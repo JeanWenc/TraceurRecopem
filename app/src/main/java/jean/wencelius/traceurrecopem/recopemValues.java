@@ -50,4 +50,31 @@ public class recopemValues {
         public static final String NEXUS_S = "Nexus S";
     }
 
+    public static String getWeekdayString (int intWeekday){
+        String mWeekdayString = new String();
+        switch (intWeekday){
+            case 1:
+                mWeekdayString = "Lundi";
+                break;
+            case 2:
+                mWeekdayString = "Mardi";
+                break;
+            case 3:
+                mWeekdayString = "Mercredi";
+                break;
+            case 4:
+                mWeekdayString = "Jeudi";
+                break;
+            case 5:
+                mWeekdayString = "Vendredi";
+                break;
+            case 6:
+                mWeekdayString = "Samedi";
+                break;
+            case 7:
+                mWeekdayString = "Dimanche";
+                break;
+        }
+        return mWeekdayString;
+    }
 }

@@ -1,19 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".controller.TrackListActivity">
 
-    <TextView
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+    <RelativeLayout
+        android:layout_height="60dp"
+        android:gravity="top"
         android:layout_width="fill_parent"
-        style="@android:style/TextAppearance.Medium"
-        android:text="@string/trackmgr_tracklist"
-        android:paddingBottom="5dp"/>
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:id="@+id/activity_tracklist_total_earnings"
+            android:text="0 F CFP"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            style="@android:style/TextAppearance.Medium"
+            android:textColor="@android:color/white"/>
+
+        <ImageButton
+            android:layout_height="wrap_content"
+            android:id="@+id/activity_tracklist_add_track_manual"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="60dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/activity_tracklist_add_track_manual"
+            android:src="@android:drawable/ic_menu_add"
+            android:tint="@android:color/white"
+            android:background="@color/colorPrimary"/>
+        <ImageButton
+            android:layout_height="wrap_content"
+            android:id="@+id/activity_tracklist_export_all_tracks"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:src="@android:drawable/ic_menu_set_as"
+            android:tint="@android:color/white"
+            android:background="@color/colorPrimary"/>
+
+    </RelativeLayout>
+
 
     <FrameLayout android:layout_weight="1" android:layout_width="fill_parent"
         android:layout_height="0dip" android:padding="3dp">
@@ -24,7 +56,7 @@
         </ListView>
 
         <TextView android:text="@string/trackmgr_empty" android:padding="5dp"
-            android:id="@+id/trackmgr_empty" android:layout_width="fill_parent" android:layout_height="fill_parent"
+            android:id="@+id/activity_tracklist_empty" android:layout_width="fill_parent" android:layout_height="fill_parent"
             android:gravity="center" style="@android:style/TextAppearance.Medium" />
     </FrameLayout>
 
