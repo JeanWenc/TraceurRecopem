@@ -46,6 +46,9 @@ public class TrackContentProvider extends ContentProvider {
             //Schema.COL_DESCRIPTION,
             //Schema.COL_TAGS,
             //Schema.COL_OSM_VISIBILITY,
+            Schema.COL_RECOPEM_TRACK_ID,
+            Schema.COL_TRACK_DATA_ADDED,
+            Schema.COL_PIC_ADDED,
             Schema.COL_START_DATE,
             Schema.COL_GPS_METHOD,
             Schema.COL_WEEKDAY,
@@ -420,7 +423,7 @@ public class TrackContentProvider extends ContentProvider {
         //Specific to Jean
         public static final String COL_PIC_PATH ="path_to_pictures";
         public static final String COL_INF_ID = "Inf_ID";
-        public static final String COL_RECOPEM_TRACK_ID = "Track_ID";
+        public static final String COL_RECOPEM_TRACK_ID = "My_Track_ID";
         public static final String COL_GPS_METHOD = "GPS_data_coll_method";
         public static final String COL_GPS_COMMENTS = "GPS_comments";
         public static final String COL_WEEKDAY = "Weekday";
@@ -446,6 +449,8 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_PIC_NB = "Picture_nb";
         public static final String COL_PIC_SCALE = "Picture_scale";
         public static final String COL_PIC_COMMENTS = "Picture_comments";
+        public static final String COL_PIC_ADDED = "Pic_added";
+        public static final String COL_TRACK_DATA_ADDED = "Track_data_added";
         public static final String COL_WG_WIND = "WG_wind_speed_knots";
         public static final String COL_WG_WIND_DIR =" WG_wind_dir";
         public static final String COL_WG_SWELL_M = "WG_swell_m";

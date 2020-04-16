@@ -108,7 +108,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TrackContentProvider.Schema.COL_PIC_NB + " text,"
             + TrackContentProvider.Schema.COL_PIC_SCALE + " text,"
             + TrackContentProvider.Schema.COL_PIC_COMMENTS + " text,"
-            + TrackContentProvider.Schema.COL_PIC_PATH + "text,"
+            + TrackContentProvider.Schema.COL_PIC_PATH + " text,"
             //+ TrackContentProvider.Schema.COL_WG_WIND + " text,"
             //+ TrackContentProvider.Schema.COL_WG_WIND_DIR + " text,"
             //+ TrackContentProvider.Schema.COL_WG_SWELL_M + " text,"
@@ -118,6 +118,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             //+ TrackContentProvider.Schema.COL_MOON + " text,"
             //+ TrackContentProvider.Schema.COL_MOON_RISE + " text,"
             //+ TrackContentProvider.Schema.COL_MOON_SET + " text,"
+            + TrackContentProvider.Schema.COL_TRACK_DATA_ADDED + " text,"
+            + TrackContentProvider.Schema.COL_PIC_ADDED + " text,"
             + TrackContentProvider.Schema.COL_ACTIVE + " integer not null default 0"
             //+ TrackContentProvider.Schema.COL_EXPORT_DATE + " long,"  // null indicates not yet exported
             //+ TrackContentProvider.Schema.COL_OSM_UPLOAD_DATE + " long" // null indicates not yet uploaded

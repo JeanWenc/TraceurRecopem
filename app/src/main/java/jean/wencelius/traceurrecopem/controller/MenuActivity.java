@@ -39,7 +39,7 @@ public class MenuActivity extends AppCompatActivity {
 
     public static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
 
-    public static final String PREF_KEY_FISHER_ID= "PREF_KEY_FISHER_ID";
+    public static final String PREF_KEY_FISHER_ID = "PREF_KEY_FISHER_ID";
 
     public long currentTrackId;
 
@@ -127,12 +127,15 @@ public class MenuActivity extends AppCompatActivity {
         int mDay  = mCalendar.get(Calendar.DAY_OF_WEEK);
         String mSimpleDate = Integer.toString(mCalendar.get(Calendar.YEAR))+"/"+Integer.toString(mCalendar.get(Calendar.MONTH)+1)+"/"+Integer.toString(mCalendar.get(Calendar.DATE));
 
+        String fisherId = AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext());
+        String mRecopemId = fisherId + "_" + mSimpleDate;
+
         // Create entry in TRACK table
         ContentValues values = new ContentValues();
         values.put(TrackContentProvider.Schema.COL_NAME, "");
         values.put(TrackContentProvider.Schema.COL_INF_ID, AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext()));
         values.put(TrackContentProvider.Schema.COL_START_DATE, startDate.getTime());
-        values.put(TrackContentProvider.Schema.COL_RECOPEM_TRACK_ID,AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext())+"_"+mSimpleDate);
+        values.put(TrackContentProvider.Schema.COL_RECOPEM_TRACK_ID, mRecopemId);
         values.put(TrackContentProvider.Schema.COL_GPS_METHOD,"GPS");
         values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDay+1);
 
