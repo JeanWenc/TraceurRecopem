@@ -38,7 +38,7 @@ public class ExportToStorageTask extends ExportTrackTask {
         // Create the path to the directory to which we will be writing
         // Trim the directory name, as additional spaces at the end will
         // not allow the directory to be created if required
-        String exportDirectoryPath = userGPXExportDirectoryName.trim();
+        String exportDirectoryPath = File.separator + userGPXExportDirectoryName.trim();
         String perTrackDirectory = File.separator + DataHelper.FILENAME_FORMATTER.format(startDate);
 
         // Create a file based on the path we've generated above

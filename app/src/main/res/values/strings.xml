@@ -19,6 +19,11 @@
     <string name="menu_newtrack">Ajouter un tracé manuellement</string>
     <string name="menu_exportall">Exporter tous les tracés</string>
 
+    <!--TrackDetail Menu-->
+    <string name="menu_adddata">Remplir Questionnaire</string>
+    <string name="menu_addpicture">Ajouter des photos de poissons</string>
+    <string name="menu_exportGPX">Exporter tracé</string>
+
     <!-->NOTIFICATION<-->
     <string name="tracking_notification_title">Enregristrement tracé #</string>
     <string name="tracking_notification_content">"Tapez ici pour ouvrir l'application."</string>

@@ -2,20 +2,30 @@ package jean.wencelius.traceurrecopem.controller;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ListActivity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.io.File;
 
 import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.db.TrackListAdapter;
+import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
 
 public class TrackListActivity extends ListActivity {
 
@@ -79,7 +89,10 @@ public class TrackListActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+
+        Intent TrackListDetailIntent = new Intent(TrackListActivity.this,TrackDetailActivity.class);
+        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, id);
+        startActivity(TrackListDetailIntent);
     }
 
     private void createManualTrack() {

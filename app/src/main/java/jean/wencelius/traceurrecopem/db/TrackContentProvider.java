@@ -48,6 +48,7 @@ public class TrackContentProvider extends ContentProvider {
             //Schema.COL_OSM_VISIBILITY,
             Schema.COL_RECOPEM_TRACK_ID,
             Schema.COL_TRACK_DATA_ADDED,
+            Schema.COL_EXPORTED,
             Schema.COL_PIC_ADDED,
             Schema.COL_START_DATE,
             Schema.COL_GPS_METHOD,
@@ -451,6 +452,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_PIC_COMMENTS = "Picture_comments";
         public static final String COL_PIC_ADDED = "Pic_added";
         public static final String COL_TRACK_DATA_ADDED = "Track_data_added";
+        public static final String COL_EXPORTED = "Exported";
         public static final String COL_WG_WIND = "WG_wind_speed_knots";
         public static final String COL_WG_WIND_DIR =" WG_wind_dir";
         public static final String COL_WG_SWELL_M = "WG_swell_m";
