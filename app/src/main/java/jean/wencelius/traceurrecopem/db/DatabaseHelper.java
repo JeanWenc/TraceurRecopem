@@ -120,6 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             //+ TrackContentProvider.Schema.COL_MOON_SET + " text,"
             + TrackContentProvider.Schema.COL_TRACK_DATA_ADDED + " text,"
             + TrackContentProvider.Schema.COL_PIC_ADDED + " text,"
+            + TrackContentProvider.Schema.COL_EXPORTED + " text,"
             + TrackContentProvider.Schema.COL_ACTIVE + " integer not null default 0"
             //+ TrackContentProvider.Schema.COL_EXPORT_DATE + " long,"  // null indicates not yet exported
             //+ TrackContentProvider.Schema.COL_OSM_UPLOAD_DATE + " long" // null indicates not yet uploaded
@@ -135,9 +136,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TrackContentProvider.Schema.COL_SPEED + " double,"
             + TrackContentProvider.Schema.COL_ACCURACY + " double,"
             + TrackContentProvider.Schema.COL_TIMESTAMP + " long not null"+ ")";
-
-
-
 
     private static final String SQL_CREATE_IDX_TRACKPOINT_TRACK
             = "create index if not exists "

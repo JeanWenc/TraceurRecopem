@@ -91,7 +91,6 @@ public class MenuActivity extends AppCompatActivity {
         mTrackingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try{
                     Intent i = new Intent(MenuActivity.this, MapAndTrackActivity.class);
                     // New track
@@ -146,6 +145,7 @@ public class MenuActivity extends AppCompatActivity {
         values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDay);
         values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
         values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"none"); // other values should be Camera or Manuel
+        values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");
 
         values.put(TrackContentProvider.Schema.COL_ACTIVE, TrackContentProvider.Schema.VAL_TRACK_ACTIVE);
 

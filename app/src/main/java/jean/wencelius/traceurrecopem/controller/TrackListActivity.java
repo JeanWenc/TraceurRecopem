@@ -6,6 +6,8 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.ListActivity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -90,8 +92,32 @@ public class TrackListActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
 
+       ContentResolver cr = getContentResolver();
+        Cursor cursor = cr.query(
+                ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, id),
+                null, null, null, null);
+
+        cursor.moveToPosition(0);
+
+        String picAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
+        String dataAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
+        String exported = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED));
+
+        String fulltext = "Track # "+id+ " nbRows = " + cursor.getCount()+ " camera = "+ picAdded;
+
+        /*Toast.makeText(this,
+                fulltext,
+                Toast.LENGTH_LONG)
+                .show();
+*/        
+        cursor.close();
+
         Intent TrackListDetailIntent = new Intent(TrackListActivity.this,TrackDetailActivity.class);
         TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, id);
+        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED,picAdded);
+        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED, dataAdded);
+        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_EXPORTED, exported);
+
         startActivity(TrackListDetailIntent);
     }
 

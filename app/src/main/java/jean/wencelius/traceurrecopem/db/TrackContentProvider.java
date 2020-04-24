@@ -71,7 +71,6 @@ public class TrackContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_WAYPOINT + "s", Schema.URI_CODE_TRACK_WAYPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_TRACKPOINT + "s", Schema.URI_CODE_TRACK_TRACKPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_WAYPOINT + "/uuid/*", Schema.URI_CODE_WAYPOINT_UUID);
-
     }
 
     /**
@@ -127,7 +126,6 @@ public class TrackContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-
         int count;
         // Select which data type to delete
         switch (uriMatcher.match(uri)) {
@@ -165,7 +163,6 @@ public class TrackContentProvider extends ContentProvider {
      */
     @Override
     public String getType(Uri uri) throws IllegalArgumentException {
-
         // Select which type to return
         switch (uriMatcher.match(uri)) {
             case Schema.URI_CODE_TRACK_TRACKPOINTS:
