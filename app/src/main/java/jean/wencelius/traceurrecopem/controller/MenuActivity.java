@@ -8,20 +8,26 @@ import android.Manifest;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
 import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.exception.CreateTrackException;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
+import jean.wencelius.traceurrecopem.recopemValues;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -132,6 +138,8 @@ public class MenuActivity extends AppCompatActivity {
         int mDay  = mCalendar.get(Calendar.DAY_OF_WEEK);
         String mSimpleDate = Integer.toString(mCalendar.get(Calendar.YEAR))+"/"+Integer.toString(mCalendar.get(Calendar.MONTH)+1)+"/"+Integer.toString(mCalendar.get(Calendar.DATE));
 
+        String saveDirectory = getDataTrackDirectory(startDate);
+
         String fisherId = AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext());
         String mRecopemId = fisherId + "_" + mSimpleDate;
 
@@ -146,6 +154,13 @@ public class MenuActivity extends AppCompatActivity {
         values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
         values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"none"); // other values should be Camera or Manuel
         values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");
+        values.put(TrackContentProvider.Schema.COL_DIR,saveDirectory);
+        values.put(TrackContentProvider.Schema.COL_DEVICE,android.os.Build.MODEL);
+
+        Toast.makeText(MenuActivity.this,
+                android.os.Build.MODEL,
+                Toast.LENGTH_LONG)
+                .show();
 
         values.put(TrackContentProvider.Schema.COL_ACTIVE, TrackContentProvider.Schema.VAL_TRACK_ACTIVE);
 
@@ -157,7 +172,27 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() {}
 
+    public String getDataTrackDirectory(Date startDate){
+        File sdRoot = Environment.getExternalStorageDirectory();
+
+        // The location that the user has specified gpx files and associated content to be written
+        String userGPXExportDirectoryName = recopemValues.VAL_STORAGE_DIR;
+
+        // Create the path to the directory to which we will be writing
+        String exportDirectoryPath = File.separator + userGPXExportDirectoryName.trim();
+        String perTrackDirectory = File.separator + DataHelper.FILENAME_FORMATTER.format(startDate);
+
+        String trackGPXExportDirectory = new String();
+        if (android.os.Build.MODEL.equals(recopemValues.Devices.NEXUS_S)) {
+            // exportDirectoryPath always starts with "/"
+            trackGPXExportDirectory = exportDirectoryPath + perTrackDirectory;
+        }else{
+            // Create a file based on the path we've generated above
+            trackGPXExportDirectory = sdRoot + exportDirectoryPath + perTrackDirectory;
+        }
+
+        return trackGPXExportDirectory;
     }
 }

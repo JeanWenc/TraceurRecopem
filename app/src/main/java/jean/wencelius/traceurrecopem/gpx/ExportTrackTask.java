@@ -74,6 +74,8 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
      */
     protected long[] trackIds;
 
+    protected String saveDir;
+
     /**
      * Dialog to display while exporting
      */
@@ -89,7 +91,7 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
      * @return The directory in which the track file should be created
      * @throws ExportTrackException
      */
-    protected abstract File getExportDirectory(Date startDate) throws ExportTrackException;
+    protected abstract File getExportDirectory(String startDate) throws ExportTrackException;
 
     /**
      * Whereas to export the media files or not
@@ -103,9 +105,11 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
      */
     protected abstract boolean updateExportDate();
 
-    public ExportTrackTask(Context context, long... trackIds) {
+    public ExportTrackTask(Context context, String saveDir,long... trackIds) {
         this.context = context;
         this.trackIds = trackIds;
+        this.saveDir=saveDir;
+
         pointDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         yearMonthDayDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
@@ -186,41 +190,18 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
             if (sdRoot.canWrite()) {
-                ContentResolver cr = context.getContentResolver();
 
-                Cursor c = context.getContentResolver().query(ContentUris.withAppendedId(
-                        TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null,
-                        null, null);
+                File trackGPXExportDirectory = getExportDirectory(saveDir);
 
-                // Get the startDate of this track
-                // TODO: Maybe we should be pulling the track name instead?
-                // We'd need to consider the possibility that two tracks were given the same name
-                // We could possibly disambiguate by including the track ID in the Folder Name
-                // to avoid overwriting another track on one hand or needlessly creating additional
-                // directories to avoid overwriting.
-                Date startDate = new Date();
-                String startDateYearMonthDay = new String();
-                if (null != c && 1 <= c.getCount()) {
-                    c.moveToFirst();
-                    long startDateInMilliseconds = c.getLong(c.getColumnIndex(TrackContentProvider.Schema.COL_START_DATE));
-                    /**
-                     * TODO: Added by Jean Make sure it works
-                     * creation of startDateYearMonthDay
-                     * Stored directly in filenameBase. In Initial script filenameBase calls buildGPXFilename(c) in original osmtracker package this file (deleted her by JW)
-                     */
-                    //JW: Below
-                    startDateYearMonthDay = yearMonthDayDateFormatter.format(new Date(startDateInMilliseconds));
+                //JW: For file name
+                String startDateYearMonthDay = saveDir.substring(saveDir.length()-19);
+                startDateYearMonthDay = startDateYearMonthDay.substring(0,10);
 
-                    startDate.setTime(startDateInMilliseconds);
-                }
-                //This is calling the ExportToStorageTask
-                File trackGPXExportDirectory = getExportDirectory(startDate);
-                //JW: Below
                 String filenameBase = startDateYearMonthDay + DataHelper.EXTENSION_GPX;
 
-                c.close();
-
                 File trackFile = new File(trackGPXExportDirectory, filenameBase);
+
+                ContentResolver cr = context.getContentResolver();
 
                 Cursor cTrackPoints = cr.query(TrackContentProvider.trackPointsUri(trackId), null,
                         null, null, TrackContentProvider.Schema.COL_TIMESTAMP + " asc");
@@ -345,5 +326,4 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
         }
     }
      */
-
 }

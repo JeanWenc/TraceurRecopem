@@ -102,14 +102,16 @@ public class TrackListActivity extends ListActivity {
         String picAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
         String dataAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
         String exported = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED));
+        String saveDir = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DIR));
 
-        String fulltext = "Track # "+id+ " nbRows = " + cursor.getCount()+ " camera = "+ picAdded;
 
-        /*Toast.makeText(this,
+        /*String fulltext = "Track # "+id+ " nbRows = " + cursor.getCount()+ " camera = "+ picAdded;
+
+        Toast.makeText(this,
                 fulltext,
                 Toast.LENGTH_LONG)
-                .show();
-*/        
+                .show();*/
+
         cursor.close();
 
         Intent TrackListDetailIntent = new Intent(TrackListActivity.this,TrackDetailActivity.class);
@@ -117,6 +119,7 @@ public class TrackListActivity extends ListActivity {
         TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED,picAdded);
         TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED, dataAdded);
         TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_EXPORTED, exported);
+        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_DIR,saveDir);
 
         startActivity(TrackListDetailIntent);
     }

@@ -21,43 +21,20 @@ public class ExportToStorageTask extends ExportTrackTask {
 
     private static final String TAG = ExportToStorageTask.class.getSimpleName();
 
-    public ExportToStorageTask(Context context, long... trackId) {
-        super(context, trackId);
+    public ExportToStorageTask(Context context, String saveDir, long... trackId) {
+        super(context, saveDir,trackId);
     }
 
     @Override
-    protected File getExportDirectory(Date startDate) throws ExportTrackException {
-        File sdRoot = Environment.getExternalStorageDirectory();
+    protected File getExportDirectory(String saveDir) throws ExportTrackException {
 
-        // The location that the user has specified gpx files
-        // and associated content to be written
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String userGPXExportDirectoryName = prefs.getString(
-                recopemValues.KEY_STORAGE_DIR,	recopemValues.VAL_STORAGE_DIR);
-
-        // Create the path to the directory to which we will be writing
-        // Trim the directory name, as additional spaces at the end will
-        // not allow the directory to be created if required
-        String exportDirectoryPath = File.separator + userGPXExportDirectoryName.trim();
-        String perTrackDirectory = File.separator + DataHelper.FILENAME_FORMATTER.format(startDate);
-
-        // Create a file based on the path we've generated above
-        File trackGPXExportDirectory = new File(sdRoot + exportDirectoryPath + perTrackDirectory);
+        File trackGPXExportDirectory = new File(saveDir);
 
         // Create track directory if needed
         if (! trackGPXExportDirectory.exists()) {
             if (! trackGPXExportDirectory.mkdirs()) {
                 Log.w(TAG,"Failed to create directory ["
                         +trackGPXExportDirectory.getAbsolutePath()+ "]");
-            }
-
-            if (! trackGPXExportDirectory.exists()) {
-                // Specific hack for Google Nexus  S(See issue #168)
-                if (android.os.Build.MODEL.equals(recopemValues.Devices.NEXUS_S)) {
-                    // exportDirectoryPath always starts with "/"
-                    trackGPXExportDirectory = new File(exportDirectoryPath + perTrackDirectory);
-                    trackGPXExportDirectory.mkdirs();
-                }
             }
 
             if (! trackGPXExportDirectory.exists()) {

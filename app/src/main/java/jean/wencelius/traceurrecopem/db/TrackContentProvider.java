@@ -39,7 +39,7 @@ public class TrackContentProvider extends ContentProvider {
     private static final String[] TRACK_TABLES_PROJECTION = {
             Schema.TBL_TRACK + "." + Schema.COL_ID + " as " + Schema.COL_ID,
             Schema.COL_ACTIVE,
-            //Schema.COL_DIR,
+            Schema.COL_DIR,
             //Schema.COL_EXPORT_DATE,
             //Schema.COL_OSM_UPLOAD_DATE,
             Schema.TBL_TRACK + "." + Schema.COL_NAME + " as "+ Schema.COL_NAME,
@@ -53,6 +53,7 @@ public class TrackContentProvider extends ContentProvider {
             Schema.COL_START_DATE,
             Schema.COL_GPS_METHOD,
             Schema.COL_WEEKDAY,
+            Schema.COL_DEVICE,
             "count(" + Schema.TBL_TRACKPOINT + "." + Schema.COL_ID + ") as " + Schema.COL_TRACKPOINT_COUNT,
             "(SELECT count("+Schema.TBL_WAYPOINT+"."+Schema.COL_TRACK_ID+") FROM "+Schema.TBL_WAYPOINT+" WHERE "+Schema.TBL_WAYPOINT+"."+Schema.COL_TRACK_ID+" = " + Schema.TBL_TRACK + "." + Schema.COL_ID + ") as " + Schema.COL_WAYPOINT_COUNT
     };
@@ -420,6 +421,7 @@ public class TrackContentProvider extends ContentProvider {
 
         //Specific to Jean
         public static final String COL_PIC_PATH ="path_to_pictures";
+        public static final String COL_PIC_NEW_NAME="picture_name";
         public static final String COL_INF_ID = "Inf_ID";
         public static final String COL_RECOPEM_TRACK_ID = "My_Track_ID";
         public static final String COL_GPS_METHOD = "GPS_data_coll_method";
@@ -460,9 +462,10 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_MOON_RISE = "Moon_rise";
         public static final String COL_MOON_SET = "Moon_set";
 
-        @Deprecated
         public static final String COL_DIR = "directory";
+        public static final String COL_DEVICE = "device";
         public static final String COL_ACTIVE = "active";
+
         public static final String COL_EXPORT_DATE = "export_date";
         public static final String COL_OSM_UPLOAD_DATE = "osm_upload_date";
         public static final String COL_COMPASS = "compass_heading";
@@ -481,6 +484,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final int URI_CODE_WAYPOINT_UUID = 8;
         public static final int URI_CODE_TRACK_START = 9;
         public static final int URI_CODE_TRACK_END = 10;
+        public static final int URI_CODE_PICTURES = 11;
 
         public static final int VAL_TRACK_ACTIVE = 1;
         public static final int VAL_TRACK_INACTIVE = 0;

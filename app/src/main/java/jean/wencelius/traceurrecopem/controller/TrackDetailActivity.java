@@ -47,6 +47,8 @@ public class TrackDetailActivity extends AppCompatActivity {
     public Boolean mDataAdded;
     public Boolean mExported;
 
+    public String mSaveDir;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,8 @@ public class TrackDetailActivity extends AppCompatActivity {
         mPicAdded = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("none");
         mDataAdded = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED).equals("true");
         mExported = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_EXPORTED).equals("true");
+
+        mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
 
         /*String fileName = "ic_center_map.png";
         String completePath = Environment.getExternalStorageDirectory() + "/" + fileName;
@@ -105,7 +109,8 @@ public class TrackDetailActivity extends AppCompatActivity {
             case R.id.trackdetail_menu_camera:
                 break;
             case R.id.trackdetail_menu_export:
-                new ExportToStorageTask(this, trackId).execute();
+                new ExportToStorageTask(this, mSaveDir, trackId).execute();
+
                 invalidateOptionsMenu();
                 mExported = true;
 

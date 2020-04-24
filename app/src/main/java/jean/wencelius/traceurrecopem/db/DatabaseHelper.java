@@ -79,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             //+ TrackContentProvider.Schema.COL_DESCRIPTION + " text,"
             //+ TrackContentProvider.Schema.COL_TAGS + " text,"
             //+ TrackContentProvider.Schema.COL_OSM_VISIBILITY + " text default '"+ Track.OSMVisibility.Private+"',"
-            //+ TrackContentProvider.Schema.COL_DIR + " text," // unused since DB_VERSION 13, since SQLite doesn't support to remove a column it will stay for now
+            + TrackContentProvider.Schema.COL_DIR + " text,"
             + TrackContentProvider.Schema.COL_INF_ID + " text,"
             + TrackContentProvider.Schema.COL_RECOPEM_TRACK_ID + " text,"
             + TrackContentProvider.Schema.COL_GPS_METHOD + " text,"
@@ -121,6 +121,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TrackContentProvider.Schema.COL_TRACK_DATA_ADDED + " text,"
             + TrackContentProvider.Schema.COL_PIC_ADDED + " text,"
             + TrackContentProvider.Schema.COL_EXPORTED + " text,"
+            + TrackContentProvider.Schema.COL_DEVICE + " text,"
             + TrackContentProvider.Schema.COL_ACTIVE + " integer not null default 0"
             //+ TrackContentProvider.Schema.COL_EXPORT_DATE + " long,"  // null indicates not yet exported
             //+ TrackContentProvider.Schema.COL_OSM_UPLOAD_DATE + " long" // null indicates not yet uploaded
