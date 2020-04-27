@@ -1,13 +1,16 @@
 package jean.wencelius.traceurrecopem.controller;
 /**
- * TODO: Resinsert Take picture on mneu item
- * TODO: Build gallery (see website)
  * TODO: Fill in option select from gallery to populate PICTURE TBL
+ * TODO: Check if can put something above recycler view (ideally map with track), test with text alone
+ * TODO: Action on image click (probably means assigning an ID to each thumbnail in gallery). Idea is to be able to see picture full screen and potentially remove a picture.
+ * TODO: ADD Data!
  */
         import androidx.annotation.Nullable;
         import androidx.appcompat.app.AppCompatActivity;
         import androidx.core.content.ContextCompat;
         import androidx.core.content.FileProvider;
+        import androidx.recyclerview.widget.GridLayoutManager;
+        import androidx.recyclerview.widget.RecyclerView;
 
         import android.Manifest;
         import android.app.AlertDialog;
@@ -43,21 +46,28 @@ package jean.wencelius.traceurrecopem.controller;
         import java.io.File;
         import java.io.IOException;
         import java.text.SimpleDateFormat;
+        import java.util.ArrayList;
         import java.util.Date;
 
         import jean.wencelius.traceurrecopem.R;
         import jean.wencelius.traceurrecopem.db.DataHelper;
+        import jean.wencelius.traceurrecopem.db.ImageAdapter;
         import jean.wencelius.traceurrecopem.db.TrackContentProvider;
         import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
         import jean.wencelius.traceurrecopem.model.AppPreferences;
+        import jean.wencelius.traceurrecopem.model.ImageUrl;
         import jean.wencelius.traceurrecopem.model.Track;
 
         import static androidx.core.content.FileProvider.getUriForFile;
 
 public class TrackDetailActivity extends AppCompatActivity {
 
-    public ImageView mImage;
-    public TextView mText;
+    //public ImageView mImage;
+    private ImageView mImageView;
+    //public TextView mText;
+
+    RecyclerView recyclerView;
+    GridLayoutManager gridLayoutManager;
 
     public long trackId;
 
@@ -83,8 +93,8 @@ public class TrackDetailActivity extends AppCompatActivity {
 
         trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
 
-        mImage = (ImageView) findViewById(R.id.activity_track_detail_test);
-        mText= (TextView) findViewById(R.id.activity_track_detail_text_test);
+        //mImage = (ImageView) findViewById(R.id.activity_track_detail_test);
+        //mText= (TextView) findViewById(R.id.activity_track_detail_text_test);
 
         mFisherID = AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext());
 
@@ -99,14 +109,24 @@ public class TrackDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        mImageView = (ImageView) findViewById(R.id.image_item_id);
+        recyclerView = (RecyclerView) findViewById(R.id.activity_track_detail_recyclerView);
+        gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
         ContentResolver cr = getContentResolver();
 
         Cursor cPictures = cr.query(TrackContentProvider.picturesUri(trackId), null,
                 null, null, TrackContentProvider.Schema.COL_ID + " asc");
 
+
+        ArrayList imageUrlList = prepareData(cPictures);
+        ImageAdapter imageAdapter = new ImageAdapter(getApplicationContext(), imageUrlList);
+        recyclerView.setAdapter(imageAdapter);
+
         //cPictures.moveToFirst();
         //cPictures.moveToLast();
-        cPictures.moveToPosition(cPictures.getCount()-1);
+/*        cPictures.moveToPosition(cPictures.getCount()-1);
 
         String imagePath = cPictures.getString(cPictures.getColumnIndex(TrackContentProvider.Schema.COL_PIC_PATH));
 
@@ -122,7 +142,20 @@ public class TrackDetailActivity extends AppCompatActivity {
 
         RequestManager requestManager = Glide.with(this);
         RequestBuilder requestBuilder = requestManager.load(imageUri);
-        requestBuilder.into(mImage);
+        requestBuilder.into(mImage);*/
+    }
+
+    private ArrayList prepareData(Cursor cursor) {
+        int i=0;
+        ArrayList imageUrlList = new ArrayList<>();
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext(),i++) {
+            String imagePath = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_PATH));
+
+            ImageUrl imageUrl = new ImageUrl();
+            imageUrl.setImageUrl(imagePath);
+            imageUrlList.add(imageUrl);
+        }
+        return imageUrlList;
     }
 
     @Override
@@ -154,11 +187,11 @@ public class TrackDetailActivity extends AppCompatActivity {
                 //TODO: Not sure button should be made invisible if people want to add more pictures
                 //TODO: Action should happen on click of placeholder. Placeholder in gallery as last or first picture all the time.
                 invalidateOptionsMenu();
-                mPicAdded=false;
+                mPicAdded=false;*/
 
                 ContentValues valuesPic = new ContentValues();
                 valuesPic.put(TrackContentProvider.Schema.COL_PIC_ADDED,"true");
-                getContentResolver().update(trackUri, valuesPic, null, null);*/
+                getContentResolver().update(trackUri, valuesPic, null, null);
                 break;
 
             case R.id.trackdetail_menu_export:
