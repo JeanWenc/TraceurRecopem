@@ -71,6 +71,7 @@ public class TrackContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/end", Schema.URI_CODE_TRACK_END);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_WAYPOINT + "s", Schema.URI_CODE_TRACK_WAYPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_TRACKPOINT + "s", Schema.URI_CODE_TRACK_TRACKPOINTS);
+        uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_PICTURE + "s", Schema.URI_CODE_TRACK_PICTURES);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_WAYPOINT + "/uuid/*", Schema.URI_CODE_WAYPOINT_UUID);
     }
 
@@ -93,6 +94,17 @@ public class TrackContentProvider extends ContentProvider {
                 ContentUris.withAppendedId(CONTENT_URI_TRACK, trackId),
                 Schema.TBL_TRACKPOINT + "s" );
     }
+
+    /**
+     * @param trackId target track id
+     * @return Uri for the trackpoints of the track
+     */
+    public static final Uri picturesUri(long trackId) {
+        return Uri.withAppendedPath(
+                ContentUris.withAppendedId(CONTENT_URI_TRACK, trackId),
+                Schema.TBL_PICTURE + "s" );
+    }
+
 
     /**
      * @param trackId target track id
@@ -175,6 +187,9 @@ public class TrackContentProvider extends ContentProvider {
             case Schema.URI_CODE_TRACK:
                 return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
                         + Schema.TBL_TRACK;
+            case Schema.URI_CODE_TRACK_PICTURES:
+                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
+                        + Schema.TBL_PICTURE;
             default:
                 throw new IllegalArgumentException("Unknown URL " + uri);
         }
@@ -199,6 +214,20 @@ public class TrackContentProvider extends ContentProvider {
                 } else {
                     throw new IllegalArgumentException("values should provide " + Schema.COL_LONGITUDE + ", "
                             + Schema.COL_LATITUDE + ", " + Schema.COL_TIMESTAMP);
+                }
+                break;
+            case Schema.URI_CODE_TRACK_PICTURES:
+                // Check that mandatory columns are present.
+                if (values.containsKey(Schema.COL_TRACK_ID) && values.containsKey(Schema.COL_PIC_PATH)) {
+
+                    long rowId = dbHelper.getWritableDatabase().insert(Schema.TBL_PICTURE, null, values);
+                    if (rowId > 0) {
+                        Uri pictureUri = ContentUris.withAppendedId(uri, rowId);
+                        getContext().getContentResolver().notifyChange(pictureUri, null);
+                        return pictureUri;
+                    }
+                } else {
+                    throw new IllegalArgumentException("values should provide " + Schema.COL_PIC_PATH);
                 }
                 break;
             case Schema.URI_CODE_TRACK_WAYPOINTS:
@@ -259,6 +288,28 @@ public class TrackContentProvider extends ContentProvider {
                 }
 
                 List<String> selctionArgsList = new ArrayList<String>();
+                selctionArgsList.add(trackId);
+                // Add the callers selection arguments, if any
+                if (null != selectionArgsIn) {
+                    for (String arg : selectionArgsIn) {
+                        selctionArgsList.add(arg);
+                    }
+                }
+                selectionArgs = selctionArgsList.toArray(new String[0]);
+                // Finished with the temporary selection arguments list. release it for GC
+                selctionArgsList.clear();
+                selctionArgsList = null;
+                break;
+            case Schema.URI_CODE_TRACK_PICTURES:
+                trackId = uri.getPathSegments().get(1);
+                qb.setTables(Schema.TBL_PICTURE);
+                selection = Schema.COL_TRACK_ID + " = ?";
+                // Deal with any additional selection info provided by the caller
+                if (null != selectionIn) {
+                    selection += " AND " + selectionIn;
+                }
+
+                selctionArgsList = new ArrayList<String>();
                 selctionArgsList.add(trackId);
                 // Add the callers selection arguments, if any
                 if (null != selectionArgsIn) {
@@ -399,6 +450,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final String TBL_TRACKPOINT = "trackpoint";
         public static final String TBL_WAYPOINT = "waypoint";
         public static final String TBL_TRACK = "track";
+        public static final String TBL_PICTURE = "picture";
 
         public static final String COL_ID = "_id";
         public static final String COL_TRACK_ID = "track_id";
@@ -484,7 +536,8 @@ public class TrackContentProvider extends ContentProvider {
         public static final int URI_CODE_WAYPOINT_UUID = 8;
         public static final int URI_CODE_TRACK_START = 9;
         public static final int URI_CODE_TRACK_END = 10;
-        public static final int URI_CODE_PICTURES = 11;
+        public static final int URI_CODE_TRACK_PICTURES = 11;
+
 
         public static final int VAL_TRACK_ACTIVE = 1;
         public static final int VAL_TRACK_INACTIVE = 0;

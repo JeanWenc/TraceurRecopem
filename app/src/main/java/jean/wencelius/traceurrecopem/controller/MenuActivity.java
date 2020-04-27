@@ -156,17 +156,24 @@ public class MenuActivity extends AppCompatActivity {
         values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");
         values.put(TrackContentProvider.Schema.COL_DIR,saveDirectory);
         values.put(TrackContentProvider.Schema.COL_DEVICE,android.os.Build.MODEL);
-
-        Toast.makeText(MenuActivity.this,
-                android.os.Build.MODEL,
-                Toast.LENGTH_LONG)
-                .show();
-
         values.put(TrackContentProvider.Schema.COL_ACTIVE, TrackContentProvider.Schema.VAL_TRACK_ACTIVE);
 
         Uri trackUri = getContentResolver().insert(TrackContentProvider.CONTENT_URI_TRACK, values);
 
         long trackId = ContentUris.parseId(trackUri);
+
+        //Create image entry
+        //Default add picture image
+        //Uri defImage = Uri.parse("android.resource://jean.wencelius.traceurrecopem/drawable/add_image");
+
+        String defImage = "android.resource://jean.wencelius.traceurrecopem/drawable/add_image";
+
+        ContentValues picVal = new ContentValues();
+        picVal.put(TrackContentProvider.Schema.COL_TRACK_ID,trackId);
+        picVal.put(TrackContentProvider.Schema.COL_PIC_PATH,defImage);
+
+        Uri picUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+        getContentResolver().insert(Uri.withAppendedPath(picUri, TrackContentProvider.Schema.TBL_PICTURE + "s"), picVal);
 
         return trackId;
     }

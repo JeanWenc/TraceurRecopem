@@ -55,7 +55,7 @@
             android:id="@android:id/list">
         </ListView>
 
-        <TextView android:text="@string/trackmgr_empty" android:padding="5dp"
+        <TextView android:text="@string/activity_track_list_empty" android:padding="5dp"
             android:id="@+id/activity_tracklist_empty" android:layout_width="fill_parent" android:layout_height="fill_parent"
             android:gravity="center" style="@android:style/TextAppearance.Medium" />
     </FrameLayout>

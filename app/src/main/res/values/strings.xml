@@ -2,27 +2,42 @@
     <string name="app_name">TraceurRecopem</string>
     <string name="app_name_w_space">Traceur Recopem</string>
 
+    <!-- TRACKLIST ACTIVITY -->
+    <string name="activity_track_list_empty">Aucun tracé enregistré</string>
 
-    <string name="trackmgr_tracklist">Liste des tracés</string>
-    <string name="trackmgr_empty">Aucun tracé enregistré</string>
+    <!-- TRACKLIST ITEM -->
+    <string name="track_item_trackpoints_count">Trackpoints: </string>
+
+    <!--TRACKLIST MENU-->
+    <string name="menu_newtrack">Ajouter un tracé manuellement</string>
+    <string name="menu_exportall">Exporter tous les tracés</string>
+
+    <!-- TRACKDETAIL ACTIVITY -->
+
+
+    <!--TRACKDETAIL MENU-->
+    <string name="menu_adddata">Remplir Questionnaire</string>
+    <string name="menu_addpicture">Ajouter des photos de poissons</string>
+    <string name="menu_exportGPX">Exporter tracé</string>
+
+    <!--IMPORT PICTURE DIALOG-->
+    <string name="activity_track_detail_dialog_import_pic_title">AJOUTER PHOTOS POISSONS</string>
+    <string name="activity_track_detail_dialog_import_pic_content">Prendre une photo tout de suite ou choisir dans votre VINI.</string>
+    <string name="activity_track_detail_dialog_import_pic_camera">NOUVELLE PHOTO</string>
+    <string name="activity_track_detail_dialog_import_pic_browse">CHOISIR PHOTO DANS VINI</string>
+    <string name="activity_track_detail_dialog_import_pic_no">ANNULER</string>
+
+
+    <!-- EXPORT GPX -->
     <string name="trackmgr_exporting_prepare">Preparing export&#8230;</string>
     <string name="trackmgr_exporting">Exporting track #{0}&#8230;</string>
     <string name="trackmgr_export_error">Unable to export track: {0}</string>
     <string name="trackmgr_exportall_confirm">All tracks will be exported, which could take a long time. Are you sure?</string>
     <string name="trackmgr_newtrack_error">Unable to create a new track: {0}</string>
 
-    <!-- Track list -->
-    <string name="track_status">Track status indicator</string>
-    <string name="trackmgr_trackpoints_count">Trackpoints: </string>
-
-    <!--TrackList Menu-->
-    <string name="menu_newtrack">Ajouter un tracé manuellement</string>
-    <string name="menu_exportall">Exporter tous les tracés</string>
-
-    <!--TrackDetail Menu-->
-    <string name="menu_adddata">Remplir Questionnaire</string>
-    <string name="menu_addpicture">Ajouter des photos de poissons</string>
-    <string name="menu_exportGPX">Exporter tracé</string>
+    <!-- GPX -->
+    <string name="gpx_track_name">Tracked with Traceur ReCoPeM</string>
+    <string name="gpx_hdop_approximation_cmt">Warning: HDOP values aren\'t the HDOP as returned by the GPS device. They\'re approximated from the location accuracy in meters.</string>
 
     <!-->NOTIFICATION<-->
     <string name="tracking_notification_title">Enregristrement tracé #</string>
@@ -37,10 +52,6 @@
     <!-->ERRORS<-->
     <string name="error_create_track_dir">Unable to create track folder %s</string>
     <string name="error_externalstorage_not_writable">Unable to write to external storage.</string>
-
-    <!-- GPX -->
-    <string name="gpx_track_name">Tracked with Traceur ReCoPeM</string>
-    <string name="gpx_hdop_approximation_cmt">Warning: HDOP values aren\'t the HDOP as returned by the GPS device. They\'re approximated from the location accuracy in meters.</string>
 
     <!-- VARIOUS -->
     <string name="various_unit_meters">m</string>
