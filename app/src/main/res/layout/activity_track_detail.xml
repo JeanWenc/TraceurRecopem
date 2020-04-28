@@ -6,22 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".controller.TrackDetailActivity"
     android:orientation="vertical">
-    <!--
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:id="@+id/activity_track_detail_text_test"/>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/activity_track_detail_test"/>
-        -->
+        android:id="@+id/activity_track_detail_text_test"
+        android:text="Hello World!"/>
+    <!--
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/activity_track_detail_test"/>
+            -->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_track_detail_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"

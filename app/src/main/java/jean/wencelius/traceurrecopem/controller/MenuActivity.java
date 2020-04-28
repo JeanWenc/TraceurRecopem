@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,6 +28,7 @@ import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.exception.CreateTrackException;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.exception.ExportTrackException;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
 
@@ -152,7 +155,7 @@ public class MenuActivity extends AppCompatActivity {
         values.put(TrackContentProvider.Schema.COL_GPS_METHOD,"GPS");
         values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDay);
         values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
-        values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"none"); // other values should be Camera or Manuel
+        values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"none"); // other value should be "true"
         values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");
         values.put(TrackContentProvider.Schema.COL_DIR,saveDirectory);
         values.put(TrackContentProvider.Schema.COL_DEVICE,android.os.Build.MODEL);
@@ -198,6 +201,22 @@ public class MenuActivity extends AppCompatActivity {
         }else{
             // Create a file based on the path we've generated above
             trackGPXExportDirectory = sdRoot + exportDirectoryPath + perTrackDirectory;
+        }
+
+        File storageDir = new File(trackGPXExportDirectory);
+
+        if (! storageDir.exists()) {
+            if (! storageDir.mkdirs()) {
+                Toast.makeText(this, "Directory [" + storageDir.getAbsolutePath() + "] does not exist and cannot be created", Toast.LENGTH_LONG).show();
+            }else{
+                File noMedia = new File(storageDir,".nomedia");
+                try {
+                    FileWriter writer = new FileWriter(noMedia,false);
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e) {
+                }
+            }
         }
 
         return trackGPXExportDirectory;

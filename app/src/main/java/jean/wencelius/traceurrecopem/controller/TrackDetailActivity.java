@@ -1,79 +1,64 @@
 package jean.wencelius.traceurrecopem.controller;
 /**
- * TODO: Fill in option select from gallery to populate PICTURE TBL
- * TODO: Check if can put something above recycler view (ideally map with track), test with text alone
- * TODO: Action on image click (probably means assigning an ID to each thumbnail in gallery). Idea is to be able to see picture full screen and potentially remove a picture.
+ * TODO: Actually delete picture in showPicture Activity (delete from our folder and from DB)
  * TODO: ADD Data!
  */
-        import androidx.annotation.Nullable;
-        import androidx.appcompat.app.AppCompatActivity;
-        import androidx.core.content.ContextCompat;
-        import androidx.core.content.FileProvider;
-        import androidx.recyclerview.widget.GridLayoutManager;
-        import androidx.recyclerview.widget.RecyclerView;
 
-        import android.Manifest;
-        import android.app.AlertDialog;
-        import android.content.ContentResolver;
-        import android.content.ContentUris;
-        import android.content.ContentValues;
-        import android.content.Context;
-        import android.content.DialogInterface;
-        import android.content.Intent;
-        import android.content.pm.PackageManager;
-        import android.database.Cursor;
-        import android.graphics.Bitmap;
-        import android.graphics.Color;
-        import android.media.Image;
-        import android.net.Uri;
-        import android.os.Bundle;
-        import android.os.Environment;
-        import android.os.Handler;
-        import android.os.StrictMode;
-        import android.provider.MediaStore;
-        import android.provider.Settings;
-        import android.util.Log;
-        import android.view.Menu;
-        import android.view.MenuItem;
-        import android.widget.ImageView;
-        import android.widget.TextView;
-        import android.widget.Toast;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-        import com.bumptech.glide.Glide;
-        import com.bumptech.glide.RequestBuilder;
-        import com.bumptech.glide.RequestManager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-        import java.io.File;
-        import java.io.IOException;
-        import java.text.SimpleDateFormat;
-        import java.util.ArrayList;
-        import java.util.Date;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
-        import jean.wencelius.traceurrecopem.R;
-        import jean.wencelius.traceurrecopem.db.DataHelper;
-        import jean.wencelius.traceurrecopem.db.ImageAdapter;
-        import jean.wencelius.traceurrecopem.db.TrackContentProvider;
-        import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
-        import jean.wencelius.traceurrecopem.model.AppPreferences;
-        import jean.wencelius.traceurrecopem.model.ImageUrl;
-        import jean.wencelius.traceurrecopem.model.Track;
+import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.db.DataHelper;
+import jean.wencelius.traceurrecopem.db.ImageAdapter;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
+import jean.wencelius.traceurrecopem.model.AppPreferences;
+import jean.wencelius.traceurrecopem.model.ImageUrl;
 
-        import static androidx.core.content.FileProvider.getUriForFile;
+public class TrackDetailActivity extends AppCompatActivity implements ImageAdapter.OnImageListener {
 
-public class TrackDetailActivity extends AppCompatActivity {
-
-    //public ImageView mImage;
     private ImageView mImageView;
-    //public TextView mText;
+    public TextView mText;
 
     RecyclerView recyclerView;
     GridLayoutManager gridLayoutManager;
+
+    public ContentResolver mCr;
+    public Cursor mCursorPictures;
 
     public long trackId;
 
     public String mFisherID;
 
-    public Boolean mPicAdded;
+    public Boolean mPicEmpty;
     public Boolean mDataAdded;
     public Boolean mExported;
 
@@ -82,6 +67,7 @@ public class TrackDetailActivity extends AppCompatActivity {
     private File currentImageFile;
 
     private static final int REQUEST_TAKE_PHOTO = 0;
+    public static final int REQUEST_BROWSE_PHOTO = 1;
 
     public static final String PREF_KEY_FISHER_ID = "PREF_KEY_FISHER_ID";
 
@@ -93,12 +79,11 @@ public class TrackDetailActivity extends AppCompatActivity {
 
         trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
 
-        //mImage = (ImageView) findViewById(R.id.activity_track_detail_test);
-        //mText= (TextView) findViewById(R.id.activity_track_detail_text_test);
+        mText= (TextView) findViewById(R.id.activity_track_detail_text_test);
 
         mFisherID = AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext());
 
-        mPicAdded = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("none");
+        mPicEmpty = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("none");
         mDataAdded = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED).equals("true");
         mExported = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_EXPORTED).equals("true");
 
@@ -114,35 +99,15 @@ public class TrackDetailActivity extends AppCompatActivity {
         gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        ContentResolver cr = getContentResolver();
+        mCr = getContentResolver();
 
-        Cursor cPictures = cr.query(TrackContentProvider.picturesUri(trackId), null,
+        mCursorPictures = mCr.query(TrackContentProvider.picturesUri(trackId), null,
                 null, null, TrackContentProvider.Schema.COL_ID + " asc");
 
 
-        ArrayList imageUrlList = prepareData(cPictures);
-        ImageAdapter imageAdapter = new ImageAdapter(getApplicationContext(), imageUrlList);
+        ArrayList imageUrlList = prepareData(mCursorPictures);
+        ImageAdapter imageAdapter = new ImageAdapter(getApplicationContext(), imageUrlList, this);
         recyclerView.setAdapter(imageAdapter);
-
-        //cPictures.moveToFirst();
-        //cPictures.moveToLast();
-/*        cPictures.moveToPosition(cPictures.getCount()-1);
-
-        String imagePath = cPictures.getString(cPictures.getColumnIndex(TrackContentProvider.Schema.COL_PIC_PATH));
-
-        Toast.makeText(this, imagePath, Toast.LENGTH_LONG).show();
-
-        Uri imageUri = null;
-        if(cPictures.getCount()>1){
-            File file = new File(imagePath);
-            imageUri = Uri.fromFile(file);
-        }else{
-            imageUri = Uri.parse(imagePath);
-        }
-
-        RequestManager requestManager = Glide.with(this);
-        RequestBuilder requestBuilder = requestManager.load(imageUri);
-        requestBuilder.into(mImage);*/
     }
 
     private ArrayList prepareData(Cursor cursor) {
@@ -159,6 +124,25 @@ public class TrackDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onImageClick(int position) {
+        if(position>0){
+            Cursor c = mCursorPictures;
+            c.moveToPosition(position);
+
+            String imagePath = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_PIC_PATH));
+            //Long imageId = c.getLong(c.getColumnIndex(TrackContentProvider.Schema.COL_ID));
+
+            c.close();
+
+            Intent ShowPictureIntent = new Intent(TrackDetailActivity.this,ShowPictureActivity.class);
+            ShowPictureIntent.putExtra(TrackContentProvider.Schema.COL_PIC_PATH, imagePath);
+            //ShowPictureIntent.putExtra(TrackContentProvider.Schema.COL_ID,imageId);
+
+            startActivity(ShowPictureIntent);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.trackdetail_menu, menu);
         return true;
@@ -166,7 +150,7 @@ public class TrackDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.trackdetail_menu_camera).setVisible(mPicAdded);
+        //TODO: Here export should be visible when mDataAdded == TRUE AND mPicEmpty==FALSE & mExported == FALSE
         menu.findItem(R.id.trackdetail_menu_export).setVisible(!mExported);
         menu.findItem(R.id.trackdetail_menu_add_data).setVisible(!mDataAdded);
         return super.onPrepareOptionsMenu(menu);
@@ -181,13 +165,10 @@ public class TrackDetailActivity extends AppCompatActivity {
                 break;
 
             case R.id.trackdetail_menu_camera:
-                getNewPictures();
+                getNewPicturesDialog();
 
-                /*//TODO:The below should be conditioned on actually inputting pictures
-                //TODO: Not sure button should be made invisible if people want to add more pictures
                 //TODO: Action should happen on click of placeholder. Placeholder in gallery as last or first picture all the time.
-                invalidateOptionsMenu();
-                mPicAdded=false;*/
+                mPicEmpty = false;
 
                 ContentValues valuesPic = new ContentValues();
                 valuesPic.put(TrackContentProvider.Schema.COL_PIC_ADDED,"true");
@@ -208,7 +189,7 @@ public class TrackDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-   private void getNewPictures() {
+   private void getNewPicturesDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.activity_track_detail_dialog_import_pic_title))
                 .setIcon(android.R.drawable.ic_menu_camera)
@@ -216,80 +197,109 @@ public class TrackDetailActivity extends AppCompatActivity {
                 .setCancelable(true).setPositiveButton(getResources().getString(R.string.activity_track_detail_dialog_import_pic_camera), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                takeNewPicture();
+                getNewPictures(REQUEST_TAKE_PHOTO);
             }
         }).setNegativeButton(getResources().getString(R.string.activity_track_detail_dialog_import_pic_browse), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                browsePicture();
+                getNewPictures(REQUEST_BROWSE_PHOTO);
             }
         }).setNeutralButton(getResources().getString(R.string.activity_track_detail_dialog_import_pic_no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 dialog.cancel();
             }
         }).create().show();
-
-
     }
 
-    private void browsePicture() {
-    }
 
-    private void takeNewPicture() {
-
+    private void getNewPictures(int requestType) {
         //From OsmTracker
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                Toast.makeText(this, "Error creating file", Toast.LENGTH_SHORT).show();
-            }
-            // Continue only if the File was successfully created
-            Toast.makeText(this, photoFile.toString(), Toast.LENGTH_LONG).show();
+        Intent getNewPictureIntent = null;
 
-            if (photoFile != null) {
-
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
+        if(requestType == REQUEST_TAKE_PHOTO){
+            getNewPictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        }else if(requestType == REQUEST_BROWSE_PHOTO){
+            getNewPictureIntent = new Intent(Intent.ACTION_PICK);
         }
+
+
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+            Toast.makeText(this, "Error creating file", Toast.LENGTH_SHORT).show();
+        }
+        // Continue only if the File was successfully created
+        Toast.makeText(this, photoFile.toString(), Toast.LENGTH_LONG).show();
+
+        if (photoFile != null) {
+            getNewPictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            if(requestType== REQUEST_BROWSE_PHOTO){
+                getNewPictureIntent.setType("image/*");
+            }
+            startActivityForResult(getNewPictureIntent, requestType);
+        }
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ContentValues picVal = new ContentValues();
+        File imageFile =null;
+        Uri picUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+        String imageUuid = null;
         switch(requestCode) {
             case REQUEST_TAKE_PHOTO:
                 if(resultCode == RESULT_OK) {
-                    File imageFile = popImageFile();
-                    ContentValues picVal = new ContentValues();
+                    imageFile = popImageFile();
+                    imageUuid = UUID.randomUUID().toString();
                     picVal.put(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                    picVal.put(TrackContentProvider.Schema.COL_UUID, imageUuid);
                     picVal.put(TrackContentProvider.Schema.COL_PIC_PATH, imageFile.toString());
-
-                    Uri picUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
                     getContentResolver().insert(Uri.withAppendedPath(picUri, TrackContentProvider.Schema.TBL_PICTURE + "s"), picVal);
                 }
                 break;
+            case REQUEST_BROWSE_PHOTO:
+                if(resultCode == RESULT_OK) {
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    //Would be useful in case of multiple image selection from Gallery
+                    //ArrayList imagesEncodedList = new ArrayList<Uri>();
+                    if (data.getData() != null) {
+                        Uri mImageUri = data.getData();
+                        // Get the cursor
+                        Cursor cursor = getContentResolver().query(mImageUri,
+                                filePathColumn, null, null, null);
+                        // Move to first row
+                        cursor.moveToFirst();
+
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        String imageString = cursor.getString(columnIndex);
+
+                        cursor.close();
+
+                        imageFile = popImageFile();
+
+                        try {
+                            copyFile(new File(imageString), imageFile);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        imageUuid = UUID.randomUUID().toString();
+
+                        picVal.put(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                        picVal.put(TrackContentProvider.Schema.COL_UUID, imageUuid);
+                        picVal.put(TrackContentProvider.Schema.COL_PIC_PATH, imageFile.toString());
+                        getContentResolver().insert(Uri.withAppendedPath(picUri, TrackContentProvider.Schema.TBL_PICTURE + "s"), picVal);
+                    }
+                }
+                break;
         }
-
-       /* if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-           File imgFile = new File(currentImageFile.getAbsolutePath());
-            if(imgFile.exists()){
-                mImage.setImageURI(Uri.fromFile(imgFile));
-            }
-
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImage.setImageBitmap(imageBitmap);
-        }*/
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -327,11 +337,25 @@ public class TrackDetailActivity extends AppCompatActivity {
         return imageFile;
     }
 
-   /* private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }*/
+    private void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!sourceFile.exists()) {
+            return;
+        }
+        FileChannel source = null;
+        FileChannel destination = null;
+        source = new FileInputStream(sourceFile).getChannel();
+        destination = new FileOutputStream(destFile).getChannel();
+        if (destination != null && source != null) {
+            destination.transferFrom(source, 0, source.size());
+        }
+        if (source != null) {
+            source.close();
+        }
+        if (destination != null) {
+            destination.close();
+        }
+    }
+
+
+
 }

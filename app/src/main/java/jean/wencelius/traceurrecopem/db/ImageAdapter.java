@@ -23,16 +23,19 @@ import jean.wencelius.traceurrecopem.model.ImageUrl;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
     private ArrayList<ImageUrl> imageUrls;
     private Context context;
+    private OnImageListener mOnImageListener;
 
-    public ImageAdapter(Context context, ArrayList<ImageUrl> imageUrls) {
+
+    public ImageAdapter(Context context, ArrayList<ImageUrl> imageUrls, OnImageListener onImageListener) {
         this.context = context;
+        this.mOnImageListener = onImageListener;
         this.imageUrls = imageUrls;
     }
 
     @Override
     public ImageAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.image_item, viewGroup, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mOnImageListener);
     }
 
     /**
@@ -61,13 +64,27 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         return imageUrls.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView img;
+        OnImageListener onImageListener;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, OnImageListener onImageListener) {
             super(view);
             img = view.findViewById(R.id.image_item_id);
+
+            this.onImageListener = onImageListener;
+
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            onImageListener.onImageClick(getAdapterPosition());
+        }
+    }
+
+    public interface OnImageListener{
+        void onImageClick(int position);
     }
 }

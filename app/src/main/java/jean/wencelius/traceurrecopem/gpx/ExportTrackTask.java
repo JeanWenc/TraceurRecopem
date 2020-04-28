@@ -91,7 +91,7 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
      * @return The directory in which the track file should be created
      * @throws ExportTrackException
      */
-    protected abstract File getExportDirectory(String startDate) throws ExportTrackException;
+    //protected abstract File getExportDirectory(String startDate) throws ExportTrackException;
 
     /**
      * Whereas to export the media files or not
@@ -191,7 +191,8 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
             if (sdRoot.canWrite()) {
 
-                File trackGPXExportDirectory = getExportDirectory(saveDir);
+                File trackGPXExportDirectory = new File(saveDir);
+                //File trackGPXExportDirectory = getExportDirectory(saveDir);
 
                 //JW: For file name
                 String startDateYearMonthDay = saveDir.substring(saveDir.length()-19);

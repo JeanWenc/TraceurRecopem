@@ -25,7 +25,7 @@ public class ExportToStorageTask extends ExportTrackTask {
         super(context, saveDir,trackId);
     }
 
-    @Override
+    /*@Override
     protected File getExportDirectory(String saveDir) throws ExportTrackException {
 
         File trackGPXExportDirectory = new File(saveDir);
@@ -43,7 +43,7 @@ public class ExportToStorageTask extends ExportTrackTask {
             }
         }
         return trackGPXExportDirectory;
-    }
+    }*/
 
     @Override
     protected boolean exportMediaFiles() {
