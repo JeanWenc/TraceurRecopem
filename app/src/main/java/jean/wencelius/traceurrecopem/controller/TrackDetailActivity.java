@@ -130,12 +130,14 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
             c.moveToPosition(position);
 
             String imagePath = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_PIC_PATH));
+            String imageUuid = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID));
             //Long imageId = c.getLong(c.getColumnIndex(TrackContentProvider.Schema.COL_ID));
 
             c.close();
 
             Intent ShowPictureIntent = new Intent(TrackDetailActivity.this,ShowPictureActivity.class);
             ShowPictureIntent.putExtra(TrackContentProvider.Schema.COL_PIC_PATH, imagePath);
+            ShowPictureIntent.putExtra(TrackContentProvider.Schema.COL_UUID,imageUuid);
             //ShowPictureIntent.putExtra(TrackContentProvider.Schema.COL_ID,imageId);
 
             startActivity(ShowPictureIntent);

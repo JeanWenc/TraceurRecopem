@@ -30,7 +30,7 @@ public class TrackContentProvider extends ContentProvider {
     public static final Uri CONTENT_URI_TRACK_ACTIVE = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_TRACK + "/active");
 
     /**Uri for a specific waypoint*/
-    public static final Uri CONTENT_URI_WAYPOINT_UUID = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_WAYPOINT + "/uuid");
+    public static final Uri CONTENT_URI_PICTURE_UUID = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_PICTURE + "/uuid");
 
     /**tables and joins to be used within a query to get the important informations of a track*/
     private static final String TRACK_TABLES = Schema.TBL_TRACK + " left join " + Schema.TBL_TRACKPOINT + " on " + Schema.TBL_TRACK + "." + Schema.COL_ID + " = " + Schema.TBL_TRACKPOINT + "." + Schema.COL_TRACK_ID;
@@ -72,7 +72,7 @@ public class TrackContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_WAYPOINT + "s", Schema.URI_CODE_TRACK_WAYPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_TRACKPOINT + "s", Schema.URI_CODE_TRACK_TRACKPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_PICTURE + "s", Schema.URI_CODE_TRACK_PICTURES);
-        uriMatcher.addURI(AUTHORITY, Schema.TBL_WAYPOINT + "/uuid/*", Schema.URI_CODE_WAYPOINT_UUID);
+        uriMatcher.addURI(AUTHORITY, Schema.TBL_PICTURE + "/uuid/*", Schema.URI_CODE_PICTURE_UUID);
     }
 
     /**
@@ -152,10 +152,10 @@ public class TrackContentProvider extends ContentProvider {
                 dbHelper.getWritableDatabase().delete(Schema.TBL_TRACKPOINT, Schema.COL_TRACK_ID + " = ?", new String[] {trackId});
                 count = dbHelper.getWritableDatabase().delete(Schema.TBL_TRACK, Schema.COL_ID + " = ?", new String[] {trackId});
                 break;
-            case Schema.URI_CODE_WAYPOINT_UUID:
+            case Schema.URI_CODE_PICTURE_UUID:
                 String uuid = uri.getLastPathSegment();
                 if(uuid != null){
-                    count = dbHelper.getWritableDatabase().delete(Schema.TBL_WAYPOINT, Schema.COL_UUID + " = ?", new String[]{uuid});
+                    count = dbHelper.getWritableDatabase().delete(Schema.TBL_PICTURE, Schema.COL_UUID + " = ?", new String[]{uuid});
                 }else{
                     count = 0;
                 }
@@ -533,7 +533,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final int URI_CODE_TRACK_WAYPOINTS = 5;
         public static final int URI_CODE_TRACK_TRACKPOINTS = 6;
         public static final int URI_CODE_TRACK_ACTIVE = 7;
-        public static final int URI_CODE_WAYPOINT_UUID = 8;
+        public static final int URI_CODE_PICTURE_UUID = 8;
         public static final int URI_CODE_TRACK_START = 9;
         public static final int URI_CODE_TRACK_END = 10;
         public static final int URI_CODE_TRACK_PICTURES = 11;

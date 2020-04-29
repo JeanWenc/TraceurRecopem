@@ -105,6 +105,12 @@ public class DataHelper {
         }
     }
 
+    public void deletePicture(String uuid) {
+        if (uuid != null) {
+            contentResolver.delete(Uri.withAppendedPath(TrackContentProvider.CONTENT_URI_PICTURE_UUID, uuid), null, null);
+        }
+    }
+
     /** Stop tracking by making the track inactive
      * @param trackId Id of the track
      */
