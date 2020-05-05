@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="Est" id="Est">
+	<SimpleField name="Desc" type="string"></SimpleField>
+	<SimpleField name="ID" type="string"></SimpleField>
+</Schema>
+<Folder><name>Est</name>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Est">
+		<SimpleData name="Desc">Est</SimpleData>
+		<SimpleData name="ID">464</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79996,-17.58883</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Est">
+		<SimpleData name="Desc">Est</SimpleData>
+		<SimpleData name="ID">484</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.7732,-17.54359</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Est">
+		<SimpleData name="Desc">Est</SimpleData>
+		<SimpleData name="ID">MOO-10</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.86189,-17.49447</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Est">
+		<SimpleData name="Desc">Est</SimpleData>
+		<SimpleData name="ID">503</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.76542,-17.50886</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Est">
+		<SimpleData name="Desc">Est</SimpleData>
+		<SimpleData name="ID">495</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.7711,-17.51832</coordinates></Point>
+  </Placemark>
+</Folder>
+</Document></kml>

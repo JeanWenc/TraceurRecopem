@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="Tribord" id="Tribord">
+	<SimpleField name="Desc" type="string"></SimpleField>
+	<SimpleField name="ID" type="string"></SimpleField>
+</Schema>
+<Folder><name>Tribord</name>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">471</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.7948,-17.58106</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">476</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79007,-17.5694</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">477</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.7867,-17.56262</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">480</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.78441,-17.55931</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">373</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.91336,-17.49259</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">370</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.90914,-17.48949</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">365</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.90539,-17.4879</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">362</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.90116,-17.48839</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">357</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.89538,-17.48636</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">354</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.89492,-17.4842</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">MOO-11</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.86563,-17.49029</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">323</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.86396,-17.49042</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">MOO-9</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.86263,-17.48766</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">322-10</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.85718,-17.50572</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">304-1</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.83226,-17.48396</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">299</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.82463,-17.48661</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">sept-93</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.8234,-17.48234</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">sept-91</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.82613,-17.47711</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">287</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79979,-17.47635</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">286</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79955,-17.47553</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">MOO-2</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.77445,-17.52036</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Tribord">
+		<SimpleData name="Desc">Tribord</SimpleData>
+		<SimpleData name="ID">déc-74</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.76403,-17.52247</coordinates></Point>
+  </Placemark>
+</Folder>
+</Document></kml>

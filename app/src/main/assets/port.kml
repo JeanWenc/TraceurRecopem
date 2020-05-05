@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="Babord" id="Babord">
+	<SimpleField name="Desc" type="string"></SimpleField>
+	<SimpleField name="ID" type="string"></SimpleField>
+</Schema>
+<Folder><name>Babord</name>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">466</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.80148,-17.58646</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">469</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79995,-17.58515</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">469-1</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79851,-17.58525</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">470</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79819,-17.58364</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">473</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.78845,-17.57579</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">474</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79201,-17.57048</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">475</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79091,-17.5698</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">478</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.78752,-17.55961</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">479</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.78759,-17.55763</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">480-2</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.78098,-17.55817</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">482</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.78871,-17.55241</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">482-1</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.78535,-17.55114</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">482-2</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.78085,-17.54863</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">483</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.77424,-17.54355</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">430</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.86983,-17.57156</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">429</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.87038,-17.57131</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">372</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.91062,-17.4899</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">371</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.90998,-17.48976</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">367</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.90591,-17.48848</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">368</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.90506,-17.48868</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">366</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.90412,-17.48907</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">364</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.90235,-17.48913</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">361</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.89854,-17.48827</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">360</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.89673,-17.488</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">359</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.89486,-17.488</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">356</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.89425,-17.48607</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">355</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.89398,-17.48417</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">MOO-13</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.87008,-17.49005</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">MOO-12</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.8689,-17.49006</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">325</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.86826,-17.49026</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">MOO-8</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.8603,-17.48748</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">321</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.85806,-17.49073</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">320</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.85365,-17.49225</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">320-9</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.85455,-17.50123</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">304</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.83026,-17.48435</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">sept-92</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.82442,-17.4775</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">sept-90</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.82479,-17.47607</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">12</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.81934,-17.50555</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">11-janv</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.81924,-17.49694</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">298</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.81737,-17.48417</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">292</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.81838,-17.4815</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">502</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.76709,-17.51403</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">501</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.76765,-17.51482</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">500</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.76876,-17.51611</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">498</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.77645,-17.52246</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">496</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.7734,-17.52286</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">494</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.77287,-17.52332</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Babord">
+		<SimpleData name="Desc">Babord</SimpleData>
+		<SimpleData name="ID">déc-75</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.7639,-17.52444</coordinates></Point>
+  </Placemark>
+</Folder>
+</Document></kml>

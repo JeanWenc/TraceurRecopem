@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="Other" id="Other">
+	<SimpleField name="Desc" type="string"></SimpleField>
+	<SimpleField name="ID" type="string"></SimpleField>
+</Schema>
+<Folder><name>Other</name>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">MOO-15</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.81624,-17.60463</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">428-3</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.87046,-17.56565</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">428-2</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.8716,-17.5662</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">322-5</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.86183,-17.49842</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">322-6</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.86277,-17.49897</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">déc-30</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.85245,-17.50806</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">déc-31</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.85176,-17.50973</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">MOO-5</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.82329,-17.50021</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">MOO-6</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.8236,-17.50189</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">MOO-4</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.81871,-17.48775</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">déc-79</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.77617,-17.52304</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Other">
+		<SimpleData name="Desc">Other</SimpleData>
+		<SimpleData name="ID">déc-78</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.77329,-17.52321</coordinates></Point>
+  </Placemark>
+</Folder>
+</Document></kml>

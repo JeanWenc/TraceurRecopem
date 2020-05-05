@@ -28,6 +28,7 @@ import org.osmdroid.tileprovider.modules.OfflineTileProvider;
 import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -41,6 +42,8 @@ import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.service.gpsLogger;
 import jean.wencelius.traceurrecopem.service.gpsLoggerServiceConnection;
 import jean.wencelius.traceurrecopem.recopemValues;
+import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
+import jean.wencelius.traceurrecopem.utils.MapTileProvider;
 
 public class MapAndTrackActivity extends AppCompatActivity {
 
@@ -75,6 +78,9 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
     private Bitmap mPersonIcon;
 
+    private FolderOverlay westOverlay, eastOverlay, southOverlay, northOverlay;
+    private FolderOverlay navOverlay, otherOverlay, portOverlay, starboardOverlay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +112,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         //Checking if proper permissions, and if not requesting them
-
+        generateBeaconOverlays();
         showMap();
 
         startTrackLoggerForNewTrack();
@@ -179,27 +185,10 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
         mMap.setMultiTouchControls(true);
         mMap.setUseDataConnection(false);
-
-        File file = null;
-        try {
-            file = getFileFromAssets("moorea.mbtiles");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (file.exists()) {
-            File[] fileTab = new File[1];
-            fileTab[0] = file;
-            OfflineTileProvider tileProvider = null;
-            try {
-                tileProvider = new OfflineTileProvider(new SimpleRegisterReceiver(this), fileTab);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mMap.setTileProvider(tileProvider);
-        }
+        mMap.setTileProvider(MapTileProvider.setMapTileProvider(ctx));
 
         IMapController mapController = mMap.getController();
-        mapController.setZoom(15);
+        mapController.setZoom(13);
         GeoPoint startPoint = new GeoPoint(-17.543859, -149.831712);
         mapController.setCenter(startPoint);
 
@@ -218,64 +207,86 @@ public class MapAndTrackActivity extends AppCompatActivity {
             }
         });
 
-        /**btRecordTrack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                stopTrackLoggerForNewTrack();
-                btRecordTrack.setColorFilter(Color.argb(255, 120, 120, 120));
-                String fulltext = "Nb points = " + Integer.toString(mGpsLogger.getPointCount());
-                mShowPointCount.setText(fulltext);
-
-                Toast.makeText(MapAndTrackActivity.this, "Tracé enregistré. Mauururu !",Toast.LENGTH_SHORT).show();
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run(){
-                        Intent menuActivityIntent = new Intent(MapAndTrackActivity.this, MenuActivity.class);
-                        startActivity(menuActivityIntent);
-                    }
-                },2000); //LENGTH_SHORT is usually 2 second long
-
-            }
-        });*/
-
          btShowBeacon.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v){
                  if(!IS_BEACON_SHOWING){
                      btShowBeacon.setColorFilter(Color.argb(255, 0, 255, 0));
+                     showBeacon();
+                     mMap.invalidate();
                      IS_BEACON_SHOWING=true;
                  }else{
                      btShowBeacon.setColorFilter(Color.argb(255, 18, 81, 140));
                      IS_BEACON_SHOWING=false;
+                     hideBeacon();
+                     mMap.invalidate();
                  }
              }
          });
     }
 
-    public File getFileFromAssets(String aFileName) throws IOException {
-        File cacheFile = new File(this.getCacheDir(), aFileName);
-        try {
-            InputStream inputStream = this.getAssets().open(aFileName);
-            try {
-                FileOutputStream outputStream = new FileOutputStream(cacheFile);
-                try {
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = inputStream.read(buf)) > 0) {
-                        outputStream.write(buf, 0, len);
-                    }
-                } finally {
-                    outputStream.close();
-                }
-            } finally {
-                inputStream.close();
-            }
-        } catch (IOException e) {
-            throw new IOException("Could not open "+aFileName, e);
-        }
-        return cacheFile;
+    private void generateBeaconOverlays() {
+        BeaconOverlay west = new BeaconOverlay("west",getApplicationContext());
+        westOverlay = (FolderOverlay)west.getKmlDocument().mKmlRoot.buildOverlay(mMap, west.getStyle(), null, west.getKmlDocument());
+
+        BeaconOverlay east = new BeaconOverlay("east",getApplicationContext());
+        eastOverlay = (FolderOverlay)east.getKmlDocument().mKmlRoot.buildOverlay(mMap, east.getStyle(), null, east.getKmlDocument());
+
+        BeaconOverlay north = new BeaconOverlay("north",getApplicationContext());
+        northOverlay = (FolderOverlay)north.getKmlDocument().mKmlRoot.buildOverlay(mMap, north.getStyle(), null, north.getKmlDocument());
+
+        BeaconOverlay south = new BeaconOverlay("south",getApplicationContext());
+        southOverlay = (FolderOverlay)south.getKmlDocument().mKmlRoot.buildOverlay(mMap, south.getStyle(), null, south.getKmlDocument());
+
+        BeaconOverlay port = new BeaconOverlay("port",getApplicationContext());
+        portOverlay = (FolderOverlay)port.getKmlDocument().mKmlRoot.buildOverlay(mMap, port.getStyle(), null, port.getKmlDocument());
+
+        BeaconOverlay starboard = new BeaconOverlay("starboard",getApplicationContext());
+        starboardOverlay = (FolderOverlay)starboard.getKmlDocument().mKmlRoot.buildOverlay(mMap, starboard.getStyle(), null, starboard.getKmlDocument());
+
+        BeaconOverlay nav = new BeaconOverlay("nav",getApplicationContext());
+        navOverlay = (FolderOverlay)nav.getKmlDocument().mKmlRoot.buildOverlay(mMap, nav.getStyle(), null, nav.getKmlDocument());
+
+        BeaconOverlay other = new BeaconOverlay("other",getApplicationContext());
+        otherOverlay = (FolderOverlay)other.getKmlDocument().mKmlRoot.buildOverlay(mMap, other.getStyle(), null, other.getKmlDocument());
     }
+
+    private void showBeacon() {
+        mMap.getOverlays().add(westOverlay);
+
+        mMap.getOverlays().add(eastOverlay);
+
+        mMap.getOverlays().add(northOverlay);
+
+        mMap.getOverlays().add(southOverlay);
+
+        mMap.getOverlays().add(portOverlay);
+
+        mMap.getOverlays().add(starboardOverlay);
+
+        mMap.getOverlays().add(navOverlay);
+
+        mMap.getOverlays().add(otherOverlay);
+    }
+
+    private void hideBeacon() {
+        mMap.getOverlays().remove(westOverlay);
+
+        mMap.getOverlays().remove(eastOverlay);
+
+        mMap.getOverlays().remove(northOverlay);
+
+        mMap.getOverlays().remove(southOverlay);
+
+        mMap.getOverlays().remove(portOverlay);
+
+        mMap.getOverlays().remove(starboardOverlay);
+
+        mMap.getOverlays().remove(navOverlay);
+
+        mMap.getOverlays().remove(otherOverlay);
+    }
+
 
     private void checkGPSProvider() {
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);

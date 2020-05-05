@@ -1,6 +1,5 @@
 package jean.wencelius.traceurrecopem.controller;
 /**
- * TODO: Actually delete picture in showPicture Activity (delete from our folder and from DB)
  * TODO: ADD Data!
  */
 
@@ -11,6 +10,8 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -18,12 +19,19 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.kml.KmlDocument;
+import org.osmdroid.bonuspack.kml.Style;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.FolderOverlay;
+import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,17 +50,22 @@ import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.model.ImageUrl;
+import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
+import jean.wencelius.traceurrecopem.utils.MapTileProvider;
+import jean.wencelius.traceurrecopem.utils.OverlayTrackPoints;
 
 public class TrackDetailActivity extends AppCompatActivity implements ImageAdapter.OnImageListener {
 
     private ImageView mImageView;
-    public TextView mText;
+    public MapView mMapView;
+    public IMapController mMapViewController;
 
     RecyclerView recyclerView;
     GridLayoutManager gridLayoutManager;
 
     public ContentResolver mCr;
     public Cursor mCursorPictures;
+    public Cursor mCursorTrackpoints;
 
     public long trackId;
 
@@ -77,9 +90,15 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_detail);
 
-        trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+        mMapView = (MapView) findViewById(R.id.activity_track_detail_display_track);
+        mMapView.setMultiTouchControls(true);
+        mMapView.setUseDataConnection(false);
+        mMapView.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext()));
+        mMapViewController = mMapView.getController();
+        mMapViewController.setZoom(13);
 
-        mText= (TextView) findViewById(R.id.activity_track_detail_text_test);
+        trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+        setTitle("Tracé #" + trackId);
 
         mFisherID = AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext());
 
@@ -94,6 +113,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     protected void onResume() {
         super.onResume();
 
+        //Image Gallery
         mImageView = (ImageView) findViewById(R.id.image_item_id);
         recyclerView = (RecyclerView) findViewById(R.id.activity_track_detail_recyclerView);
         gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
@@ -104,10 +124,35 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         mCursorPictures = mCr.query(TrackContentProvider.picturesUri(trackId), null,
                 null, null, TrackContentProvider.Schema.COL_ID + " asc");
 
-
         ArrayList imageUrlList = prepareData(mCursorPictures);
         ImageAdapter imageAdapter = new ImageAdapter(getApplicationContext(), imageUrlList, this);
         recyclerView.setAdapter(imageAdapter);
+
+        //Map
+        GeoPoint startPoint = new GeoPoint(-17.543859, -149.831712);
+        mMapViewController.setCenter(startPoint);
+
+        mCursorTrackpoints = mCr.query(TrackContentProvider.trackPointsUri(trackId), null,
+                null, null, TrackContentProvider.Schema.COL_TIMESTAMP + " asc");
+
+        if(mCursorTrackpoints.getCount()>0){
+
+            final SimpleFastPointOverlay sfpo = OverlayTrackPoints.createPointOverlay(mCursorTrackpoints);
+
+            mMapView.getOverlays().add(sfpo);
+
+            final double nor = sfpo.getBoundingBox().getLatNorth();
+            final double sou = sfpo.getBoundingBox().getLatSouth();
+            final double eas = sfpo.getBoundingBox().getLonEast();
+            final double wes = sfpo.getBoundingBox().getLonWest();
+            mMapView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mMapViewController.zoomToSpan((int) (nor-sou), (int) (eas-wes));
+                    mMapViewController.setCenter(new GeoPoint((nor + sou) / 2, (eas + wes) / 2));
+                }
+            });
+        }
     }
 
     private ArrayList prepareData(Cursor cursor) {
@@ -357,7 +402,5 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
             destination.close();
         }
     }
-
-
 
 }

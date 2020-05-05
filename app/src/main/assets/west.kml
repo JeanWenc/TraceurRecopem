@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="Ouest" id="Ouest">
+	<SimpleField name="Desc" type="string"></SimpleField>
+	<SimpleField name="ID" type="string"></SimpleField>
+</Schema>
+<Folder><name>Ouest</name>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Ouest">
+		<SimpleData name="Desc">Ouest</SimpleData>
+		<SimpleData name="ID">472</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.79334,-17.57903</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#Ouest">
+		<SimpleData name="Desc">Ouest</SimpleData>
+		<SimpleData name="ID">MOO-14</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-149.87039,-17.4903</coordinates></Point>
+  </Placemark>
+</Folder>
+</Document></kml>

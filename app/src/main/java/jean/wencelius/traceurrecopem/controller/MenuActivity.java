@@ -181,9 +181,6 @@ public class MenuActivity extends AppCompatActivity {
         return trackId;
     }
 
-    @Override
-    public void onBackPressed() {}
-
     public String getDataTrackDirectory(Date startDate){
         File sdRoot = Environment.getExternalStorageDirectory();
 
@@ -221,4 +218,7 @@ public class MenuActivity extends AppCompatActivity {
 
         return trackGPXExportDirectory;
     }
+
+    @Override
+    public void onBackPressed() {}
 }
