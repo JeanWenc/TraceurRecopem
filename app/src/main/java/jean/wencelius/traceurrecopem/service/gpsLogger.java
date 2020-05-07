@@ -173,7 +173,7 @@ public class gpsLogger extends Service implements LocationListener {
         isGpsEnabled = true;
 
         // first of all we check if the time from the last used fix to the current fix is greater than the logging interval
-        if((lastGPSTimestamp + gpsLoggingInterval) < System.currentTimeMillis()){
+        //if((lastGPSTimestamp + gpsLoggingInterval) < System.currentTimeMillis()){
             lastGPSTimestamp = System.currentTimeMillis(); // save the time of this fix
 
             lastLocation = location;
@@ -183,7 +183,7 @@ public class gpsLogger extends Service implements LocationListener {
                 dataHelper.track(currentTrackId, location);
                 pointCount++;
             }
-        }
+        //}
     }
 
     @Override

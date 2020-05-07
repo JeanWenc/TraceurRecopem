@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.controller.dataInput.dataInputGear;
 import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.ImageAdapter;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
@@ -209,6 +210,9 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         switch (item.getItemId()) {
 
             case R.id.trackdetail_menu_add_data:
+                //TODO: Add extras (cursor? track id?)
+                Intent AddDataIntent = new Intent(TrackDetailActivity.this, dataInputGear.class);
+                startActivity(AddDataIntent);
                 break;
 
             case R.id.trackdetail_menu_camera:

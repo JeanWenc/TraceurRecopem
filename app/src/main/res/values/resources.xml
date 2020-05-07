@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="day_night">
+        <item>Jour</item>
+        <item>Nuit</item>
+        <item>Les deux</item>
+    </string-array>
+</resources>
