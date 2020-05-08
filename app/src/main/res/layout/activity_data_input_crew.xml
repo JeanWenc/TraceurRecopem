@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".controller.dataInput.dataInputBoat">
+
+    <TextView
+        android:id="@+id/activity_data_input_crew_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/data_input_crew_question"
+        android:textStyle="bold"
+        style="@android:style/TextAppearance.Large"
+        />
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/activity_data_input_crew_question_radio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@id/activity_data_input_crew_question">
+        <RadioButton android:id="@+id/activity_data_input_crew_question_yes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Oui"
+            style="@android:style/TextAppearance.Medium"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton android:id="@+id/activity_data_input_crew_question_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Non"
+            style="@android:style/TextAppearance.Medium"
+            android:layout_marginLeft="20dp"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/activity_data_input_crew_question_N"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_data_input_crew_question_radio"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/data_input_crew_question_N"
+        android:textStyle="bold"
+        style="@android:style/TextAppearance.Large"
+        />
+    
+    <NumberPicker
+        android:id="@+id/activity_data_input_crew_input_N"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/activity_data_input_crew_question_N"
+        />
+
+    <TextView
+        android:id="@+id/activity_data_input_crew_question_who"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_data_input_crew_input_N"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/data_input_crew_question_who"
+        android:textStyle="bold"
+        style="@android:style/TextAppearance.Large"
+        />
+
+    <TextView
+        android:id="@+id/activity_data_input_crew_question_who_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activity_data_input_crew_question_who"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/data_input_crew_question_who_details"
+        android:textStyle="bold"
+        style="@android:style/TextAppearance.Small"
+        />
+
+    <EditText
+        android:id="@+id/activity_data_input_crew_input_who"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:hint="@string/data_input_crew_input_who"
+        android:layout_below="@id/activity_data_input_crew_question_who_details"/>
+
+    <Button
+        android:id="@+id/activity_data_input_crew_next_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/activity_data_input_crew_input_who"
+        android:padding="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Suivant"/>
+
+</RelativeLayout>

@@ -94,6 +94,12 @@
     <string name="data_input_current_question_2">2 - Moyen</string>
     <string name="data_input_current_question_3">3 - Fort</string>
 
+    <!--CREW-->
+    <string name="data_input_crew_question">Es-tu parti pêcher seul ?"</string>
+    <string name="data_input_crew_question_N">Combien de pêcheurs sont partis avec toi ?</string>
+    <string name="data_input_crew_question_who">Qui est parti avec toi ?</string>
+    <string name="data_input_crew_question_who_details">Pas obligatoire.</string>
+    <string name="data_input_crew_input_who">"Noms ou Relations (exple: Mon cousin, mon voisin, mon ami)"</string>
 
 
 

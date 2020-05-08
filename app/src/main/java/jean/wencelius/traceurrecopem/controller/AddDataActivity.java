@@ -15,13 +15,8 @@ import android.widget.Toast;
 import jean.wencelius.traceurrecopem.R;
 
 public class AddDataActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener {
+//TODO: once all dataInput activities created, delete this one.
 
-
-    //TODO:
-    private int mCrewN;
-
-    private String mCrew;
-    private EditText mCrewEditText;
 
    //TODO:
     private int mCatchSale;

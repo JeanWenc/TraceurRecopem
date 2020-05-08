@@ -40,7 +40,7 @@ public class dataInputWind extends AppCompatActivity {
         mWindEstFisher = "empty";
 
         //TODO:
-        setTitle("Question 3/X");
+        setTitle("Question 4/X");
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override

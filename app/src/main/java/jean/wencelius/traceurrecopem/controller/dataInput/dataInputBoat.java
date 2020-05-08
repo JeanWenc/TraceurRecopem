@@ -45,7 +45,7 @@ public class dataInputBoat extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent NextIntent = new Intent(dataInputBoat.this, dataInputWind.class);
+                Intent NextIntent = new Intent(dataInputBoat.this, dataInputCrew.class);
                 startActivity(NextIntent);
             }
         });
