@@ -46,7 +46,7 @@ public class MenuActivity extends AppCompatActivity {
 
     public static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
 
-    public static final String PREF_KEY_FISHER_ID = "PREF_KEY_FISHER_ID";
+    public static final String PREF_KEY_FISHER_ID = recopemValues.PREF_KEY_FISHER_ID;
 
     public long currentTrackId;
 

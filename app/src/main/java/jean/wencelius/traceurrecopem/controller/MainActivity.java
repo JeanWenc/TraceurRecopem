@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
+import jean.wencelius.traceurrecopem.recopemValues;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,7 +16,10 @@ public class MainActivity extends AppCompatActivity {
 
     private int SPLASH_TIME = 3000;
 
-    public String mFisherName;
+    private String mFisherName;
+
+    private String mPrefLocSale;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mGreetingText = (TextView) findViewById(R.id.activity_main_greeting_text);
 
-        mFisherName = AppPreferences.getDefaultsString("PREF_KEY_FISHER_NAME",getApplicationContext());
+        mFisherName = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_NAME,getApplicationContext());
+        mPrefLocSale = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_LOCATION_SALE_PREF, getApplicationContext());
+
 
         if(mFisherName!=null){
             String fulltext = "Ia Ora " + mFisherName + " !";
@@ -43,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    if (mFisherName!=null){
+                    if (mFisherName!=null && mPrefLocSale!=null){
                         Intent menuActivityIntent = new Intent(MainActivity.this, MenuActivity.class);
                         startActivity(menuActivityIntent);
                     }else{

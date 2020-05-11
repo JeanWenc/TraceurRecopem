@@ -2,6 +2,18 @@
     <string name="app_name">TraceurRecopem</string>
     <string name="app_name_w_space">Traceur Recopem</string>
 
+    <!-- LOGIN ACTIVITY -->
+    <string name="activity_login_name_hint">Nom du collaborateur</string>
+    <string name="activity_login_id_hint">Identifiant du collaborateur</string>
+    <string name="activity_login_boat_question">Utilises-tu un bateau/pirogue ?</string>
+    <string name="activity_login_boat_owner_question">En es-tu le propriétaire ?</string>
+    <string name="activity_login_pref_location_sale">Lieu préféré de vente en bord de route ?</string>
+    <string-array name="activity_login_boat_list">
+        <item>"None"</item>
+        <item>"motorboat"</item>
+        <item>"outrigger"</item>
+    </string-array>
+
     <!-- TRACKLIST ACTIVITY -->
     <string name="activity_track_list_empty">Aucun tracé enregistré</string>
 

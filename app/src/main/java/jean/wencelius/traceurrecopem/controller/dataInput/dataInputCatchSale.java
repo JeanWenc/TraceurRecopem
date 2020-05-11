@@ -1,9 +1,11 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,15 +27,32 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
     private String mCatchSaleAns;
     private int mCatchSaleN;
     private String mCatchSaleType;
+    private int mCatchSaleTypeInt;
     private String mCatchSalePrice;
+    private int mCatchSalePriceInt;
     private String mCatchSaleWhere;
+    private int mCatchSaleWhereInt;
     private String mCatchSaleDetails;
     private String mCatchSalePicAns;
+
+    public static final String BUNDLE_STATE_ANS = "mainAnswer";
+    public static final String BUNDLE_STATE_CATCH_N = "catchN";
+    public static final String BUNDLE_STATE_TYPE_INT = "typeInt";
+    public static final String BUNDLE_STATE_PRICE_INT = "priceInt";
+    public static final String BUNDLE_STATE_WHERE_INT = "whereInt";
+    public static final String BUNDLE_STATE_DETAILS = "details";
+    public static final String BUNDLE_STATE_PIC_ANS = "picAnswer";
+    public static final String BUNDLE_STATE_BUTTON = "nxtButton";
 
     //Views
     private Button mButton;
     private RelativeLayout mCatchSaleQuantityFrame;
     private LinearLayout mCatchSalePicFrame;
+
+    private RadioButton mCatchSaleInputAnsY;
+    private RadioButton mCatchSaleInputAnsN;
+    private RadioButton mCatchSaleInputPicAnsY;
+    private RadioButton mCatchSaleInputPicAnsN;
 
     private NumberPicker mCatchSaleInputN;
     private NumberPicker mCatchSaleInputType;
@@ -57,10 +76,14 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_data_input_catch_sale);
 
         mButton = (Button) findViewById(R.id.activity_data_input_catch_sale_next_btn);
-        mButton.setEnabled(false);
 
         mCatchSaleQuantityFrame = (RelativeLayout) findViewById(R.id.activity_catch_sale_quantity_frame);
         mCatchSalePicFrame = (LinearLayout) findViewById(R.id.activity_catch_sale_pic_frame);
+
+        mCatchSaleInputAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_yes);
+        mCatchSaleInputAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_no);
+        mCatchSaleInputPicAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_pic_yes);
+        mCatchSaleInputPicAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_pic_no);
 
         mCatchSaleInputN = (NumberPicker) findViewById(R.id.activity_data_input_catch_sale_input_N);
         mCatchSaleInputType = (NumberPicker) findViewById(R.id.activity_data_input_catch_sale_input_type);
@@ -71,6 +94,9 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         mCatchSaleInputN.setMinValue(0);
         mCatchSaleInputN.setMaxValue(100);
         mCatchSaleInputN.setOnValueChangedListener(new nPicker());
+        mCatchSaleInputN.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+
 
         type = getResources().getStringArray(R.array.data_input_catch_sale_type);
         mCatchSaleInputType.setMinValue(0);
@@ -81,7 +107,10 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                 return type[value];
             }
         });
+        mCatchSaleInputType.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        mCatchSaleInputType.setDisplayedValues(type);
         mCatchSaleInputType.setOnValueChangedListener(new typePicker());
+
 
         prices = this.getResources().getStringArray(R.array.data_input_catch_sale_price);
         ArrayAdapter<CharSequence> priceAdapter = ArrayAdapter.createFromResource(this, R.array.data_input_catch_sale_price,
@@ -101,22 +130,59 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         mCatchSaleInputWhere.setAdapter(whereAdapter);
         mCatchSaleInputWhere.setOnItemSelectedListener(this);
 
-        mCatchSaleQuantityFrame.setVisibility(View.INVISIBLE);
-        mCatchSalePicFrame.setVisibility(View.INVISIBLE);
+        if(savedInstanceState != null){
+            mButton.setEnabled(savedInstanceState.getBoolean(BUNDLE_STATE_BUTTON));
 
-        mCatchSaleAns = "empty";
-        mCatchSaleN = 0;
-        mCatchSaleType = "NA";
-        mCatchSalePrice = "NA";
-        mCatchSaleWhere = "NA";
-        mCatchSalePicAns = "NA";
-        mCatchSaleDetails = "NA";
+            mCatchSaleAns = savedInstanceState.getString(BUNDLE_STATE_ANS);
+            mCatchSaleN = savedInstanceState.getInt(BUNDLE_STATE_CATCH_N);
+            mCatchSaleTypeInt = savedInstanceState.getInt(BUNDLE_STATE_TYPE_INT);
+            mCatchSaleType = type[mCatchSaleTypeInt];
+            mCatchSalePriceInt = savedInstanceState.getInt(BUNDLE_STATE_PRICE_INT);
+            mCatchSalePrice = prices[mCatchSalePriceInt];
+            mCatchSaleWhereInt = savedInstanceState.getInt(BUNDLE_STATE_WHERE_INT);
+            mCatchSaleWhere = places[mCatchSaleWhereInt];
+            mCatchSalePicAns = savedInstanceState.getString(BUNDLE_STATE_PIC_ANS);
+            mCatchSaleDetails = savedInstanceState.getString(BUNDLE_STATE_DETAILS);
 
-        nValid = false;
-        typeValid = false;
-        priceValid = false;
-        whereValid = false;
-        picValid = false;
+            mCatchSaleInputAnsY.setSelected(mCatchSaleAns.equals("true"));
+            mCatchSaleInputAnsN.setSelected(mCatchSaleAns.equals("false"));
+            mCatchSaleInputPicAnsY.setSelected(mCatchSalePicAns.equals("true"));
+            mCatchSaleInputPicAnsN.setSelected(mCatchSalePicAns.equals("false"));
+
+            mCatchSaleInputN.setValue(mCatchSaleN);
+            mCatchSaleInputType.setValue(mCatchSaleTypeInt);
+            mCatchSaleInputPrice.setSelection(mCatchSalePriceInt);
+            mCatchSaleInputWhere.setSelection(mCatchSaleWhereInt);
+            mCatchSaleInputDetails.setText(mCatchSaleDetails);
+            mCatchSaleInputDetails.setSelection(mCatchSaleDetails.length());
+        }else{
+            mButton.setEnabled(false);
+
+            mCatchSaleAns = "empty";
+            mCatchSaleN = 0;
+            mCatchSaleType = "NA";
+            mCatchSaleTypeInt = 0;
+            mCatchSalePrice = "NA";
+            mCatchSalePriceInt = 0;
+            mCatchSaleWhere = "NA";
+            mCatchSaleWhereInt = 0;
+            mCatchSalePicAns = "NA";
+            mCatchSaleDetails = "NA";
+        }
+
+        if(mCatchSaleAns.equals("true")){
+            mCatchSaleQuantityFrame.setVisibility(View.VISIBLE);
+            mCatchSalePicFrame.setVisibility(View.VISIBLE);
+        }else{
+            mCatchSaleQuantityFrame.setVisibility(View.INVISIBLE);
+            mCatchSalePicFrame.setVisibility(View.INVISIBLE);
+        }
+
+        nValid = mCatchSaleN!=0;
+        typeValid = mCatchSaleTypeInt!=0;
+        priceValid = mCatchSalePriceInt!=0;
+        whereValid = mCatchSaleWhereInt!=0;
+        picValid = mCatchSalePicAns.equals("true") || mCatchSalePicAns.equals("false");
 
 
         //TODO:
@@ -155,8 +221,11 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                     mCatchSalePicFrame.setVisibility(View.INVISIBLE);
                     mCatchSaleN = 0;
                     mCatchSaleType = "NA";
+                    mCatchSaleTypeInt = 0;
                     mCatchSalePrice = "NA";
+                    mCatchSalePriceInt = 0;
                     mCatchSaleWhere = "NA";
+                    mCatchSaleWhereInt = 0;
                     mCatchSalePicAns = "NA";
                 }
                 break;
@@ -200,6 +269,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         {
             Toast.makeText(this, "Your choice :" + prices[position],Toast.LENGTH_SHORT).show();
             mCatchSalePrice = prices[position];
+            mCatchSalePriceInt=position;
             if(mCatchSalePrice.equals("Prix pour un"))
                 priceValid = false;
             else
@@ -212,6 +282,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         }else{
             Toast.makeText(this, "Your choice :" + places[position],Toast.LENGTH_SHORT).show();
             mCatchSaleWhere = places[position];
+            mCatchSaleWhereInt=position;
             if(mCatchSaleWhere.equals("Choisi le lieu"))
                 whereValid = false;
             else
@@ -251,6 +322,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         @Override
         public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
             mCatchSaleType = type[newVal];
+            mCatchSaleTypeInt = newVal;
             if(mCatchSaleType.equals("Choisi"))
                 typeValid = false;
             else
@@ -262,5 +334,20 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                 mButton.setEnabled(false);
             Toast.makeText(dataInputCatchSale.this, mCatchSaleType, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+
+        outState.putString(BUNDLE_STATE_ANS,mCatchSaleAns);
+        outState.putInt(BUNDLE_STATE_CATCH_N,mCatchSaleN);
+        outState.putInt(BUNDLE_STATE_TYPE_INT,mCatchSaleTypeInt);
+        outState.putInt(BUNDLE_STATE_PRICE_INT,mCatchSalePriceInt);
+        outState.putInt(BUNDLE_STATE_WHERE_INT,mCatchSaleWhereInt);
+        outState.putString(BUNDLE_STATE_DETAILS,mCatchSaleInputDetails.getText().toString());
+        outState.putString(BUNDLE_STATE_PIC_ANS,mCatchSalePicAns);
+        outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+
+        super.onSaveInstanceState(outState);
     }
 }

@@ -127,6 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:hint="Ajoute des détails, si besoin."
+                    android:imeOptions="flagNoExtractUi"
                     android:layout_below="@id/activity_data_input_catch_sale_input_N"/>
             </RelativeLayout>
 

@@ -18,13 +18,7 @@ public class AddDataActivity extends AppCompatActivity  implements AdapterView.O
 //TODO: once all dataInput activities created, delete this one.
 
 
-   //TODO:
-    private int mCatchSale;
 
-    private String mCatchSaleType;
-    private Spinner mCatchSaleTypeSpinner;
-    private String mCatchSaleWhere;
-    private Spinner mCatchSaleWhereSpinner;
 
     private int mCatchOrder;
     private String mCatchOrderType;

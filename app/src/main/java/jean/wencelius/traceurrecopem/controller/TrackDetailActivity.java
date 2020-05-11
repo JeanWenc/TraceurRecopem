@@ -51,6 +51,7 @@ import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.model.ImageUrl;
+import jean.wencelius.traceurrecopem.recopemValues;
 import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
 import jean.wencelius.traceurrecopem.utils.MapTileProvider;
 import jean.wencelius.traceurrecopem.utils.OverlayTrackPoints;
@@ -83,7 +84,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     private static final int REQUEST_TAKE_PHOTO = 0;
     public static final int REQUEST_BROWSE_PHOTO = 1;
 
-    public static final String PREF_KEY_FISHER_ID = "PREF_KEY_FISHER_ID";
+    public static final String PREF_KEY_FISHER_ID = recopemValues.PREF_KEY_FISHER_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

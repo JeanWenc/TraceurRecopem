@@ -7,33 +7,103 @@
     android:orientation="vertical"
     tools:context=".controller.LoginActivity">
 
-    <EditText
-        android:id="@+id/activity_login_name_input"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:hint="Nom du Collaborateur"
-        />
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/activity_login_name_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:hint="@string/activity_login_name_hint"
+                />
 
-    <EditText
-        android:id="@+id/activity_login_id_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:hint="Identifiant du Collaborateur"
-        />
+            <EditText
+                android:id="@+id/activity_login_id_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:hint="@string/activity_login_id_hint"
+                />
 
-    <Button
-        android:id="@+id/activity_login_submit_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:padding="30dp"
-        android:layout_gravity="center_horizontal"
-        android:text="Valider"/>
+            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/activity_login_boat_question"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"
+
+            />
+            <Spinner
+                android:id="@+id/activity_login_boat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/activity_login_boat_owner_question"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold"
+
+                />
+            <CheckBox android:id="@+id/activity_login_boat_owner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Oui"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="10dp"
+                style="@android:style/TextAppearance.Medium"
+                android:onClick="onCheckboxClicked"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/activity_login_pref_location_sale"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold"
+
+                />
+
+            <Spinner
+                android:id="@+id/activity_login_where_sale"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"/>
+
+            <Button
+                android:id="@+id/activity_login_submit_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:padding="30dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Valider"/>
+
+        </LinearLayout>
+    </ScrollView>
+
 
 </LinearLayout>

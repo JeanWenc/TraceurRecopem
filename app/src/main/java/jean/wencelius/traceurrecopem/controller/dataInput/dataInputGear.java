@@ -1,5 +1,6 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -17,11 +18,14 @@ import jean.wencelius.traceurrecopem.controller.TrackDetailActivity;
 
 public class dataInputGear extends AppCompatActivity {
 
-    private EditText mAutreDetail;
-
-    public String mGear;
-
+    private EditText mInputOtherDetail;
+    private String mGear;
+    private String mOtherDetail;
     private Button mButton;
+
+    public static final String BUNDLE_STATE_GEAR = "gear";
+    public static final String BUNDLE_STATE_OTHER_DETAIL = "otherDetail";
+    public static final String BUNDLE_STATE_BUTTON = "nxtButton";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +33,26 @@ public class dataInputGear extends AppCompatActivity {
         setContentView(R.layout.activity_data_input_gear);
 
         mButton = (Button) findViewById(R.id.activity_data_input_gear_next_btn);
-        mButton.setEnabled(false);
+        mInputOtherDetail = (EditText) findViewById(R.id.activity_data_input_gear_autre_detail);
 
-        mAutreDetail = (EditText) findViewById(R.id.activity_data_input_gear_autre_detail);
+        if(savedInstanceState != null){
+            mGear = savedInstanceState.getString(BUNDLE_STATE_GEAR);
+            mOtherDetail = savedInstanceState.getString(BUNDLE_STATE_OTHER_DETAIL);
+            if(mGear.contains("other")){
+                mInputOtherDetail.setVisibility(View.VISIBLE);
+                mInputOtherDetail.setText(mOtherDetail);
+                mInputOtherDetail.setSelection(mOtherDetail.length());
+            }else{
+                mInputOtherDetail.setVisibility(View.INVISIBLE);
+            }
+            mButton.setEnabled(savedInstanceState.getBoolean(BUNDLE_STATE_BUTTON));
 
-        mGear="empty";
-        mAutreDetail.setVisibility(View.INVISIBLE);
+        }else{
+            mGear="empty";
+            mOtherDetail = "";
+            mInputOtherDetail.setVisibility(View.INVISIBLE);
+            mButton.setEnabled(false);
+        }
 
         //TODO:
         setTitle("Question 1/X");
@@ -42,11 +60,22 @@ public class dataInputGear extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                mOtherDetail = mInputOtherDetail.getText().toString();
                 Intent NextIntent = new Intent(dataInputGear.this, dataInputBoat.class);
                 startActivity(NextIntent);
             }
         });
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(BUNDLE_STATE_GEAR,mGear);
+        outState.putString(BUNDLE_STATE_OTHER_DETAIL,mInputOtherDetail.getText().toString());
+        outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+
+        super.onSaveInstanceState(outState);
     }
 
     public void onCheckboxClicked(View view) {
@@ -121,21 +150,25 @@ public class dataInputGear extends AppCompatActivity {
 
             case R.id.activity_data_input_gear_autre:
                 if (checked){
-                    mAutreDetail.setVisibility(View.VISIBLE);
+                    mInputOtherDetail.setVisibility(View.VISIBLE);
                     if(!mGear.equals("empty"))
                         mGear+=" & other";
                     else
                         mGear="other";
                 }else{
-                    mAutreDetail.getText().clear();
-                    mAutreDetail.setVisibility(View.INVISIBLE);
+                    mInputOtherDetail.getText().clear();
+                    mInputOtherDetail.setVisibility(View.INVISIBLE);
                     if(mGear.contains("other")) removeString("other");
                 }
                 break;
         }
 
         if(mGear.contains("other")){
-            mAutreDetail.addTextChangedListener(new TextWatcher() {
+            if (mInputOtherDetail.getText().toString().equals(""))
+                mButton.setEnabled(false);
+            else
+                mButton.setEnabled(true);
+            mInputOtherDetail.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
@@ -153,7 +186,7 @@ public class dataInputGear extends AppCompatActivity {
             mButton.setEnabled(mGear!="empty");
         }
 
-        //Toast.makeText(dataInputGear.this, mGear, Toast.LENGTH_LONG).show();
+        Toast.makeText(dataInputGear.this, mGear, Toast.LENGTH_LONG).show();
     }
 
     public void removeString(String string){

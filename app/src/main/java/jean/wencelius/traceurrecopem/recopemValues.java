@@ -51,6 +51,13 @@ public class recopemValues {
         public static final String NEXUS_S = "Nexus S";
     }
 
+    public static final String PREF_KEY_FISHER_NAME = "PREF_KEY_FISHER_NAME";
+    public static final String PREF_KEY_FISHER_ID = "PREF_KEY_FISHER_ID";
+    public static final String PREF_KEY_FISHER_BOAT = "PREF_KEY_FISHER_BOAT";
+    public static final String PREF_KEY_FISHER_BOAT_OWNER = "PREF_KEY_FISHER_BOAT_OWNER";
+    public static final String PREF_KEY_FISHER_LOCATION_SALE_PREF = "PREF_KEY_FISHER_LOCATION_SALE_PREF";
+
+
     public static String getWeekdayString (int intWeekday){
         String mWeekdayString = new String();
         switch (intWeekday){
