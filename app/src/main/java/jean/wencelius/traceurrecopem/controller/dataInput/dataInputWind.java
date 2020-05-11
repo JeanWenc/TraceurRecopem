@@ -45,7 +45,7 @@ public class dataInputWind extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent NextIntent = new Intent(dataInputWind.this, TrackListActivity.class);
+                Intent NextIntent = new Intent(dataInputWind.this, dataInputCatchSale.class);
                 startActivity(NextIntent);
             }
         });

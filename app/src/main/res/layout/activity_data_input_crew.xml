@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".controller.dataInput.dataInputBoat">
+    tools:context=".controller.dataInput.dataInputCrew">
 
     <TextView
         android:id="@+id/activity_data_input_crew_question"

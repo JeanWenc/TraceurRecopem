@@ -117,6 +117,9 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         mCrewN = newVal;
-        if (newVal!=0) mButton.setEnabled(true);
+        if (newVal!=0)
+            mButton.setEnabled(true);
+        else
+            mButton.setEnabled(false);
     }
 }

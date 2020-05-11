@@ -101,6 +101,58 @@
     <string name="data_input_crew_question_who_details">Pas obligatoire.</string>
     <string name="data_input_crew_input_who">"Noms ou Relations (exple: Mon cousin, mon voisin, mon ami)"</string>
 
+    <!--CATCH SALE-->
+    <string name="data_input_catch_sale_question">As-tu vendu du poisson en bord de route ?"</string>
+    <string name="data_input_catch_sale_question_N">Quelles quantités ?</string>
+    <string-array name="data_input_catch_sale_type">
+        <item>Choisi</item>
+        <item>tui</item>
+        <item>poissons</item>
+        <item>kilos</item>
+        <item>paquet</item>
+    </string-array>
+    <string name="data_input_catch_sale_question_price">"Prix pour un : "</string>
+    <string-array name="data_input_catch_sale_price">
+        <item>Prix pour un</item>
+        <item>500F</item>
+        <item>1000F</item>
+        <item>1500F</item>
+        <item>2000F</item>
+        <item>2500F</item>
+        <item>3000F</item>
+        <item>3500F</item>
+        <item>4000F</item>
+        <item>5000F</item>
+        <item>6000F</item>
+        <item>7000F</item>
+        <item>8000F</item>
+        <item>9000F</item>
+    </string-array>
+    <string name="data_input_catch_sale_question_where">"Vendu où :"</string>
+    <string-array name="data_input_catch_sale_where">
+        <item>"Choisi le lieu"</item>
+        <item>Maatea</item>
+        <item>Haumi</item>
+        <item>Afareaitu</item>
+        <item>Patae</item>
+        <item>Vaiare</item>
+        <item>Teavaro</item>
+        <item>Temae</item>
+        <item>Tiaia</item>
+        <item>Maharepa</item>
+        <item>Paopao</item>
+        <item>Pihaena</item>
+        <item>Vaihere</item>
+        <item>Opunohu</item>
+        <item>Urufara</item>
+        <item>Papetoai</item>
+        <item>Tiahura</item>
+        <item>Varari</item>
+        <item>Haapiti</item>
+        <item>Vaianae</item>
+        <item>Atiha</item>
+    </string-array>
+    <string name="data_input_catch_sale_question_pic">"As-tu pris une photo du poisson/de ta prise ?"</string>
 
 
 </resources>
