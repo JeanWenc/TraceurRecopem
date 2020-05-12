@@ -6,97 +6,107 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".controller.dataInput.dataInputWind">
-
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/data_input_wind_question"
-        android:textStyle="bold"
-        style="@android:style/TextAppearance.Large"
-        />
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/data_input_wind_question"
+                android:textStyle="bold"
+                style="@android:style/TextAppearance.Large"
+                />
 
-    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <RadioButton android:id="@+id/activity_data_input_wind_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/data_input_wind_question_1"
-            style="@android:style/TextAppearance.Medium"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="20dp"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton android:id="@+id/activity_data_input_wind_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/data_input_wind_question_2"
-            style="@android:style/TextAppearance.Medium"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="20dp"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton android:id="@+id/activity_data_input_wind_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/data_input_wind_question_3"
-            style="@android:style/TextAppearance.Medium"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="20dp"
-            android:onClick="onRadioButtonClicked"/>
-    </RadioGroup>
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton android:id="@+id/activity_data_input_wind_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/data_input_wind_question_1"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:onClick="onRadioButtonClicked"/>
+                <RadioButton android:id="@+id/activity_data_input_wind_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/data_input_wind_question_2"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:onClick="onRadioButtonClicked"/>
+                <RadioButton android:id="@+id/activity_data_input_wind_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/data_input_wind_question_3"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:onClick="onRadioButtonClicked"/>
+            </RadioGroup>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/data_input_current_question"
-        android:textStyle="bold"
-        style="@android:style/TextAppearance.Large"
-        />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/data_input_current_question"
+                android:textStyle="bold"
+                style="@android:style/TextAppearance.Large"
+                />
 
-    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <RadioButton android:id="@+id/activity_data_input_current_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/data_input_wind_question_1"
-            style="@android:style/TextAppearance.Medium"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="20dp"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton android:id="@+id/activity_data_input_current_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/data_input_wind_question_2"
-            style="@android:style/TextAppearance.Medium"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="20dp"
-            android:onClick="onRadioButtonClicked"/>
-        <RadioButton android:id="@+id/activity_data_input_current_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/data_input_wind_question_3"
-            style="@android:style/TextAppearance.Medium"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="20dp"
-            android:onClick="onRadioButtonClicked"/>
-    </RadioGroup>
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton android:id="@+id/activity_data_input_current_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/data_input_wind_question_1"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:onClick="onRadioButtonClicked"/>
+                <RadioButton android:id="@+id/activity_data_input_current_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/data_input_wind_question_2"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:onClick="onRadioButtonClicked"/>
+                <RadioButton android:id="@+id/activity_data_input_current_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/data_input_wind_question_3"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:onClick="onRadioButtonClicked"/>
+            </RadioGroup>
 
-    <Button
-        android:id="@+id/activity_data_input_wind_next_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="30dp"
-        android:layout_marginTop="20dp"
-        android:text="Suivant"/>
+            <Button
+                android:id="@+id/activity_data_input_wind_next_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="30dp"
+                android:layout_marginTop="20dp"
+                android:text="Suivant"/>
+        </LinearLayout>
+    </ScrollView>
+
+
 
 
 </LinearLayout>

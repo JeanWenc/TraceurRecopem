@@ -1,5 +1,6 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -25,6 +26,10 @@ public class dataInputWind extends AppCompatActivity {
     private Boolean cg1;
     private Boolean cg2;
 
+    public static final String BUNDLE_STATE_BUTTON = "nxtButton";
+    public static final String BUNDLE_STATE_WIND = "wind";
+    public static final String BUNDLE_STATE_CURRENT = "current";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +37,24 @@ public class dataInputWind extends AppCompatActivity {
         setContentView(R.layout.activity_data_input_wind);
 
         mButton = (Button) findViewById(R.id.activity_data_input_wind_next_btn);
-        mButton.setEnabled(false);
 
-        cg1 = false;
-        cg2=false;
+        if(savedInstanceState!=null){
+            mButton.setEnabled(savedInstanceState.getBoolean(BUNDLE_STATE_BUTTON));
+            mWindEstFisher = savedInstanceState.getString(BUNDLE_STATE_WIND);
+            mCurrentEstFisher = savedInstanceState.getString(BUNDLE_STATE_CURRENT);
 
-        mWindEstFisher = "empty";
+            cg1 = !mWindEstFisher.equals("empty");
+            cg2 = !mCurrentEstFisher.equals("empty");
+
+        }else{
+            mButton.setEnabled(false);
+
+            cg1 = false;
+            cg2 = false;
+
+            mWindEstFisher = "empty";
+            mCurrentEstFisher = "empty";
+        }
 
         //TODO:
         setTitle("Question 4/X");
@@ -49,6 +66,14 @@ public class dataInputWind extends AppCompatActivity {
                 startActivity(NextIntent);
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(BUNDLE_STATE_WIND,mWindEstFisher);
+        outState.putString(BUNDLE_STATE_CURRENT,mCurrentEstFisher);
+        outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+        super.onSaveInstanceState(outState);
     }
 
     public void onRadioButtonClicked(View view) {
