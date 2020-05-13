@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.TrackDetailActivity;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 public class dataInputGear extends AppCompatActivity {
 
@@ -23,9 +24,14 @@ public class dataInputGear extends AppCompatActivity {
     private String mOtherDetail;
     private Button mButton;
 
+    private long trackId;
+    private boolean mNewPicAdded;
+
     public static final String BUNDLE_STATE_GEAR = "gear";
     public static final String BUNDLE_STATE_OTHER_DETAIL = "otherDetail";
     public static final String BUNDLE_STATE_BUTTON = "nxtButton";
+    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
+    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +53,17 @@ public class dataInputGear extends AppCompatActivity {
             }
             mButton.setEnabled(savedInstanceState.getBoolean(BUNDLE_STATE_BUTTON));
 
+            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
+
         }else{
             mGear="empty";
             mOtherDetail = "";
             mInputOtherDetail.setVisibility(View.INVISIBLE);
             mButton.setEnabled(false);
+
+            trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+            mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
         }
 
         //TODO:
@@ -63,6 +75,8 @@ public class dataInputGear extends AppCompatActivity {
 
                 mOtherDetail = mInputOtherDetail.getText().toString();
                 Intent NextIntent = new Intent(dataInputGear.this, dataInputBoat.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
             }
         });
@@ -74,6 +88,9 @@ public class dataInputGear extends AppCompatActivity {
         outState.putString(BUNDLE_STATE_GEAR,mGear);
         outState.putString(BUNDLE_STATE_OTHER_DETAIL,mInputOtherDetail.getText().toString());
         outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+
+        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
 
         super.onSaveInstanceState(outState);
     }

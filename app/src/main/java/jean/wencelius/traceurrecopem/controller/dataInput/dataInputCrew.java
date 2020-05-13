@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.TrackListActivity;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
@@ -25,10 +26,16 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
     private int mCrewN;
     private String mCrewWho;
 
+    private long trackId;
+    private boolean mNewPicAdded;
+
     public static final String BUNDLE_STATE_CREW_ANS = "crewAns";
     public static final String BUNDLE_STATE_CREW_N = "crewN";
     public static final String BUNDLE_STATE_CREW_WHO = "crewWho";
     public static final String BUNDLE_STATE_BUTTON = "nxtButton";
+    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
+    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
+
     //Views
     private Button mButton;
     private TextView mCrewQuestionN;
@@ -66,11 +73,16 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
                 mCrewInputWho.setText(mCrewWho);
                 mCrewInputWho.setSelection(mCrewWho.length());
             }
+            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
 
         }else{
             mCrewAlone = "empty";
             mCrewN=0;
             mCrewWho = "NA";
+
+            trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+            mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
 
             mButton.setEnabled(false);
         }
@@ -106,6 +118,8 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
                 Toast.makeText(dataInputCrew.this, Integer.toString(mCrewN) + mCrewWho, Toast.LENGTH_SHORT).show();
 
                 Intent NextIntent = new Intent(dataInputCrew.this, dataInputWind.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
             }
         });
@@ -117,6 +131,9 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
         outState.putInt(BUNDLE_STATE_CREW_N,mCrewN);
         outState.putString(BUNDLE_STATE_CREW_WHO,mCrewInputWho.getText().toString());
         outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+
+        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
         super.onSaveInstanceState(outState);
     }
 

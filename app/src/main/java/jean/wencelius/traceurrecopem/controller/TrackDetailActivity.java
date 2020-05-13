@@ -1,7 +1,4 @@
 package jean.wencelius.traceurrecopem.controller;
-/**
- * TODO: ADD Data!
- */
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -10,8 +7,6 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -21,16 +16,14 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.bonuspack.kml.KmlDocument;
-import org.osmdroid.bonuspack.kml.Style;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
 
 import java.io.File;
@@ -52,7 +45,6 @@ import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.model.ImageUrl;
 import jean.wencelius.traceurrecopem.recopemValues;
-import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
 import jean.wencelius.traceurrecopem.utils.MapTileProvider;
 import jean.wencelius.traceurrecopem.utils.OverlayTrackPoints;
 
@@ -74,12 +66,22 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     public String mFisherID;
 
     public Boolean mPicEmpty;
+    private Boolean mNewPicAdded;
     public Boolean mDataAdded;
     public Boolean mExported;
 
     public String mSaveDir;
 
     private File currentImageFile;
+
+    public static final String BUNDLE_STATE_TRACK_ID = "stateTrackId";
+    public static final String BUNDLE_STATE_SAVE_DIR = "stateSaveDir";
+    public static final String BUNDLE_STATE_EXPORTED = "stateExported";
+    public static final String BUNDLE_STATE_DATA = "stateData";
+    public static final String BUNDLE_STATE_PIC = "statePic";
+    public static final String BUNDLE_STATE_NEW_PIC = "stateNewPic";
+    public static final String BUNDLE_STATE_CURRENT_IMAGE_FILE ="stateCurrentImageFile";
+
 
     private static final int REQUEST_TAKE_PHOTO = 0;
     public static final int REQUEST_BROWSE_PHOTO = 1;
@@ -99,22 +101,36 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         mMapViewController = mMapView.getController();
         mMapViewController.setZoom(13);
 
-        trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+        if(savedInstanceState!=null){
+            mSaveDir = savedInstanceState.getString(BUNDLE_STATE_SAVE_DIR);
+            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
+
+            mPicEmpty=savedInstanceState.getBoolean(BUNDLE_STATE_PIC);
+            mNewPicAdded=savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC);
+            mExported=savedInstanceState.getBoolean(BUNDLE_STATE_EXPORTED);
+            mDataAdded = savedInstanceState.getBoolean(BUNDLE_STATE_DATA);
+
+            String tempCurrentImageFile = savedInstanceState.getString(BUNDLE_STATE_CURRENT_IMAGE_FILE);
+            if(!tempCurrentImageFile.equals("none")) currentImageFile = new File(tempCurrentImageFile);
+
+        }else{
+            mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
+            trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+
+            mNewPicAdded=false;
+
+            mPicEmpty = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("none");
+            mDataAdded = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED).equals("true");
+            mExported = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_EXPORTED).equals("true");
+        }
         setTitle("Tracé #" + trackId);
 
         mFisherID = AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext());
-
-        mPicEmpty = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("none");
-        mDataAdded = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED).equals("true");
-        mExported = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_EXPORTED).equals("true");
-
-        mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         //Image Gallery
         mImageView = (ImageView) findViewById(R.id.image_item_id);
         recyclerView = (RecyclerView) findViewById(R.id.activity_track_detail_recyclerView);
@@ -138,7 +154,6 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                 null, null, TrackContentProvider.Schema.COL_TIMESTAMP + " asc");
 
         if(mCursorTrackpoints.getCount()>0){
-
             final SimpleFastPointOverlay sfpo = OverlayTrackPoints.createPointOverlay(mCursorTrackpoints);
 
             mMapView.getOverlays().add(sfpo);
@@ -155,6 +170,25 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                 }
             });
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putString(BUNDLE_STATE_SAVE_DIR,mSaveDir);
+
+        outState.putBoolean(BUNDLE_STATE_DATA,mDataAdded);
+        outState.putBoolean(BUNDLE_STATE_EXPORTED,mExported);
+        outState.putBoolean(BUNDLE_STATE_PIC,mPicEmpty);
+        outState.putBoolean(BUNDLE_STATE_NEW_PIC,mNewPicAdded);
+
+        String tempCurrentImageFile = "none";
+        if(currentImageFile!=null){
+            tempCurrentImageFile = currentImageFile.toString();
+        }
+        outState.putString(BUNDLE_STATE_CURRENT_IMAGE_FILE,tempCurrentImageFile.toString());
+
+        super.onSaveInstanceState(outState);
     }
 
     private ArrayList prepareData(Cursor cursor) {
@@ -213,18 +247,14 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
             case R.id.trackdetail_menu_add_data:
                 //TODO: Add extras (cursor? track id?)
                 Intent AddDataIntent = new Intent(TrackDetailActivity.this, dataInputGear.class);
+                AddDataIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                AddDataIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(AddDataIntent);
                 break;
 
             case R.id.trackdetail_menu_camera:
                 getNewPicturesDialog();
-
                 //TODO: Action should happen on click of placeholder. Placeholder in gallery as last or first picture all the time.
-                mPicEmpty = false;
-
-                ContentValues valuesPic = new ContentValues();
-                valuesPic.put(TrackContentProvider.Schema.COL_PIC_ADDED,"true");
-                getContentResolver().update(trackUri, valuesPic, null, null);
                 break;
 
             case R.id.trackdetail_menu_export:
@@ -303,7 +333,9 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         ContentValues picVal = new ContentValues();
+        ContentValues trackDataPic = new ContentValues();
         File imageFile =null;
+        Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
         Uri picUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
         String imageUuid = null;
         switch(requestCode) {
@@ -315,6 +347,10 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                     picVal.put(TrackContentProvider.Schema.COL_UUID, imageUuid);
                     picVal.put(TrackContentProvider.Schema.COL_PIC_PATH, imageFile.toString());
                     getContentResolver().insert(Uri.withAppendedPath(picUri, TrackContentProvider.Schema.TBL_PICTURE + "s"), picVal);
+                    mNewPicAdded=true;
+                    mPicEmpty = (false);
+                    trackDataPic.put(TrackContentProvider.Schema.COL_PIC_ADDED,"true");
+                    getContentResolver().update(trackUri, trackDataPic, null, null);
                 }
                 break;
             case REQUEST_BROWSE_PHOTO:
@@ -348,6 +384,10 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                         picVal.put(TrackContentProvider.Schema.COL_UUID, imageUuid);
                         picVal.put(TrackContentProvider.Schema.COL_PIC_PATH, imageFile.toString());
                         getContentResolver().insert(Uri.withAppendedPath(picUri, TrackContentProvider.Schema.TBL_PICTURE + "s"), picVal);
+                        mNewPicAdded=true;
+                        mPicEmpty = (false);
+                        trackDataPic.put(TrackContentProvider.Schema.COL_PIC_ADDED,"true");
+                        getContentResolver().update(trackUri, trackDataPic, null, null);
                     }
                 }
                 break;

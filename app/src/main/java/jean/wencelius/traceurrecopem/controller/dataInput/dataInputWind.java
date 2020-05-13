@@ -13,13 +13,16 @@ import android.widget.Toast;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.TrackListActivity;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 
 public class dataInputWind extends AppCompatActivity {
 
     public String mWindEstFisher;
-
     public String mCurrentEstFisher;
+
+    private long trackId;
+    private boolean mNewPicAdded;
 
     private Button mButton;
 
@@ -29,6 +32,8 @@ public class dataInputWind extends AppCompatActivity {
     public static final String BUNDLE_STATE_BUTTON = "nxtButton";
     public static final String BUNDLE_STATE_WIND = "wind";
     public static final String BUNDLE_STATE_CURRENT = "current";
+    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
+    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
 
 
     @Override
@@ -46,6 +51,9 @@ public class dataInputWind extends AppCompatActivity {
             cg1 = !mWindEstFisher.equals("empty");
             cg2 = !mCurrentEstFisher.equals("empty");
 
+            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
+
         }else{
             mButton.setEnabled(false);
 
@@ -54,6 +62,9 @@ public class dataInputWind extends AppCompatActivity {
 
             mWindEstFisher = "empty";
             mCurrentEstFisher = "empty";
+
+            trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+            mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
         }
 
         //TODO:
@@ -63,6 +74,8 @@ public class dataInputWind extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent NextIntent = new Intent(dataInputWind.this, dataInputCatchSale.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
             }
         });
@@ -73,6 +86,9 @@ public class dataInputWind extends AppCompatActivity {
         outState.putString(BUNDLE_STATE_WIND,mWindEstFisher);
         outState.putString(BUNDLE_STATE_CURRENT,mCurrentEstFisher);
         outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+
+        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
         super.onSaveInstanceState(outState);
     }
 

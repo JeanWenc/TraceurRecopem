@@ -18,8 +18,6 @@ public class AddDataActivity extends AppCompatActivity  implements AdapterView.O
 //TODO: once all dataInput activities created, delete this one.
 
 
-
-
     private int mCatchOrder;
     private String mCatchOrderType;
     private Spinner mCatchOrderTypeSpinner;

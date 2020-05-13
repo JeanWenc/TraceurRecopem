@@ -15,6 +15,7 @@ import android.widget.Toast;
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.TrackDetailActivity;
 import jean.wencelius.traceurrecopem.controller.TrackListActivity;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
 
@@ -22,6 +23,9 @@ public class dataInputBoat extends AppCompatActivity {
 
     public String mBoat;
     public String mBoatOwner;
+
+    private long trackId;
+    private boolean mNewPicAdded;
 
     private Button mButton;
     private CheckBox mCheckBox;
@@ -33,6 +37,8 @@ public class dataInputBoat extends AppCompatActivity {
     public static final String BUNDLE_STATE_BOAT = "boatType";
     public static final String BUNDLE_STATE_BOAT_OWNER = "boatOwner";
     public static final String BUNDLE_STATE_BUTTON = "nxtButton";
+    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
+    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,8 @@ public class dataInputBoat extends AppCompatActivity {
             mButton.setEnabled(savedInstanceState.getBoolean(BUNDLE_STATE_BUTTON));
             mBoat = savedInstanceState.getString(BUNDLE_STATE_BOAT);
             mBoatOwner = savedInstanceState.getString(BUNDLE_STATE_BOAT_OWNER);
+            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
 
         }else{
             String boat = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT,getApplicationContext());
@@ -64,6 +72,8 @@ public class dataInputBoat extends AppCompatActivity {
                 mBoat = "empty";
                 mBoatOwner = "NA";
             }
+            trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+            mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
         }
 
         if(true){
@@ -86,6 +96,8 @@ public class dataInputBoat extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent NextIntent = new Intent(dataInputBoat.this, dataInputCrew.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
             }
         });
@@ -96,6 +108,10 @@ public class dataInputBoat extends AppCompatActivity {
         outState.putString(BUNDLE_STATE_BOAT,mBoat);
         outState.putString(BUNDLE_STATE_BOAT_OWNER,mBoatOwner);
         outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+
+        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+
         super.onSaveInstanceState(outState);
     }
 

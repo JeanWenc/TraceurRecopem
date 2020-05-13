@@ -166,5 +166,29 @@
     </string-array>
     <string name="data_input_catch_sale_question_pic">"As-tu pris une photo du poisson/de ta prise ?"</string>
 
+    <!--DIALOG FISH PICKER -->
+    <string name="dialog_fish_picker_text">Quantités pêchées</string>
+
+    <!--FISH CAUGHT-->
+    <string-array name="data_input_fish_caught_fish_file_list">
+        <item>fish_paaihere.jpg</item>
+        <item>fish_paraha.jpg</item>
+        <item>fish_parai.jpg</item>
+        <item>fish_roi.jpg</item>
+    </string-array>
+
+    <string-array name="data_input_fish_caught_fish_tahitian_list">
+        <item>Paaihere</item>
+        <item>Paraha peue</item>
+        <item>"Para'i"</item>
+        <item>Roi</item>
+    </string-array>
+
+    <string-array name="data_input_fish_caught_fish_family_list">
+        <item>Carangidae</item>
+        <item>Platax orbicularis</item>
+        <item>Acanthurus xanthopterus</item>
+        <item>Cephalopholis argus</item>
+    </string-array>
 
 </resources>

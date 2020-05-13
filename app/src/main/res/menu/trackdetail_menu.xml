@@ -5,14 +5,15 @@
     <item android:id="@+id/trackdetail_menu_add_data"
         android:title="@string/menu_adddata"
         android:icon="@android:drawable/ic_dialog_info"
-        app:showAsAction="ifRoom|withText"></item>
+        app:showAsAction="ifRoom"
+        ></item>
     <item android:id="@+id/trackdetail_menu_camera"
         android:title="@string/menu_addpicture"
         android:icon="@android:drawable/ic_menu_camera"
-        app:showAsAction="ifRoom|withText"></item>
+        app:showAsAction="ifRoom"></item>
     <item android:id="@+id/trackdetail_menu_export"
         android:title="@string/menu_exportGPX"
         android:icon="@android:drawable/ic_menu_save"
-        app:showAsAction="ifRoom|withText"></item>
+        app:showAsAction="ifRoom"></item>
 
 </menu>

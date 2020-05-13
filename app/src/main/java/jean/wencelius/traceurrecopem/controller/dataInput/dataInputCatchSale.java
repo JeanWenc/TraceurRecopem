@@ -2,6 +2,7 @@ package jean.wencelius.traceurrecopem.controller.dataInput;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,8 +20,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Arrays;
+
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.TrackListActivity;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.model.AppPreferences;
+import jean.wencelius.traceurrecopem.recopemValues;
+import jean.wencelius.traceurrecopem.utils.FishPickerDialog;
 
 public class dataInputCatchSale extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -35,6 +42,10 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
     private String mCatchSaleDetails;
     private String mCatchSalePicAns;
 
+    private String mCatchDestination;
+    private long trackId;
+    private boolean mNewPicAdded;
+
     public static final String BUNDLE_STATE_ANS = "mainAnswer";
     public static final String BUNDLE_STATE_CATCH_N = "catchN";
     public static final String BUNDLE_STATE_TYPE_INT = "typeInt";
@@ -43,6 +54,10 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
     public static final String BUNDLE_STATE_DETAILS = "details";
     public static final String BUNDLE_STATE_PIC_ANS = "picAnswer";
     public static final String BUNDLE_STATE_BUTTON = "nxtButton";
+    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
+    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
+    public static final String BUNDLE_EXTRA_CATCH_DESTINATION = "catchDestination";
+    public static final String BUNDLE_EXTRA_REPORTED_PIC ="reportedPic";
 
     //Views
     private Button mButton;
@@ -91,12 +106,13 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         mCatchSaleInputWhere = (Spinner) findViewById(R.id.activity_data_input_catch_sale_input_where);
         mCatchSaleInputDetails = (EditText) findViewById(R.id.activity_data_input_catch_sale_input_details);
 
+        //TODO: Modify
+        mCatchDestination = "sale";
+
         mCatchSaleInputN.setMinValue(0);
         mCatchSaleInputN.setMaxValue(100);
         mCatchSaleInputN.setOnValueChangedListener(new nPicker());
         mCatchSaleInputN.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-
-
 
         type = getResources().getStringArray(R.array.data_input_catch_sale_type);
         mCatchSaleInputType.setMinValue(0);
@@ -155,6 +171,10 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
             mCatchSaleInputWhere.setSelection(mCatchSaleWhereInt);
             mCatchSaleInputDetails.setText(mCatchSaleDetails);
             mCatchSaleInputDetails.setSelection(mCatchSaleDetails.length());
+
+            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
+
         }else{
             mButton.setEnabled(false);
 
@@ -164,10 +184,21 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
             mCatchSaleTypeInt = 0;
             mCatchSalePrice = "NA";
             mCatchSalePriceInt = 0;
-            mCatchSaleWhere = "NA";
-            mCatchSaleWhereInt = 0;
             mCatchSalePicAns = "NA";
             mCatchSaleDetails = "NA";
+
+            String catchSaleWhere = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_LOCATION_SALE_PREF,getApplicationContext());
+            if(null!=catchSaleWhere){
+                mCatchSaleWhere = catchSaleWhere;
+                mCatchSaleWhereInt = Arrays.asList(places).indexOf(catchSaleWhere);
+                mCatchSaleInputWhere.setSelection(mCatchSaleWhereInt);
+            }else{
+                mCatchSaleWhere = "NA";
+                mCatchSaleWhereInt = 0;
+
+            }
+            trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+            mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
         }
 
         if(mCatchSaleAns.equals("true")){
@@ -204,6 +235,8 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                         "Price = "+mCatchSalePrice+" Where = "+mCatchSaleWhere + "Details = "+mCatchSaleDetails, Toast.LENGTH_LONG).show();
 
                 //Intent NextIntent = new Intent(dataInputCatchSale.this, TrackListActivity.class);
+                //NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                //NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 //startActivity(NextIntent);
             }
         });
@@ -245,6 +278,12 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                         mButton.setEnabled(true);
                     else
                         mButton.setEnabled(false);
+                    Intent fishCaughtIntent = new Intent(dataInputCatchSale.this, dataInputFishCaught.class);
+                    fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                    fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                    fishCaughtIntent.putExtra(BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
+                    fishCaughtIntent.putExtra(BUNDLE_EXTRA_REPORTED_PIC,mCatchSalePicAns);
+                    startActivity(fishCaughtIntent);
                 }
                 break;
             case R.id.activity_data_input_catch_sale_question_pic_yes:
@@ -348,6 +387,8 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         outState.putString(BUNDLE_STATE_PIC_ANS,mCatchSalePicAns);
         outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
 
+        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
         super.onSaveInstanceState(outState);
     }
 }
