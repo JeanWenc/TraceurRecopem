@@ -26,6 +26,8 @@
 
     <!-- TRACKDETAIL ACTIVITY -->
 
+    <!-- SHOW PICTURE ACTIVITY -->
+    <string name="activity_show_picture_deleting_image">Suppression image...</string>
 
     <!--TRACKDETAIL MENU-->
     <string name="menu_adddata">Remplir Questionnaire</string>
@@ -165,6 +167,9 @@
         <item>Atiha</item>
     </string-array>
     <string name="data_input_catch_sale_question_pic">"As-tu pris une photo du poisson/de ta prise ?"</string>
+
+    <!--DATA INPUT FISH CAUGHT-->
+    <string name="data_input_fish_caught_intro">Click sur les poissons que tu as pêchés pour indiquer leur nombre</string>
 
     <!--DIALOG FISH PICKER -->
     <string name="dialog_fish_picker_text">Quantités pêchées</string>

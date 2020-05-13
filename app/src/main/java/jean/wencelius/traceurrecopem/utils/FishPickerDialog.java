@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.dataInput.dataInputCatchSale;
+import jean.wencelius.traceurrecopem.controller.dataInput.dataInputFishCaught;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +25,10 @@ import jean.wencelius.traceurrecopem.controller.dataInput.dataInputCatchSale;
  * create an instance of this fragment.
  */
 public class FishPickerDialog extends DialogFragment implements NumberPicker.OnValueChangeListener {
+
+    //TODO: in Dialog do cursorOfFishCatch (trackId + mCatchDestination)
+    //TODO: Before populating cursor make sure value doesn't already exist. If it does warn user he is changing values
+    //TODO: This method can then be applied to all the dataInput methods to check for any changes (on a track curso and not a fishCatch Cursor)
 
     private static final String ARG_FISH_FAMILY = "fishFamily";
     private static final String ARG_FISH_TAHITIAN = "fishTahitian";
@@ -100,6 +105,8 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
         mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dataInputFishCaught prevActivity = (dataInputFishCaught) getActivity();
+                prevActivity.setMyNameStr(Integer.toString(mCatchN)+" "+mCatchType);
                 getDialog().dismiss();
             }
         });

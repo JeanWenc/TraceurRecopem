@@ -66,7 +66,7 @@ public class ShowPictureActivity extends AppCompatActivity {
                 boolean deleted = imageFile.delete();
 
                 //Toast.makeText(this, mImageUuid, Toast.LENGTH_SHORT).show();
-                Toast.makeText(this, "Suppression image... !", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.activity_show_picture_deleting_image, Toast.LENGTH_LONG).show();
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -74,7 +74,7 @@ public class ShowPictureActivity extends AppCompatActivity {
                         Intent TrackDetailIntent = new Intent(ShowPictureActivity.this,TrackDetailActivity.class);
                         startActivity(TrackDetailIntent);
                     }
-                },2000); //LENGTH_SHORT is usually 2 second long
+                },1000); //LENGTH_SHORT is usually 2 second long
 
 
                 break;
