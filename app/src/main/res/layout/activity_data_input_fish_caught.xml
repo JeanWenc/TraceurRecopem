@@ -19,14 +19,27 @@
         android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/testing"
+        android:id="@+id/activity_data_input_fish_caught_other_fish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.AppCompat.Medium"
-        android:text="test"
+        android:text="@string/data_input_fish_caught_other_fish"
         android:textStyle="bold"
         android:layout_gravity="center"
+        android:textColor="@color/zissouYelDark"
         />
+
+    <TextView
+        android:id="@+id/activity_data_input_fish_caught_other_fish_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:text=""
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:textColor="@color/zissouYelDark"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_data_input_fish_caught_recyclerView"
         android:layout_width="match_parent"

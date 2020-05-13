@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
-     * SQL for creating table TRACKPOINT
+     * SQL for creating table PICTURE
      */
     private static final String SQL_CREATE_TABLE_PICTURE = ""
             + "create table " + TrackContentProvider.Schema.TBL_PICTURE + " ("
@@ -60,6 +60,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             = "create index if not exists "
             + TrackContentProvider.Schema.TBL_PICTURE
             + "_idx ON " + TrackContentProvider.Schema.TBL_PICTURE + "(" + TrackContentProvider.Schema.COL_TRACK_ID + ")";
+
+
+    /**
+     * SQL for creating table FISH_CAUGHT
+     */
+    private static final String SQL_CREATE_TABLE_POISSON = ""
+            + "create table " + TrackContentProvider.Schema.TBL_POISSON + " ("
+            + TrackContentProvider.Schema.COL_ID + " integer primary key autoincrement,"
+            + TrackContentProvider.Schema.COL_TRACK_ID + " integer not null,"
+            + TrackContentProvider.Schema.COL_CATCH_DESTINATION + " text,"
+            + TrackContentProvider.Schema.COL_FISH_FAMILY + " text,"
+            + TrackContentProvider.Schema.COL_FISH_TAHITIAN + " text,"
+            + TrackContentProvider.Schema.COL_CATCH_N + " integer not null,"
+            + TrackContentProvider.Schema.COL_CATCH_N_TYPE+ " text"
+            + ")";
+
+    /**
+     * SQL for creating index FISH_CAUGHT_idx (track id)
+     * @since 12
+     */
+    private static final String SQL_CREATE_IDX_POISSON_TRACK
+            = "create index if not exists "
+            + TrackContentProvider.Schema.TBL_POISSON
+            + "_idx ON " + TrackContentProvider.Schema.TBL_POISSON + "(" + TrackContentProvider.Schema.COL_TRACK_ID + ")";
 
     /**
      * SQL for creating table WAYPOINT
@@ -164,6 +188,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("drop table if exists " + TrackContentProvider.Schema.TBL_PICTURE);
         db.execSQL(SQL_CREATE_TABLE_PICTURE);
         db.execSQL(SQL_CREATE_IDX_PICTURE_TRACK);
+        db.execSQL("drop table if exists " + TrackContentProvider.Schema.TBL_POISSON);
+        db.execSQL(SQL_CREATE_TABLE_POISSON);
+        db.execSQL(SQL_CREATE_IDX_POISSON_TRACK);
         db.execSQL("drop table if exists " + TrackContentProvider.Schema.TBL_WAYPOINT);
         db.execSQL(SQL_CREATE_TABLE_WAYPOINT);
         db.execSQL(SQL_CREATE_IDX_WAYPOINT_TRACK);

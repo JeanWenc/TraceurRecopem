@@ -72,6 +72,7 @@ public class TrackContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_WAYPOINT + "s", Schema.URI_CODE_TRACK_WAYPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_TRACKPOINT + "s", Schema.URI_CODE_TRACK_TRACKPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_PICTURE + "s", Schema.URI_CODE_TRACK_PICTURES);
+        uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_POISSON + "s", Schema.URI_CODE_TRACK_POISSONS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_PICTURE + "/uuid/*", Schema.URI_CODE_PICTURE_UUID);
     }
 
@@ -97,7 +98,7 @@ public class TrackContentProvider extends ContentProvider {
 
     /**
      * @param trackId target track id
-     * @return Uri for the trackpoints of the track
+     * @return Uri for the pictures of the track
      */
     public static final Uri picturesUri(long trackId) {
         return Uri.withAppendedPath(
@@ -105,6 +106,15 @@ public class TrackContentProvider extends ContentProvider {
                 Schema.TBL_PICTURE + "s" );
     }
 
+    /**
+     * @param trackId target track id
+     * @return Uri for the pictures of the track
+     */
+    public static final Uri poissonsUri(long trackId) {
+        return Uri.withAppendedPath(
+                ContentUris.withAppendedId(CONTENT_URI_TRACK, trackId),
+                Schema.TBL_POISSON + "s" );
+    }
 
     /**
      * @param trackId target track id
@@ -190,6 +200,9 @@ public class TrackContentProvider extends ContentProvider {
             case Schema.URI_CODE_TRACK_PICTURES:
                 return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
                         + Schema.TBL_PICTURE;
+            case Schema.URI_CODE_TRACK_POISSONS:
+                return ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + recopemValues.class.getPackage() + "."
+                        + Schema.TBL_POISSON;
             default:
                 throw new IllegalArgumentException("Unknown URL " + uri);
         }
@@ -228,6 +241,20 @@ public class TrackContentProvider extends ContentProvider {
                     }
                 } else {
                     throw new IllegalArgumentException("values should provide " + Schema.COL_PIC_PATH);
+                }
+                break;
+            case Schema.URI_CODE_TRACK_POISSONS:
+                // Check that mandatory columns are present.
+                if (values.containsKey(Schema.COL_TRACK_ID) && values.containsKey(Schema.COL_CATCH_DESTINATION)) {
+
+                    long rowId = dbHelper.getWritableDatabase().insert(Schema.TBL_POISSON, null, values);
+                    if (rowId > 0) {
+                        Uri poissonUri = ContentUris.withAppendedId(uri, rowId);
+                        getContext().getContentResolver().notifyChange(poissonUri, null);
+                        return poissonUri;
+                    }
+                } else {
+                    throw new IllegalArgumentException("values should provide " + Schema.COL_CATCH_DESTINATION);
                 }
                 break;
             case Schema.URI_CODE_TRACK_WAYPOINTS:
@@ -303,6 +330,28 @@ public class TrackContentProvider extends ContentProvider {
             case Schema.URI_CODE_TRACK_PICTURES:
                 trackId = uri.getPathSegments().get(1);
                 qb.setTables(Schema.TBL_PICTURE);
+                selection = Schema.COL_TRACK_ID + " = ?";
+                // Deal with any additional selection info provided by the caller
+                if (null != selectionIn) {
+                    selection += " AND " + selectionIn;
+                }
+
+                selctionArgsList = new ArrayList<String>();
+                selctionArgsList.add(trackId);
+                // Add the callers selection arguments, if any
+                if (null != selectionArgsIn) {
+                    for (String arg : selectionArgsIn) {
+                        selctionArgsList.add(arg);
+                    }
+                }
+                selectionArgs = selctionArgsList.toArray(new String[0]);
+                // Finished with the temporary selection arguments list. release it for GC
+                selctionArgsList.clear();
+                selctionArgsList = null;
+                break;
+            case Schema.URI_CODE_TRACK_POISSONS:
+                trackId = uri.getPathSegments().get(1);
+                qb.setTables(Schema.TBL_POISSON);
                 selection = Schema.COL_TRACK_ID + " = ?";
                 // Deal with any additional selection info provided by the caller
                 if (null != selectionIn) {
@@ -408,6 +457,13 @@ public class TrackContentProvider extends ContentProvider {
                 }
                 table = Schema.TBL_WAYPOINT;
                 break;
+            case Schema.URI_CODE_TRACK_POISSONS:
+                if (selectionIn == null || selectionArgsIn == null) {
+                    // Caller must narrow to a specific waypoint
+                    throw new IllegalArgumentException();
+                }
+                table = Schema.TBL_POISSON;
+                break;
             case Schema.URI_CODE_TRACK_ID:
                 if (selectionIn != null || selectionArgsIn != null) {
                     // Any selection/selectionArgs will be ignored
@@ -451,6 +507,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final String TBL_WAYPOINT = "waypoint";
         public static final String TBL_TRACK = "track";
         public static final String TBL_PICTURE = "picture";
+        public static final String TBL_POISSON = "poisson";
 
         public static final String COL_ID = "_id";
         public static final String COL_TRACK_ID = "track_id";
@@ -474,6 +531,13 @@ public class TrackContentProvider extends ContentProvider {
         //Specific to Jean
         public static final String COL_PIC_PATH ="path_to_pictures";
         public static final String COL_PIC_NEW_NAME="picture_name";
+
+        public static final String COL_FISH_FAMILY = "fishFamily";
+        public static final String COL_FISH_TAHITIAN = "fishTahitian";
+        public static final String COL_CATCH_DESTINATION = "catchDestination";
+        public static final String COL_CATCH_N = "catchN";
+        public static final String COL_CATCH_N_TYPE = "catchNType";
+
         public static final String COL_INF_ID = "Inf_ID";
         public static final String COL_RECOPEM_TRACK_ID = "My_Track_ID";
         public static final String COL_GPS_METHOD = "GPS_data_coll_method";
@@ -537,6 +601,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final int URI_CODE_TRACK_START = 9;
         public static final int URI_CODE_TRACK_END = 10;
         public static final int URI_CODE_TRACK_PICTURES = 11;
+        public static final int URI_CODE_TRACK_POISSONS = 12;
 
 
         public static final int VAL_TRACK_ACTIVE = 1;

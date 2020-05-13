@@ -45,7 +45,6 @@ public class DataHelper {
     }
 
     public void track(long trackId, Location location) {
-
         ContentValues values = new ContentValues();
         values.put(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
         values.put(TrackContentProvider.Schema.COL_LATITUDE, location.getLatitude());

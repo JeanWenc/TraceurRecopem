@@ -169,8 +169,8 @@
     <string name="data_input_catch_sale_question_pic">"As-tu pris une photo du poisson/de ta prise ?"</string>
 
     <!--DATA INPUT FISH CAUGHT-->
-    <string name="data_input_fish_caught_intro">Click sur les poissons que tu as pêchés pour indiquer leur nombre</string>
-
+    <string name="data_input_fish_caught_intro">Clique sur les poissons que tu as pêchés pour indiquer leur nombre</string>
+    <string name="data_input_fish_caught_other_fish">"Les autres poissons que j'ai attrapé : "</string>
     <!--DIALOG FISH PICKER -->
     <string name="dialog_fish_picker_text">Quantités pêchées</string>
 

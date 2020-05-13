@@ -1,5 +1,10 @@
 package jean.wencelius.traceurrecopem.utils;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -18,6 +23,7 @@ import android.widget.Toast;
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.dataInput.dataInputCatchSale;
 import jean.wencelius.traceurrecopem.controller.dataInput.dataInputFishCaught;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,7 +43,8 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
     public static final String ARG_IN_PICTURES = "inPictures";
 
     private String [] type;
-
+    public ContentResolver mCr;
+    public Cursor mCursorFishCaught;
 
     private String mFishFamily;
     private String mFishTahitian;
@@ -105,6 +112,19 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
         mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                mCr = getActivity().getContentResolver();
+
+                ContentValues values = new ContentValues();
+                values.put(TrackContentProvider.Schema.COL_TRACK_ID,mTrackId);
+                values.put(TrackContentProvider.Schema.COL_CATCH_DESTINATION,mCatchDestination);
+                values.put(TrackContentProvider.Schema.COL_FISH_FAMILY,mFishFamily);
+                values.put(TrackContentProvider.Schema.COL_FISH_TAHITIAN,mFishTahitian);
+                values.put(TrackContentProvider.Schema.COL_CATCH_N,mCatchN);
+                values.put(TrackContentProvider.Schema.COL_CATCH_N_TYPE,mCatchType);
+
+                mCr.insert(TrackContentProvider.poissonsUri(mTrackId),values);
+
                 dataInputFishCaught prevActivity = (dataInputFishCaught) getActivity();
                 prevActivity.setMyNameStr(Integer.toString(mCatchN)+" "+mCatchType);
                 getDialog().dismiss();
