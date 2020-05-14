@@ -173,9 +173,10 @@
     <string name="data_input_fish_caught_other_fish">"Les autres poissons que j'ai attrapé : "</string>
     <!--DIALOG FISH PICKER -->
     <string name="dialog_fish_picker_text">Quantités pêchées</string>
-
+    <string name="dialog_fish_picker_input_other_fish_hint">Ecris le nom du poisson</string>
     <!--FISH CAUGHT-->
     <string-array name="data_input_fish_caught_fish_file_list">
+        <item>fish_new_fish.png</item>
         <item>fish_paaihere.jpg</item>
         <item>fish_paraha.jpg</item>
         <item>fish_parai.jpg</item>
@@ -183,6 +184,7 @@
     </string-array>
 
     <string-array name="data_input_fish_caught_fish_tahitian_list">
+        <item>Autre poisson</item>
         <item>Paaihere</item>
         <item>Paraha peue</item>
         <item>"Para'i"</item>
@@ -190,6 +192,7 @@
     </string-array>
 
     <string-array name="data_input_fish_caught_fish_family_list">
+        <item>otherFish</item>
         <item>Carangidae</item>
         <item>Platax orbicularis</item>
         <item>Acanthurus xanthopterus</item>

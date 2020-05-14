@@ -1,24 +1,33 @@
 package jean.wencelius.traceurrecopem.utils;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Arrays;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.dataInput.dataInputCatchSale;
@@ -32,42 +41,49 @@ import jean.wencelius.traceurrecopem.db.TrackContentProvider;
  */
 public class FishPickerDialog extends DialogFragment implements NumberPicker.OnValueChangeListener {
 
-    //TODO: in Dialog do cursorOfFishCatch (trackId + mCatchDestination)
-    //TODO: Before populating cursor make sure value doesn't already exist. If it does warn user he is changing values
-    //TODO: This method can then be applied to all the dataInput methods to check for any changes (on a track curso and not a fishCatch Cursor)
-
     private static final String ARG_FISH_FAMILY = "fishFamily";
     private static final String ARG_FISH_TAHITIAN = "fishTahitian";
     private static final String ARG_CATCH_DESTINATION = "catchDestination";
     private static final String ARG_TRACK_ID = "trackId";
-    public static final String ARG_IN_PICTURES = "inPictures";
+    private static final String ARG_IN_PICTURES = "inPictures";
+    private static final String ARG_SEL_PIC = "selPic";
 
     private String [] type;
-    public ContentResolver mCr;
-    public Cursor mCursorFishCaught;
+    private ContentResolver mCr;
+    private Cursor mCursorFishCaught;
 
     private String mFishFamily;
     private String mFishTahitian;
     private long mTrackId;
     private String mCatchDestination;
     private String mInPictures;
+    private int mSelPic;
+    private boolean mNeedCheckUpdate;
+
+    private String selectionIn;
+    private String [] selectionArgsList;
 
     private TextView mDialogFishName;
     private Button mOkButton;
     private Button mCancelButton;
+    private EditText mInputOtherFish;
 
     private NumberPicker mPickerCatchN;
     private int mCatchN;
 
     private NumberPicker mPickerCatchType;
-    private int mCatchTypeInt;
     private String mCatchType;
+
+    private boolean mInputOtherFishValid;
+    private boolean mCatchTypeValid;
+    private boolean mCatchNValid;
+
 
     public FishPickerDialog() {
         // Required empty public constructor
     }
 
-    public static FishPickerDialog newInstance(String fishFamily, String fishTahitian, long trackId, String catchDestination, String inPictures) {
+    public static FishPickerDialog newInstance(int selPic,String fishFamily, String fishTahitian, long trackId, String catchDestination, String inPictures) {
         FishPickerDialog fragment = new FishPickerDialog();
         Bundle args = new Bundle();
         args.putString(ARG_FISH_FAMILY, fishFamily);
@@ -75,6 +91,7 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
         args.putLong(ARG_TRACK_ID, trackId);
         args.putString(ARG_CATCH_DESTINATION, catchDestination);
         args.putString(ARG_IN_PICTURES, inPictures);
+        args.putInt(ARG_SEL_PIC,selPic);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,17 +105,23 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
             mTrackId = getArguments().getLong(ARG_TRACK_ID);
             mCatchDestination = getArguments().getString(ARG_CATCH_DESTINATION);
             mInPictures = getArguments().getString(ARG_IN_PICTURES);
-
-            mCatchN = 0;
-            mCatchTypeInt = 0;
-            mCatchType = "none";
+            mSelPic = getArguments().getInt(ARG_SEL_PIC);
         }
+            mCatchN = 0;
+            mCatchNValid = false;
+            mCatchType = "Choisi";
+            mCatchTypeValid = false;
+            if(mSelPic==0){
+                mInputOtherFishValid = false;
+            }else{
+                mInputOtherFishValid = true;
+            }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_fish_picker_dialog, container, false);
     }
 
@@ -106,40 +129,32 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mOkButton = (Button) view.findViewById(R.id.dialog_fish_picker_button_ok);
-        mCancelButton = (Button) view.findViewById(R.id.dialog_fish_picker_button_cancel);
-
-        mOkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mCr = getActivity().getContentResolver();
-
-                ContentValues values = new ContentValues();
-                values.put(TrackContentProvider.Schema.COL_TRACK_ID,mTrackId);
-                values.put(TrackContentProvider.Schema.COL_CATCH_DESTINATION,mCatchDestination);
-                values.put(TrackContentProvider.Schema.COL_FISH_FAMILY,mFishFamily);
-                values.put(TrackContentProvider.Schema.COL_FISH_TAHITIAN,mFishTahitian);
-                values.put(TrackContentProvider.Schema.COL_CATCH_N,mCatchN);
-                values.put(TrackContentProvider.Schema.COL_CATCH_N_TYPE,mCatchType);
-
-                mCr.insert(TrackContentProvider.poissonsUri(mTrackId),values);
-
-                dataInputFishCaught prevActivity = (dataInputFishCaught) getActivity();
-                prevActivity.setMyNameStr(Integer.toString(mCatchN)+" "+mCatchType);
-                getDialog().dismiss();
-            }
-        });
-
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getDialog().dismiss();
-            }
-        });
-
         mDialogFishName = (TextView) view.findViewById(R.id.dialog_fish_picker_tahitian_name);
         mDialogFishName.setText(mFishTahitian);
+
+        mInputOtherFish = (EditText) view.findViewById(R.id.dialog_fish_picker_input_other_fish);
+
+        if(mSelPic==0){
+            mInputOtherFish.setVisibility(View.VISIBLE);
+
+            mInputOtherFish.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    mInputOtherFishValid = (s.toString().length()!=0);
+                    mOkButton.setEnabled(mCatchNValid && mCatchTypeValid && mInputOtherFishValid);
+                }
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        }else{
+            mInputOtherFish.setVisibility(View.INVISIBLE);
+        }
 
         mPickerCatchN = (NumberPicker) view.findViewById(R.id.dialog_fish_picker_N);
         mPickerCatchN.setMinValue(0);
@@ -161,9 +176,97 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
         mPickerCatchType.setDisplayedValues(type);
         mPickerCatchType.setOnValueChangedListener(this);
 
-        // Fetch arguments from bundle and set title
-        String title = mFishFamily;
-        getDialog().setTitle(title);
+        mOkButton = (Button) view.findViewById(R.id.dialog_fish_picker_button_ok);
+        mOkButton.setEnabled(mCatchNValid && mCatchTypeValid && mInputOtherFishValid);
+        mCancelButton = (Button) view.findViewById(R.id.dialog_fish_picker_button_cancel);
+
+        mOkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mCr = getActivity().getContentResolver();
+
+                if(mSelPic == 0){
+                    mFishTahitian = mInputOtherFish.getText().toString();
+                }
+                Toast.makeText(getActivity(), mFishTahitian, Toast.LENGTH_SHORT).show();
+
+                selectionIn = TrackContentProvider.Schema.COL_CATCH_DESTINATION + " = ? AND " + TrackContentProvider.Schema.COL_FISH_TAHITIAN + " = ?";
+                selectionArgsList = new String [] {mCatchDestination, mFishTahitian};
+                mCursorFishCaught = mCr.query(TrackContentProvider.poissonsUri(mTrackId), null,
+                        selectionIn, selectionArgsList, TrackContentProvider.Schema.COL_ID + " asc");
+
+                int catchN = 0;
+                String catchType = "";
+
+                boolean isCursorNotEmpty = mCursorFishCaught.moveToFirst();
+                Toast.makeText(getActivity(), "Cursor not empty = " + Boolean.toString(isCursorNotEmpty), Toast.LENGTH_SHORT).show();
+
+                if(isCursorNotEmpty){
+                    catchN = mCursorFishCaught.getInt(mCursorFishCaught.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_N));
+                    catchType = mCursorFishCaught.getString(mCursorFishCaught.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_N_TYPE));
+                    mNeedCheckUpdate = true;
+                }else{
+                    mNeedCheckUpdate = false;
+                }
+                mCursorFishCaught.close();
+
+                if(mNeedCheckUpdate){
+                    if(catchN!=mCatchN || !catchType.equals(mCatchType)){
+
+                        String message = "Tu vas changer les informations pour " + mFishTahitian + " !\n\n"
+                                + "Anciennes informations : " + mFishTahitian+" : "+ catchN + " "+ catchType+ "." +"\n\n"
+                                + "Nouvelles informations : " + mFishTahitian+" : "+ mCatchN + " " + mCatchType +".";
+
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(android.R.string.dialog_alert_title)
+                                .setMessage(message)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(
+                                        android.R.string.ok, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                ContentValues valuesToUpdate = new ContentValues();
+                                                valuesToUpdate.put(TrackContentProvider.Schema.COL_CATCH_N,mCatchN);
+                                                valuesToUpdate.put(TrackContentProvider.Schema.COL_CATCH_N_TYPE,mCatchType);
+                                                mCr.update(TrackContentProvider.poissonsUri(mTrackId),valuesToUpdate,selectionIn,selectionArgsList);
+                                                dialog.dismiss();
+                                            }
+                                        }
+                                ).setNegativeButton(
+                                android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }
+                        )
+                                .show();
+                    }
+                }else{
+                    ContentValues values = new ContentValues();
+                    values.put(TrackContentProvider.Schema.COL_TRACK_ID,mTrackId);
+                    values.put(TrackContentProvider.Schema.COL_CATCH_DESTINATION,mCatchDestination);
+                    values.put(TrackContentProvider.Schema.COL_FISH_FAMILY,mFishFamily);
+                    values.put(TrackContentProvider.Schema.COL_FISH_TAHITIAN,mFishTahitian);
+                    values.put(TrackContentProvider.Schema.COL_CATCH_N,mCatchN);
+                    values.put(TrackContentProvider.Schema.COL_CATCH_N_TYPE,mCatchType);
+
+                    mCr.insert(TrackContentProvider.poissonsUri(mTrackId),values);
+                }
+
+                dataInputFishCaught prevActivity = (dataInputFishCaught) getActivity();
+                prevActivity.setMyCaughtFish(mFishTahitian,mCatchN,mCatchType);
+                getDialog().dismiss();
+            }
+        });
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDialog().dismiss();
+            }
+        });
 
     }
 
@@ -171,11 +274,14 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
         if(picker.getId() == R.id.dialog_fish_picker_N){
+            mCatchNValid = newVal!=0;
             mCatchN = newVal;
+            mOkButton.setEnabled(mCatchNValid && mCatchTypeValid && mInputOtherFishValid);
         }
         if(picker.getId() == R.id.dialog_fish_picker_type){
-            mCatchTypeInt = newVal;
+            mCatchTypeValid = newVal!=0;
             mCatchType = type[newVal];
+            mOkButton.setEnabled(mCatchNValid && mCatchTypeValid && mInputOtherFishValid);
         }
     }
 }
