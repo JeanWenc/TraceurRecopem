@@ -2,6 +2,9 @@ package jean.wencelius.traceurrecopem.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 public class AddDataActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener {
 //TODO: once all dataInput activities created, delete this one.
@@ -36,6 +40,20 @@ public class AddDataActivity extends AppCompatActivity  implements AdapterView.O
     private Spinner mCatchConsTypeSpinner;
 
     //TODO: Question As-tu pris les poissons en photo? If no, question group of species per group of species
+
+    //TODO: Last Activity create textfile. Use the below as cursor
+    /*ContentResolver cr = getContentResolver();
+    Cursor cursor = cr.query(
+            ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, id),
+            null, null, null, null);
+
+       cursor.moveToPosition(0);
+
+    String picAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
+    String dataAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
+
+        cursor.close();
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -40,12 +40,7 @@ public class TrackContentProvider extends ContentProvider {
             Schema.TBL_TRACK + "." + Schema.COL_ID + " as " + Schema.COL_ID,
             Schema.COL_ACTIVE,
             Schema.COL_DIR,
-            //Schema.COL_EXPORT_DATE,
-            //Schema.COL_OSM_UPLOAD_DATE,
             Schema.TBL_TRACK + "." + Schema.COL_NAME + " as "+ Schema.COL_NAME,
-            //Schema.COL_DESCRIPTION,
-            //Schema.COL_TAGS,
-            //Schema.COL_OSM_VISIBILITY,
             Schema.COL_RECOPEM_TRACK_ID,
             Schema.COL_TRACK_DATA_ADDED,
             Schema.COL_EXPORTED,
@@ -54,6 +49,38 @@ public class TrackContentProvider extends ContentProvider {
             Schema.COL_GPS_METHOD,
             Schema.COL_WEEKDAY,
             Schema.COL_DEVICE,
+            Schema.COL_GEAR,
+            Schema.COL_GEAR_OTHER_DETAILS,
+            Schema.COL_BOAT,
+            Schema.COL_BOAT_OWNER,
+            Schema.COL_CREW_ALONE,
+            Schema.COL_CREW_N,
+            Schema.COL_CREW_WHO,
+            Schema.COL_CATCH_SALE,
+            Schema.COL_CATCH_SALE_N,
+            Schema.COL_CATCH_SALE_TYPE,
+            Schema.COL_CATCH_SALE_PRICE,
+            Schema.COL_CATCH_SALE_WHERE,
+            Schema.COL_CATCH_SALE_DETAILS,
+            Schema.COL_CATCH_SALE_PIC,
+            Schema.COL_CATCH_ORDER,
+            Schema.COL_CATCH_ORDER_N,
+            Schema.COL_CATCH_ORDER_TYPE,
+            Schema.COL_CATCH_ORDER_PRICE,
+            Schema.COL_CATCH_ORDER_WHERE,
+            Schema.COL_CATCH_ORDER_DETAILS,
+            Schema.COL_CATCH_ORDER_PIC,
+            Schema.COL_CATCH_GIVE,
+            Schema.COL_CATCH_GIVE_N,
+            Schema.COL_CATCH_GIVE_TYPE,
+            Schema.COL_CATCH_GIVE_WHERE,
+            Schema.COL_CATCH_GIVE_DETAILS,
+            Schema.COL_CATCH_GIVE_PIC,
+            Schema.COL_CATCH_CONS,
+            Schema.COL_CATCH_CONS_N,
+            Schema.COL_CATCH_CONS_TYPE,
+            Schema.COL_CATCH_CONS_DETAILS,
+            Schema.COL_CATCH_CONS_PIC,
             "count(" + Schema.TBL_TRACKPOINT + "." + Schema.COL_ID + ") as " + Schema.COL_TRACKPOINT_COUNT,
             "(SELECT count("+Schema.TBL_WAYPOINT+"."+Schema.COL_TRACK_ID+") FROM "+Schema.TBL_WAYPOINT+" WHERE "+Schema.TBL_WAYPOINT+"."+Schema.COL_TRACK_ID+" = " + Schema.TBL_TRACK + "." + Schema.COL_ID + ") as " + Schema.COL_WAYPOINT_COUNT
     };
@@ -498,7 +525,6 @@ public class TrackContentProvider extends ContentProvider {
 
     }
 
-
     /**
      * Represents Data Schema.
      */
@@ -509,83 +535,77 @@ public class TrackContentProvider extends ContentProvider {
         public static final String TBL_PICTURE = "picture";
         public static final String TBL_POISSON = "poisson";
 
-        public static final String COL_ID = "_id";
-        public static final String COL_TRACK_ID = "track_id";
-        public static final String COL_UUID = "uuid";
-        public static final String COL_LONGITUDE = "longitude";
-        public static final String COL_LATITUDE = "latitude";
-        public static final String COL_SPEED = "speed";
-        public static final String COL_ACCURACY = "accuracy";
-        public static final String COL_TIMESTAMP = "point_timestamp";
-        public static final String COL_NAME = "name";
-        public static final String COL_START_DATE = "start_date";
+        public static final String COL_UUID = "uuid"; // In DataHelper (called by gpsLogger) TBL_WAYPOINTS
 
-        //JW: Should be deleted
-        public static final String COL_ELEVATION = "elevation";
-        public static final String COL_NBSATELLITES = "nb_satellites";
-        public static final String COL_DESCRIPTION = "description";
-        public static final String COL_TAGS = "tags";
-        public static final String COL_OSM_VISIBILITY = "osm_visibility";
-        public static final String COL_LINK = "link";
+        public static final String COL_ID = "_id"; // EVERYWHERE
+        public static final String COL_TRACK_ID = "track_id"; // EVERYWHERE
+        public static final String COL_LONGITUDE = "longitude"; // In DataHelper (called by gpsLogger) TBL_TRACKPOINTS
+        public static final String COL_LATITUDE = "latitude"; // In DataHelper (called by gpsLogger) TBL_TRACKPOINTS
+        public static final String COL_SPEED = "speed"; // In DataHelper (called by gpsLogger) TBL_TRACKPOINTS
+        public static final String COL_ACCURACY = "accuracy"; // In DataHelper (called by gpsLogger) TBL_TRACKPOINTS
+        public static final String COL_TIMESTAMP = "point_timestamp"; // In DataHelper (called by gpsLogger) TBL_TRACKPOINTS
+        public static final String COL_NAME = "name";// In MenuActiviy TBL_TRACK but not used ; // In DataHelper (called by gpsLogger) TBL_WAYPOINTS
+        public static final String COL_START_DATE = "start_date"; // MenuActivity TBL_TRACK
 
-        //Specific to Jean
-        public static final String COL_PIC_PATH ="path_to_pictures";
-        public static final String COL_PIC_NEW_NAME="picture_name";
+        //TBL_PICTURES
+        public static final String COL_PIC_PATH ="path_to_pictures"; // MenuActivity TBL_PICTURES
 
-        public static final String COL_FISH_FAMILY = "fishFamily";
-        public static final String COL_FISH_TAHITIAN = "fishTahitian";
-        public static final String COL_CATCH_DESTINATION = "catchDestination";
-        public static final String COL_CATCH_N = "catchN";
-        public static final String COL_CATCH_N_TYPE = "catchNType";
+        //TBL_POISSONS
+        public static final String COL_FISH_FAMILY = "fishFamily"; //FishPickerDialog
+        public static final String COL_FISH_TAHITIAN = "fishTahitian";//FishPickerDialog
+        public static final String COL_CATCH_DESTINATION = "catchDestination";//FishPickerDialog
+        public static final String COL_CATCH_N = "catchN";//FishPickerDialog
+        public static final String COL_CATCH_N_TYPE = "catchNType";//FishPickerDialog
 
-        public static final String COL_INF_ID = "Inf_ID";
-        public static final String COL_RECOPEM_TRACK_ID = "My_Track_ID";
-        public static final String COL_GPS_METHOD = "GPS_data_coll_method";
-        public static final String COL_GPS_COMMENTS = "GPS_comments";
-        public static final String COL_WEEKDAY = "Weekday";
-        public static final String COL_DAY_NIGHT = "Day_night";
-        public static final String COL_GEAR = "Gear";
-        public static final String COL_GEAR_DETAILS = "Gear_details";
-        public static final String COL_TRANSPORT = "Transport_to_landing";
+        public static final String COL_INF_ID = "Inf_ID"; // MenuActivity TBL_TRACK
+        public static final String COL_RECOPEM_TRACK_ID = "My_Track_ID"; // MenuActivity TBL_TRACK
+        public static final String COL_GPS_METHOD = "GPS_data_coll_method"; // MenuActivity TBL_TRACK
+        public static final String COL_WEEKDAY = "Weekday"; // MenuActivity TBL_TRACK
+        public static final String COL_GEAR = "Gear"; // DataInputGear TBL_TRACK
+        public static final String COL_GEAR_OTHER_DETAILS = "Gear_other_details";// DataInputGear TBL_TRACK
         public static final String COL_HOUR_START = "Hour_st";
         public static final String COL_HOUR_END = "Hour_end";
-        public static final String COL_BOAT = "Boat";
-        public static final String COL_BOAT_OWNER = "Boat_owner";
-        public static final String COL_CREW ="Crew";
-        public static final String COL_WEATHER_COMMENTS ="Weather_comments";
+        public static final String COL_BOAT = "Boat"; //DataInputBoat TBL_TRACK
+        public static final String COL_BOAT_OWNER = "Boat_owner";//DataInputBoat TBL_TRACK
+        public static final String COL_CREW_ALONE ="crew_alone";//DataInputCrew TBL_TRACK
+        public static final String COL_CREW_N ="crew_N";//DataInputCrew TBL_TRACK
+        public static final String COL_CREW_WHO ="crew_Who";//DataInputCrew TBL_TRACK
         public static final String COL_WIND_FISHER = "Wind_est_fisher";
-        public static final String COL_SWELL_FISHER = "Current_est_fisher";
-        public static final String COL_TARGET_SPECIES = "Target_species";
-        public static final String COL_CATCH_TOTAL = "Catch_total";
-        public static final String COL_CATCH_N_FISHER = "N_fisher_share_catch";
+        public static final String COL_CURRENT_FISHER = "Current_est_fisher";
         public static final String COL_CATCH_SALE = "Catch_sale";
+        public static final String COL_CATCH_SALE_N = "Catch_sale_N";
+        public static final String COL_CATCH_SALE_TYPE = "Catch_sale_type";
+        public static final String COL_CATCH_SALE_PRICE = "Catch_sale_price";
+        public static final String COL_CATCH_SALE_WHERE= "Catch_sale_where";
+        public static final String COL_CATCH_SALE_DETAILS = "Catch_sale_details";
+        public static final String COL_CATCH_SALE_PIC = "Catch_sale_pic";
         public static final String COL_CATCH_ORDER ="Catch_order";
+        public static final String COL_CATCH_ORDER_N = "Catch_order_N";
+        public static final String COL_CATCH_ORDER_TYPE = "Catch_order_type";
+        public static final String COL_CATCH_ORDER_PRICE = "Catch_order_price";
+        public static final String COL_CATCH_ORDER_WHERE= "Catch_order_where";
+        public static final String COL_CATCH_ORDER_DETAILS = "Catch_order_details";
+        public static final String COL_CATCH_ORDER_PIC = "Catch_order_pic";
         public static final String COL_CATCH_CONS = "Catch_cons";
+        public static final String COL_CATCH_CONS_N = "Catch_cons_N";
+        public static final String COL_CATCH_CONS_TYPE = "Catch_cons_type";
+        public static final String COL_CATCH_CONS_DETAILS = "Catch_cons_details";
+        public static final String COL_CATCH_CONS_PIC = "Catch_cons_pic";
         public static final String COL_CATCH_GIVE = "Catch_give";
+        public static final String COL_CATCH_GIVE_N = "Catch_give_N";
+        public static final String COL_CATCH_GIVE_TYPE = "Catch_give_type";
+        public static final String COL_CATCH_GIVE_WHERE= "Catch_give_where";
+        public static final String COL_CATCH_GIVE_DETAILS = "Catch_give_details";
+        public static final String COL_CATCH_GIVE_PIC = "Catch_give_pic";
         public static final String COL_PIC_NB = "Picture_nb";
         public static final String COL_PIC_SCALE = "Picture_scale";
         public static final String COL_PIC_COMMENTS = "Picture_comments";
-        public static final String COL_PIC_ADDED = "Pic_added";
-        public static final String COL_TRACK_DATA_ADDED = "Track_data_added";
-        public static final String COL_EXPORTED = "Exported";
-        public static final String COL_WG_WIND = "WG_wind_speed_knots";
-        public static final String COL_WG_WIND_DIR =" WG_wind_dir";
-        public static final String COL_WG_SWELL_M = "WG_swell_m";
-        public static final String COL_WG_SWELL_DIR = "WG_swell_dir";
-        public static final String COL_WG_SWELL_PERIOD = "WG_swell_period";
-        public static final String COL_WG_TEMP = "WG_temp";
-        public static final String COL_MOON = "Moon";
-        public static final String COL_MOON_RISE = "Moon_rise";
-        public static final String COL_MOON_SET = "Moon_set";
-
-        public static final String COL_DIR = "directory";
-        public static final String COL_DEVICE = "device";
-        public static final String COL_ACTIVE = "active";
-
-        public static final String COL_EXPORT_DATE = "export_date";
-        public static final String COL_OSM_UPLOAD_DATE = "osm_upload_date";
-        public static final String COL_COMPASS = "compass_heading";
-        public static final String COL_COMPASS_ACCURACY = "compass_accuracy";
+        public static final String COL_PIC_ADDED = "Pic_added"; // MenuActivity TBL_TRACK
+        public static final String COL_TRACK_DATA_ADDED = "Track_data_added"; // MenuActivity TBL_TRACK
+        public static final String COL_EXPORTED = "Exported"; // MenuActivity TBL_TRACK
+        public static final String COL_DIR = "directory"; // MenuActivity TBL_TRACK
+        public static final String COL_DEVICE = "device";// MenuActivity TBL_TRACK
+        public static final String COL_ACTIVE = "active";// MenuActivity TBL_TRACK
 
         // virtual colums that are used in some sqls but dont exist in database
         public static final String COL_TRACKPOINT_COUNT = "tp_count";
@@ -602,7 +622,6 @@ public class TrackContentProvider extends ContentProvider {
         public static final int URI_CODE_TRACK_END = 10;
         public static final int URI_CODE_TRACK_PICTURES = 11;
         public static final int URI_CODE_TRACK_POISSONS = 12;
-
 
         public static final int VAL_TRACK_ACTIVE = 1;
         public static final int VAL_TRACK_INACTIVE = 0;

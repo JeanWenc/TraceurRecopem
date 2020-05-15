@@ -177,7 +177,6 @@ public class gpsLogger extends Service implements LocationListener {
             lastGPSTimestamp = System.currentTimeMillis(); // save the time of this fix
 
             lastLocation = location;
-            //lastNbSatellites = countSatellites();
 
             if (isTracking) {
                 dataHelper.track(currentTrackId, location);

@@ -1,18 +1,19 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.TrackListActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 
@@ -73,6 +74,19 @@ public class dataInputWind extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+
+                ContentValues windValues = new ContentValues();
+                windValues.put(TrackContentProvider.Schema.COL_WIND_FISHER,mWindEstFisher);
+                windValues.put(TrackContentProvider.Schema.COL_CURRENT_FISHER,mCurrentEstFisher);
+
+                getContentResolver().update(trackUri, windValues, null, null);
+
+                String textToDisplay ="Wind = " + mWindEstFisher + "\n" +
+                        "Current = " +  mCurrentEstFisher+ "\n";
+
+                Toast.makeText(dataInputWind.this, textToDisplay, Toast.LENGTH_SHORT).show();
+
                 Intent NextIntent = new Intent(dataInputWind.this, dataInputCatchSale.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
@@ -133,8 +147,6 @@ public class dataInputWind extends AppCompatActivity {
                 }
                 break;
         }
-
-        Toast.makeText(this, mWindEstFisher + mCurrentEstFisher, Toast.LENGTH_SHORT).show();
 
         if(cg1 && cg2)
             mButton.setEnabled(true);

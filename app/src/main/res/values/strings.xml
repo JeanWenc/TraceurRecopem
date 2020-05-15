@@ -9,9 +9,11 @@
     <string name="activity_login_boat_owner_question">En es-tu le propriétaire ?</string>
     <string name="activity_login_pref_location_sale">Lieu préféré de vente en bord de route ?</string>
     <string-array name="activity_login_boat_list">
-        <item>"None"</item>
+        <item>"empty"</item>
         <item>"motorboat"</item>
         <item>"outrigger"</item>
+        <item>"swim"</item>
+        <item>"from_shore"</item>
     </string-array>
 
     <!-- TRACKLIST ACTIVITY -->

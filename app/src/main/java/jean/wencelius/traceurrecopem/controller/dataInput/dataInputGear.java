@@ -1,9 +1,9 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,8 +13,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.TrackDetailActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 public class dataInputGear extends AppCompatActivity {
@@ -72,15 +74,29 @@ public class dataInputGear extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
 
-                mOtherDetail = mInputOtherDetail.getText().toString();
+                ContentValues gearValues = new ContentValues();
+                gearValues.put(TrackContentProvider.Schema.COL_GEAR,mGear);
+
+                if(mGear.contains("other")){
+                    mOtherDetail = mInputOtherDetail.getText().toString();
+                    gearValues.put(TrackContentProvider.Schema.COL_GEAR_OTHER_DETAILS,mOtherDetail);
+                }
+
+                getContentResolver().update(trackUri, gearValues, null, null);
+
+                String textToDisplay ="Gear Type = " + mGear + "\n" +
+                        "Other Details = " +  mOtherDetail;
+
+                Toast.makeText(dataInputGear.this, textToDisplay, Toast.LENGTH_SHORT).show();
+
                 Intent NextIntent = new Intent(dataInputGear.this, dataInputBoat.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
             }
         });
-
     }
 
     @Override
@@ -202,8 +218,6 @@ public class dataInputGear extends AppCompatActivity {
         }else{
             mButton.setEnabled(mGear!="empty");
         }
-
-        Toast.makeText(dataInputGear.this, mGear, Toast.LENGTH_LONG).show();
     }
 
     public void removeString(String string){

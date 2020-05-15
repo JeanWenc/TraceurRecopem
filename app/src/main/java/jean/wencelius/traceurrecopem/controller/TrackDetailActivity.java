@@ -212,14 +212,12 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
             String imagePath = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_PIC_PATH));
             String imageUuid = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID));
-            //Long imageId = c.getLong(c.getColumnIndex(TrackContentProvider.Schema.COL_ID));
 
             c.close();
 
             Intent ShowPictureIntent = new Intent(TrackDetailActivity.this,ShowPictureActivity.class);
             ShowPictureIntent.putExtra(TrackContentProvider.Schema.COL_PIC_PATH, imagePath);
             ShowPictureIntent.putExtra(TrackContentProvider.Schema.COL_UUID,imageUuid);
-            //ShowPictureIntent.putExtra(TrackContentProvider.Schema.COL_ID,imageId);
 
             startActivity(ShowPictureIntent);
         }
@@ -245,7 +243,6 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         switch (item.getItemId()) {
 
             case R.id.trackdetail_menu_add_data:
-                //TODO: Add extras (cursor? track id?)
                 Intent AddDataIntent = new Intent(TrackDetailActivity.this, dataInputGear.class);
                 AddDataIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 AddDataIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
@@ -401,8 +398,6 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-        //String imageFileName = "JPEG_" + timeStamp;
 
         String imageFileName = mFisherID + "_" + Long.toString(trackId) + "_" + timeStamp;
 

@@ -1,12 +1,10 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,8 +15,10 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Arrays;
 
@@ -27,7 +27,6 @@ import jean.wencelius.traceurrecopem.controller.TrackListActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
-import jean.wencelius.traceurrecopem.utils.FishPickerDialog;
 
 public class dataInputCatchSale extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -127,7 +126,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         mCatchSaleInputType.setDisplayedValues(type);
         mCatchSaleInputType.setOnValueChangedListener(new typePicker());
 
-
         prices = this.getResources().getStringArray(R.array.data_input_catch_sale_price);
         ArrayAdapter<CharSequence> priceAdapter = ArrayAdapter.createFromResource(this, R.array.data_input_catch_sale_price,
                 android.R.layout.simple_spinner_item);
@@ -195,7 +193,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
             }else{
                 mCatchSaleWhere = "NA";
                 mCatchSaleWhereInt = 0;
-
             }
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
@@ -215,29 +212,41 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         whereValid = mCatchSaleWhereInt!=0;
         picValid = mCatchSalePicAns.equals("true") || mCatchSalePicAns.equals("false");
 
-
         //TODO:
         setTitle("Question 5/X");
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mCatchSaleAns.equals("false")){
-                    //don't fill in mCrewN and mCrewWho
-                }else{
-                    //fill in mCrewN
-                    mCatchSaleDetails = mCatchSaleInputDetails.getText().toString();
-                }
+                mCatchSaleDetails = mCatchSaleInputDetails.getText().toString();
 
-                Toast.makeText(dataInputCatchSale.this, "N fish = " +
-                        Integer.toString(mCatchSaleN) + " "+
-                        mCatchSaleType +
-                        "Price = "+mCatchSalePrice+" Where = "+mCatchSaleWhere + "Details = "+mCatchSaleDetails, Toast.LENGTH_LONG).show();
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
 
-                //Intent NextIntent = new Intent(dataInputCatchSale.this, TrackListActivity.class);
-                //NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-                //NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-                //startActivity(NextIntent);
+                ContentValues catchSaleValues = new ContentValues();
+                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_SALE,mCatchSaleAns);
+                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_SALE_N,mCatchSaleN);
+                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_SALE_TYPE,mCatchSaleType);
+                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_SALE_PRICE,mCatchSalePrice);
+                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_SALE_WHERE,mCatchSaleWhere);
+                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_SALE_DETAILS,mCatchSaleDetails);
+                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_SALE_PIC,mCatchSalePicAns);
+
+                getContentResolver().update(trackUri, catchSaleValues, null, null);
+
+                String textToDisplay ="Sold Catch = " + mCatchSaleAns + "\n" +
+                        "Sold N = " +  mCatchSaleN + " - " + mCatchSaleType +"\n" +
+                        "Price = " + mCatchSalePrice +"\n" +
+                        "Sold in = "+  mCatchSaleWhere +"\n" +
+                        "Details = " + mCatchSaleDetails +"\n" +
+                        "Pictures = " + mCatchSalePicAns;
+
+                Toast.makeText(dataInputCatchSale.this, textToDisplay, Toast.LENGTH_LONG).show();
+
+                Intent NextIntent = new Intent(dataInputCatchSale.this, TrackListActivity.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                NextIntent.putExtra(BUNDLE_EXTRA_REPORTED_PIC, mCatchSalePicAns);
+                startActivity(NextIntent);
             }
         });
     }
@@ -297,7 +306,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                 }
                 break;
         }
-        Toast.makeText(this, mCatchSaleAns, Toast.LENGTH_SHORT).show();
     }
 
    @Override
@@ -306,7 +314,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
 
         if(spin.getId() == R.id.activity_data_input_catch_sale_input_price)
         {
-            Toast.makeText(this, "Your choice :" + prices[position],Toast.LENGTH_SHORT).show();
             mCatchSalePrice = prices[position];
             mCatchSalePriceInt=position;
             if(mCatchSalePrice.equals("Prix pour un"))
@@ -319,7 +326,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
             else
                 mButton.setEnabled(false);
         }else{
-            Toast.makeText(this, "Your choice :" + places[position],Toast.LENGTH_SHORT).show();
             mCatchSaleWhere = places[position];
             mCatchSaleWhereInt=position;
             if(mCatchSaleWhere.equals("Choisi le lieu"))
@@ -371,7 +377,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                 mButton.setEnabled(true);
             else
                 mButton.setEnabled(false);
-            Toast.makeText(dataInputCatchSale.this, mCatchSaleType, Toast.LENGTH_SHORT).show();
         }
     }
 

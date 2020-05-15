@@ -1,23 +1,22 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.TrackListActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
@@ -107,15 +106,22 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mCrewAlone.equals("true")){
-                    //don't fill in mCrewN and mCrewWho
-                }else{
-                    //fill in mCrewN
-                    String crewWho = mCrewInputWho.getText().toString();
-                    mCrewWho =  crewWho;
-                }
+                String crewWho = mCrewInputWho.getText().toString();
 
-                Toast.makeText(dataInputCrew.this, Integer.toString(mCrewN) + mCrewWho, Toast.LENGTH_SHORT).show();
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+
+                ContentValues crewValues = new ContentValues();
+                crewValues.put(TrackContentProvider.Schema.COL_CREW_ALONE,mCrewAlone);
+                crewValues.put(TrackContentProvider.Schema.COL_CREW_N,mCrewN);
+                crewValues.put(TrackContentProvider.Schema.COL_CREW_WHO,crewWho);
+
+                getContentResolver().update(trackUri, crewValues, null, null);
+
+                String textToDisplay ="Crew Alone = " + mCrewAlone + "\n" +
+                        "Crew N = " +  mCrewN+ "\n" +
+                        "Crew Who = " +  mCrewWho+ "\n";
+
+                Toast.makeText(dataInputCrew.this, textToDisplay, Toast.LENGTH_SHORT).show();
 
                 Intent NextIntent = new Intent(dataInputCrew.this, dataInputWind.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
@@ -168,7 +174,6 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
                 }
                 break;
         }
-        Toast.makeText(this, mCrewAlone, Toast.LENGTH_SHORT).show();
     }
 
     @Override

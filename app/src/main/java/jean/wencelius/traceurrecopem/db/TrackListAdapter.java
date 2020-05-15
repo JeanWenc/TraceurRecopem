@@ -58,22 +58,6 @@ public class TrackListAdapter extends CursorAdapter {
         LinearLayout vMainLayout = (LinearLayout) v.findViewById(R.id.tracklist_item_mainlayout);
 
         TextView vTps = (TextView) v.findViewById(R.id.tracklist_item_tps);
-        //ImageView vStatus = (ImageView) v.findViewById(R.id.trackmgr_item_statusicon);
-
-        // Is track active ?
-        /**int active = cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_ACTIVE));
-        if (TrackContentProvider.Schema.VAL_TRACK_ACTIVE == active) {
-            // Yellow clock icon for Active
-            vStatus.setImageResource(android.R.drawable.presence_away);
-            vStatus.setVisibility(View.VISIBLE);
-        } else if (cursor.isNull(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORT_DATE))) {
-            // Hide green circle icon: Track not yet exported
-            vStatus.setVisibility(View.GONE);
-        } else {
-            // Show green circle icon (don't assume already visible with this drawable; may be a re-query)
-            vStatus.setImageResource(android.R.drawable.presence_online);
-            vStatus.setVisibility(View.VISIBLE);
-        }*/
 
         // Bind id
         long trackId = cursor.getLong(cursor.getColumnIndex(TrackContentProvider.Schema.COL_ID));
@@ -96,13 +80,12 @@ public class TrackListAdapter extends CursorAdapter {
         vPicAdded.setText(mPicAdded);
 
         if(mDataAdded.equals("false") && mPicAdded.equals("none")){
-            vMainLayout.setBackgroundColor(Color.parseColor("#FF0000"));
-        }else if(mDataAdded.equals("true") && !mPicAdded.equals("none")){
-            vMainLayout.setBackgroundColor(Color.parseColor("#00FF00"));
+            vMainLayout.setBackgroundColor(Color.parseColor("#F21A00"));
+        }else if(mDataAdded.equals("false") || !mPicAdded.equals("none")){
+            vMainLayout.setBackgroundColor(Color.parseColor("#E1AF00"));
         }else{
-            vMainLayout.setBackgroundColor(Color.parseColor("#FFFF00"));
+            vMainLayout.setBackgroundColor(Color.parseColor("#3B9AB2"));
         }
-
         return v;
     }
 }

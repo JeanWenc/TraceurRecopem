@@ -1,33 +1,20 @@
 package jean.wencelius.traceurrecopem.controller;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.app.ListActivity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Environment;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.File;
-
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.db.TrackListAdapter;
-import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
 
 public class TrackListActivity extends ListActivity {
 
@@ -57,8 +44,6 @@ public class TrackListActivity extends ListActivity {
                 exportAll();
             }
         });
-
-        //registerForContextMenu(getListView());
     }
 
 
@@ -93,35 +78,30 @@ public class TrackListActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
 
        ContentResolver cr = getContentResolver();
-        Cursor cursor = cr.query(
+       Cursor cursor = cr.query(
                 ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, id),
                 null, null, null, null);
 
-        cursor.moveToPosition(0);
+       cursor.moveToPosition(0);
 
-        String picAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
-        String dataAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
-        String exported = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED));
-        String saveDir = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DIR));
+       String picAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
+       String dataAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
+       String exported = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED));
+       String saveDir = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DIR));
 
+       cursor.close();
 
-        /*String fulltext = "Track # "+id+ " nbRows = " + cursor.getCount()+ " camera = "+ picAdded;
+       Intent TrackListDetailIntent = new Intent(TrackListActivity.this,TrackDetailActivity.class);
 
-        Toast.makeText(this,
-                fulltext,
-                Toast.LENGTH_LONG)
-                .show();*/
+       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, id);
+       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED,picAdded);
+       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED, dataAdded);
+       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_EXPORTED, exported);
+       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_DIR,saveDir);
 
-        cursor.close();
+       startActivity(TrackListDetailIntent);
 
-        Intent TrackListDetailIntent = new Intent(TrackListActivity.this,TrackDetailActivity.class);
-        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, id);
-        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED,picAdded);
-        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED, dataAdded);
-        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_EXPORTED, exported);
-        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_DIR,saveDir);
-
-        startActivity(TrackListDetailIntent);
+        Toast.makeText(this, "Track # "+Long.toString(id), Toast.LENGTH_LONG).show();
     }
 
     private void createManualTrack() {

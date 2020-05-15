@@ -15,31 +15,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
  */
 public class Track {
 
-    /**public enum OSMVisibility {
-        Private(0, R.string.osm_visibility_private),
-        Public(1, R.string.osm_visibility_public),
-        Trackable(2, R.string.osm_visibility_trackable),
-        Identifiable(3, R.string.osm_visibility_identifiable);
-
-        public final int position;
-        public final int resId;
-
-        private OSMVisibility(int position, int resId) {
-            this.position = position;
-            this.resId = resId;
-        }
-
-        public static OSMVisibility fromPosition(int position) {
-            for (OSMVisibility v: values()) {
-                if (v.position == position) {
-                    return v;
-                }
-            }
-
-            throw new IllegalArgumentException();
-        }
-    }*/
-
     private static final DateFormat DATE_FORMAT = DateFormat.getDateTimeInstance();
 
     private String name;

@@ -1,20 +1,20 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.TrackDetailActivity;
-import jean.wencelius.traceurrecopem.controller.TrackListActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
@@ -63,8 +63,6 @@ public class dataInputBoat extends AppCompatActivity {
             String boat = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT,getApplicationContext());
             String boatOwner = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT_OWNER,getApplicationContext());
 
-            Toast.makeText(this, boat, Toast.LENGTH_SHORT).show();
-
             if(null != boat){
                 mBoat = boat;
                 mBoatOwner = boatOwner;
@@ -76,8 +74,10 @@ public class dataInputBoat extends AppCompatActivity {
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
         }
 
-        if(true){
-        //if(mBoat.equals("motorboat") || mBoat.equals("outrigger")){
+        //if(true){
+        if(mBoat.equals("empty")){
+            mButton.setEnabled(false);
+        }else if(mBoat.equals("motorboat") || mBoat.equals("outrigger")){
             radioMotorboat.setChecked(mBoat.equals("motorboat"));
             radioOutrigger.setChecked(mBoat.equals("outrigger"));
             mCheckBox.setVisibility((View.VISIBLE));
@@ -87,6 +87,7 @@ public class dataInputBoat extends AppCompatActivity {
             radioShore.setChecked(mBoat.equals("from_shore"));
             radioSwim.setChecked(mBoat.equals("swim"));
             mCheckBox.setVisibility(View.INVISIBLE);
+            mButton.setEnabled(true);
         }
 
         //TODO:
@@ -95,6 +96,20 @@ public class dataInputBoat extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+
+                ContentValues boatValues = new ContentValues();
+                boatValues.put(TrackContentProvider.Schema.COL_BOAT,mBoat);
+                boatValues.put(TrackContentProvider.Schema.COL_BOAT_OWNER,mBoatOwner);
+
+                getContentResolver().update(trackUri, boatValues, null, null);
+
+                String textToDisplay ="Boat Type = " + mBoat + "\n" +
+                        "Boat Owner = " +  mBoatOwner;
+
+                Toast.makeText(dataInputBoat.this, textToDisplay, Toast.LENGTH_SHORT).show();
+
                 Intent NextIntent = new Intent(dataInputBoat.this, dataInputCrew.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
@@ -151,7 +166,6 @@ public class dataInputBoat extends AppCompatActivity {
                 }
                 break;
         }
-        //Toast.makeText(this, mBoatOwner, Toast.LENGTH_SHORT).show();
         mButton.setEnabled(true);
     }
 
@@ -167,6 +181,5 @@ public class dataInputBoat extends AppCompatActivity {
                 }
                 break;
         }
-        //Toast.makeText(this, mBoatOwner, Toast.LENGTH_SHORT).show();
     }
 }
