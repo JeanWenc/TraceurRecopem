@@ -19,7 +19,17 @@ import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 public class AddDataActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener {
-//TODO: once all dataInput activities created, delete this one.
+    //TODO: Add catchOrder, catchGive, catch Cons
+    //TODO: On final activity get saveDir from cursor... export all answers to .csv (think about retrieving start and end time (make sure trackpoints > 1)
+    //TODO: on final DataActivity => AddData = true
+    //TODO: Export to gpx on finish tracking just to ensure no data loss
+    //TODO: If pictures true & AddData true => enable emailing (replace save by email, because normally track & csv generated at end of activities of dataInput activities and tracking activities)
+    //TODO: remove 'OFCFP from header of Track List Activity'. Remove Export Buttons
+    //TODO: Implement Add Manual Track Activity
+    //TODO: Enable waypoint creation on MapTrack (Dialog to input name). Means to think of a way to: create a layout with all waypoints in DB, clickable, evenutally possibility to delete them
+
+
+    //TODO: once all dataInput activities created, delete this one.
 
 
     private int mCatchOrder;

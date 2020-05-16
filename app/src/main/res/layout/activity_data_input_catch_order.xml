@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".controller.dataInput.dataInputCatchSale">
+    tools:context=".controller.dataInput.dataInputCatchOrder">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,31 +15,31 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/activity_data_input_catch_sale_question"
+                android:id="@+id/activity_data_input_catch_order_question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginBottom="5dp"
-                android:text="@string/data_input_catch_sale_question"
+                android:text="@string/data_input_catch_order_question"
                 android:textStyle="bold"
                 style="@android:style/TextAppearance.Large"
                 />
 
             <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/activity_data_input_catch_sale_question_radio"
+                android:id="@+id/activity_data_input_catch_order_question_radio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginLeft="20dp">
-                <RadioButton android:id="@+id/activity_data_input_catch_sale_question_yes"
+                <RadioButton android:id="@+id/activity_data_input_catch_order_question_yes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/answer_yes"
                     style="@android:style/TextAppearance.Medium"
                     android:onClick="onRadioButtonClicked"/>
 
-                <RadioButton android:id="@+id/activity_data_input_catch_sale_question_no"
+                <RadioButton android:id="@+id/activity_data_input_catch_order_question_no"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/answer_no"
@@ -49,13 +49,13 @@
             </RadioGroup>
 
             <RelativeLayout
-                android:id="@+id/activity_catch_sale_quantity_frame"
+                android:id="@+id/activity_catch_order_quantity_frame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp">
 
                 <TextView
-                    android:id="@+id/activity_data_input_catch_sale_question_N"
+                    android:id="@+id/activity_data_input_catch_order_question_N"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
@@ -65,80 +65,80 @@
                     />
 
                 <NumberPicker
-                    android:id="@+id/activity_data_input_catch_sale_input_N"
+                    android:id="@+id/activity_data_input_catch_order_input_N"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/activity_data_input_catch_sale_question_N"
+                    android:layout_below="@id/activity_data_input_catch_order_question_N"
                     />
 
                 <NumberPicker
-                    android:id="@+id/activity_data_input_catch_sale_input_type"
+                    android:id="@+id/activity_data_input_catch_order_input_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/activity_data_input_catch_sale_question_N"
-                    android:layout_toRightOf="@id/activity_data_input_catch_sale_input_N"
+                    android:layout_below="@id/activity_data_input_catch_order_question_N"
+                    android:layout_toRightOf="@id/activity_data_input_catch_order_input_N"
                     android:layout_marginLeft="40dp"
                     />
 
                 <TextView
-                    android:id="@+id/activity_data_input_catch_sale_question_price"
+                    android:id="@+id/activity_data_input_catch_order_question_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/activity_data_input_catch_sale_question_N"
-                    android:layout_toRightOf="@id/activity_data_input_catch_sale_input_type"
+                    android:layout_below="@id/activity_data_input_catch_order_question_N"
+                    android:layout_toRightOf="@id/activity_data_input_catch_order_input_type"
                     android:layout_marginLeft="40dp"
                     android:text="@string/data_input_catch_sale_question_price"
                     style="@android:style/TextAppearance.Medium"/>
 
                 <Spinner
-                    android:id="@+id/activity_data_input_catch_sale_input_price"
+                    android:id="@+id/activity_data_input_catch_order_input_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/activity_data_input_catch_sale_question_price"
-                    android:layout_toRightOf="@id/activity_data_input_catch_sale_input_type"
+                    android:layout_below="@id/activity_data_input_catch_order_question_price"
+                    android:layout_toRightOf="@id/activity_data_input_catch_order_input_type"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="40dp"
                     />
 
                 <TextView
-                    android:id="@+id/activity_data_input_catch_sale_question_where"
+                    android:id="@+id/activity_data_input_catch_order_question_where"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/activity_data_input_catch_sale_input_type"
-                    android:layout_below="@id/activity_data_input_catch_sale_input_price"
+                    android:layout_toRightOf="@id/activity_data_input_catch_order_input_type"
+                    android:layout_below="@id/activity_data_input_catch_order_input_price"
                     android:layout_marginLeft="40dp"
                     android:layout_marginTop="20dp"
                     android:text="@string/data_input_catch_sale_question_where"
                     style="@android:style/TextAppearance.Medium"/>
 
                 <Spinner
-                    android:id="@+id/activity_data_input_catch_sale_input_where"
+                    android:id="@+id/activity_data_input_catch_order_input_where"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/activity_data_input_catch_sale_question_where"
-                    android:layout_toRightOf="@id/activity_data_input_catch_sale_input_type"
+                    android:layout_below="@id/activity_data_input_catch_order_question_where"
+                    android:layout_toRightOf="@id/activity_data_input_catch_order_input_type"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="40dp"
                     />
 
                 <EditText
-                    android:id="@+id/activity_data_input_catch_sale_input_details"
+                    android:id="@+id/activity_data_input_catch_order_input_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:hint="@string/data_input_catch_sale_question_details"
                     android:imeOptions="flagNoExtractUi"
-                    android:layout_below="@id/activity_data_input_catch_sale_input_N"/>
+                    android:layout_below="@id/activity_data_input_catch_order_input_N"/>
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/activity_catch_sale_pic_frame"
+                android:id="@+id/activity_catch_order_pic_frame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="20dp">
                 <TextView
-                    android:id="@+id/activity_data_input_catch_sale_question_pic"
+                    android:id="@+id/activity_data_input_catch_order_question_pic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/data_input_catch_sale_question_pic"
@@ -147,18 +147,18 @@
                     />
 
                 <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/activity_data_input_catch_sale_question_pic_radio"
+                    android:id="@+id/activity_data_input_catch_order_question_pic_radio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <RadioButton android:id="@+id/activity_data_input_catch_sale_question_pic_yes"
+                    <RadioButton android:id="@+id/activity_data_input_catch_order_question_pic_yes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/answer_yes"
                         style="@android:style/TextAppearance.Medium"
                         android:onClick="onRadioButtonClicked"/>
 
-                    <RadioButton android:id="@+id/activity_data_input_catch_sale_question_pic_no"
+                    <RadioButton android:id="@+id/activity_data_input_catch_order_question_pic_no"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/answer_no"
@@ -169,7 +169,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/activity_data_input_catch_sale_next_btn"
+                android:id="@+id/activity_data_input_catch_order_next_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

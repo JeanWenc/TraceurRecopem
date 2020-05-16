@@ -131,7 +131,6 @@ public class gpsLogger extends Service implements LocationListener {
             if (recopemValues.INTENT_START_TRACKING.equals(intent.getAction()) ) {
                 Bundle extras = intent.getExtras();
                 if (extras != null) {
-                    //**TODO: Retrieve trackId value*/
                     long trackId = extras.getLong(TrackContentProvider.Schema.COL_TRACK_ID);
                     startTracking(trackId);
                 }

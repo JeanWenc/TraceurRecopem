@@ -57,6 +57,21 @@ public class recopemValues {
     public static final String PREF_KEY_FISHER_BOAT_OWNER = "PREF_KEY_FISHER_BOAT_OWNER";
     public static final String PREF_KEY_FISHER_LOCATION_SALE_PREF = "PREF_KEY_FISHER_LOCATION_SALE_PREF";
 
+    public static final String BUNDLE_STATE_ANS = "mainAnswer";
+    public static final String BUNDLE_STATE_CATCH_N = "catchN";
+    public static final String BUNDLE_STATE_TYPE_INT = "typeInt";
+    public static final String BUNDLE_STATE_PRICE_INT = "priceInt";
+    public static final String BUNDLE_STATE_WHERE_INT = "whereInt";
+    public static final String BUNDLE_STATE_DETAILS = "details";
+    public static final String BUNDLE_STATE_PIC_ANS = "picAnswer";
+    public static final String BUNDLE_STATE_BUTTON = "nxtButton";
+    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
+    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
+    public static final String BUNDLE_EXTRA_CATCH_DESTINATION = "catchDestination";
+
+    public static final String BUNDLE_STATE_SALE_PIC_ANS = "salePicAnswer";
+    public static final String BUNDLE_STATE_ORDER_PIC_ANS = "orderPicAnswer";
+    public static final String BUNDLE_STATE_GIVE_PIC_ANS = "givePicAnswer";
 
     public static String getWeekdayString (int intWeekday){
         String mWeekdayString = new String();

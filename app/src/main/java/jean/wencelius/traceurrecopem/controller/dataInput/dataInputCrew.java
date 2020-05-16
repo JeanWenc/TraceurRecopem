@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
@@ -28,12 +29,9 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
     private long trackId;
     private boolean mNewPicAdded;
 
-    public static final String BUNDLE_STATE_CREW_ANS = "crewAns";
-    public static final String BUNDLE_STATE_CREW_N = "crewN";
-    public static final String BUNDLE_STATE_CREW_WHO = "crewWho";
-    public static final String BUNDLE_STATE_BUTTON = "nxtButton";
-    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
-    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
+    private static final String BUNDLE_STATE_CREW_ANS = "crewAns";
+    private static final String BUNDLE_STATE_CREW_N = "crewN";
+    private static final String BUNDLE_STATE_CREW_WHO = "crewWho";
 
     //Views
     private Button mButton;
@@ -62,7 +60,7 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
         mCrewInputN.setOnValueChangedListener(this);
 
         if(savedInstanceState!=null){
-            mButton.setEnabled(savedInstanceState.getBoolean(BUNDLE_STATE_BUTTON));
+            mButton.setEnabled(savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON));
             mCrewAlone = savedInstanceState.getString(BUNDLE_STATE_CREW_ANS);
             mCrewN = savedInstanceState.getInt(BUNDLE_STATE_CREW_N);
             mCrewWho = savedInstanceState.getString(BUNDLE_STATE_CREW_WHO);
@@ -72,8 +70,8 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
                 mCrewInputWho.setText(mCrewWho);
                 mCrewInputWho.setSelection(mCrewWho.length());
             }
-            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
-            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
+            trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
 
         }else{
             mCrewAlone = "empty";
@@ -119,7 +117,7 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
 
                 String textToDisplay ="Crew Alone = " + mCrewAlone + "\n" +
                         "Crew N = " +  mCrewN+ "\n" +
-                        "Crew Who = " +  mCrewWho+ "\n";
+                        "Crew Who = " +  crewWho + "\n";
 
                 Toast.makeText(dataInputCrew.this, textToDisplay, Toast.LENGTH_SHORT).show();
 
@@ -136,10 +134,10 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
         outState.putString(BUNDLE_STATE_CREW_ANS,mCrewAlone);
         outState.putInt(BUNDLE_STATE_CREW_N,mCrewN);
         outState.putString(BUNDLE_STATE_CREW_WHO,mCrewInputWho.getText().toString());
-        outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,mButton.isEnabled());
 
-        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
-        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
         super.onSaveInstanceState(outState);
     }
 

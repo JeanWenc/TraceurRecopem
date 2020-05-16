@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.recopemValues;
 
 
 public class dataInputWind extends AppCompatActivity {
@@ -30,12 +31,8 @@ public class dataInputWind extends AppCompatActivity {
     private Boolean cg1;
     private Boolean cg2;
 
-    public static final String BUNDLE_STATE_BUTTON = "nxtButton";
-    public static final String BUNDLE_STATE_WIND = "wind";
-    public static final String BUNDLE_STATE_CURRENT = "current";
-    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
-    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
-
+    private static final String BUNDLE_STATE_WIND = "wind";
+    private static final String BUNDLE_STATE_CURRENT = "current";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +42,15 @@ public class dataInputWind extends AppCompatActivity {
         mButton = (Button) findViewById(R.id.activity_data_input_wind_next_btn);
 
         if(savedInstanceState!=null){
-            mButton.setEnabled(savedInstanceState.getBoolean(BUNDLE_STATE_BUTTON));
+            mButton.setEnabled(savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON));
             mWindEstFisher = savedInstanceState.getString(BUNDLE_STATE_WIND);
             mCurrentEstFisher = savedInstanceState.getString(BUNDLE_STATE_CURRENT);
 
             cg1 = !mWindEstFisher.equals("empty");
             cg2 = !mCurrentEstFisher.equals("empty");
 
-            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
-            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
+            trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
 
         }else{
             mButton.setEnabled(false);
@@ -99,10 +96,10 @@ public class dataInputWind extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(BUNDLE_STATE_WIND,mWindEstFisher);
         outState.putString(BUNDLE_STATE_CURRENT,mCurrentEstFisher);
-        outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,mButton.isEnabled());
 
-        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
-        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
         super.onSaveInstanceState(outState);
     }
 

@@ -45,7 +45,6 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
     private static final String ARG_FISH_TAHITIAN = "fishTahitian";
     private static final String ARG_CATCH_DESTINATION = "catchDestination";
     private static final String ARG_TRACK_ID = "trackId";
-    private static final String ARG_IN_PICTURES = "inPictures";
     private static final String ARG_SEL_PIC = "selPic";
 
     private String [] type;
@@ -56,7 +55,6 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
     private String mFishTahitian;
     private long mTrackId;
     private String mCatchDestination;
-    private String mInPictures;
     private int mSelPic;
     private boolean mNeedCheckUpdate;
 
@@ -83,14 +81,13 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
         // Required empty public constructor
     }
 
-    public static FishPickerDialog newInstance(int selPic,String fishFamily, String fishTahitian, long trackId, String catchDestination, String inPictures) {
+    public static FishPickerDialog newInstance(int selPic,String fishFamily, String fishTahitian, long trackId, String catchDestination) {
         FishPickerDialog fragment = new FishPickerDialog();
         Bundle args = new Bundle();
         args.putString(ARG_FISH_FAMILY, fishFamily);
         args.putString(ARG_FISH_TAHITIAN, fishTahitian);
         args.putLong(ARG_TRACK_ID, trackId);
         args.putString(ARG_CATCH_DESTINATION, catchDestination);
-        args.putString(ARG_IN_PICTURES, inPictures);
         args.putInt(ARG_SEL_PIC,selPic);
         fragment.setArguments(args);
         return fragment;
@@ -104,7 +101,6 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
             mFishTahitian = getArguments().getString(ARG_FISH_TAHITIAN);
             mTrackId = getArguments().getLong(ARG_TRACK_ID);
             mCatchDestination = getArguments().getString(ARG_CATCH_DESTINATION);
-            mInPictures = getArguments().getString(ARG_IN_PICTURES);
             mSelPic = getArguments().getInt(ARG_SEL_PIC);
         }
             mCatchN = 0;
@@ -117,7 +113,6 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
                 mInputOtherFishValid = true;
             }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

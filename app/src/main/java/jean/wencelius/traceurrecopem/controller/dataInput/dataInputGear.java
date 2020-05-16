@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputGear extends AppCompatActivity {
 
@@ -29,11 +30,8 @@ public class dataInputGear extends AppCompatActivity {
     private long trackId;
     private boolean mNewPicAdded;
 
-    public static final String BUNDLE_STATE_GEAR = "gear";
-    public static final String BUNDLE_STATE_OTHER_DETAIL = "otherDetail";
-    public static final String BUNDLE_STATE_BUTTON = "nxtButton";
-    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
-    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
+    private static final String BUNDLE_STATE_GEAR = "gear";
+    private static final String BUNDLE_STATE_OTHER_DETAIL = "otherDetail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +51,10 @@ public class dataInputGear extends AppCompatActivity {
             }else{
                 mInputOtherDetail.setVisibility(View.INVISIBLE);
             }
-            mButton.setEnabled(savedInstanceState.getBoolean(BUNDLE_STATE_BUTTON));
+            mButton.setEnabled(savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON));
 
-            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
-            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
+            trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
 
         }else{
             mGear="empty";
@@ -103,10 +101,10 @@ public class dataInputGear extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(BUNDLE_STATE_GEAR,mGear);
         outState.putString(BUNDLE_STATE_OTHER_DETAIL,mInputOtherDetail.getText().toString());
-        outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,mButton.isEnabled());
 
-        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
-        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
 
         super.onSaveInstanceState(outState);
     }

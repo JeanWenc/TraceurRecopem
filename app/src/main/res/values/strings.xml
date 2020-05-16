@@ -2,6 +2,9 @@
     <string name="app_name">TraceurRecopem</string>
     <string name="app_name_w_space">Traceur Recopem</string>
 
+    <string name="answer_yes">Oui</string>
+    <string name="answer_no">Non</string>
+
     <!-- LOGIN ACTIVITY -->
     <string name="activity_login_name_hint">Nom du collaborateur</string>
     <string name="activity_login_id_hint">Identifiant du collaborateur</string>
@@ -118,7 +121,7 @@
     <string name="data_input_crew_input_who">"Noms ou Relations (exple: Mon cousin, mon voisin, mon ami)"</string>
 
     <!--CATCH SALE-->
-    <string name="data_input_catch_sale_question">As-tu vendu du poisson en bord de route ?"</string>
+    <string name="data_input_catch_sale_question">As-tu VENDU du poisson en\nBORD DE ROUTE ?"</string>
     <string name="data_input_catch_sale_question_N">Quelles quantités ?</string>
     <string-array name="data_input_catch_sale_type">
         <item>Choisi</item>
@@ -168,7 +171,13 @@
         <item>Vaianae</item>
         <item>Atiha</item>
     </string-array>
+    <string name="data_input_catch_sale_question_details">"Ajoute des détails, si besoin."</string>
     <string name="data_input_catch_sale_question_pic">"As-tu pris une photo du poisson/de ta prise ?"</string>
+
+    <!--DATA INPUT CATCH ORDER-->
+    <string name="data_input_catch_order_question">As-tu VENDU du poisson par\nCOMMANDES ?"</string>
+    <string name="data_input_catch_order_question_pic_if_sale_pic">"Les poissons vendus par commandes sont-ils visibles sur tes photos ?"</string>
+
 
     <!--DATA INPUT FISH CAUGHT-->
     <string name="data_input_fish_caught_intro">Clique sur les poissons que tu as pêchés pour indiquer leur nombre</string>

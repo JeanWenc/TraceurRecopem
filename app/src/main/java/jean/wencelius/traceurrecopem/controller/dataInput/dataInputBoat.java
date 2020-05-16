@@ -34,11 +34,9 @@ public class dataInputBoat extends AppCompatActivity {
     private RadioButton radioSwim;
     private RadioButton radioShore;
 
-    public static final String BUNDLE_STATE_BOAT = "boatType";
-    public static final String BUNDLE_STATE_BOAT_OWNER = "boatOwner";
-    public static final String BUNDLE_STATE_BUTTON = "nxtButton";
-    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
-    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
+    private static final String BUNDLE_STATE_BOAT = "boatType";
+    private static final String BUNDLE_STATE_BOAT_OWNER = "boatOwner";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +51,11 @@ public class dataInputBoat extends AppCompatActivity {
         radioShore = (RadioButton) findViewById(R.id.activity_data_input_boat_shore);
 
         if(savedInstanceState!=null){
-            mButton.setEnabled(savedInstanceState.getBoolean(BUNDLE_STATE_BUTTON));
+            mButton.setEnabled(savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON));
             mBoat = savedInstanceState.getString(BUNDLE_STATE_BOAT);
             mBoatOwner = savedInstanceState.getString(BUNDLE_STATE_BOAT_OWNER);
-            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
-            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
+            trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
 
         }else{
             String boat = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT,getApplicationContext());
@@ -122,10 +120,10 @@ public class dataInputBoat extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(BUNDLE_STATE_BOAT,mBoat);
         outState.putString(BUNDLE_STATE_BOAT_OWNER,mBoatOwner);
-        outState.putBoolean(BUNDLE_STATE_BUTTON,mButton.isEnabled());
+        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,mButton.isEnabled());
 
-        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
-        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
 
         super.onSaveInstanceState(outState);
     }

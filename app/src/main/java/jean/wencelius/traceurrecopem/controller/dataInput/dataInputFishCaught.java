@@ -1,16 +1,7 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,20 +23,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.MapAloneActivity;
-import jean.wencelius.traceurrecopem.controller.MenuActivity;
-import jean.wencelius.traceurrecopem.db.ImageAdapter;
 import jean.wencelius.traceurrecopem.db.ImageFishAdapter;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.ImageUrl;
+import jean.wencelius.traceurrecopem.recopemValues;
 import jean.wencelius.traceurrecopem.utils.FishPickerDialog;
 import jean.wencelius.traceurrecopem.utils.MapTileProvider;
 
 public class dataInputFishCaught extends AppCompatActivity implements ImageFishAdapter.OnImageListener{
-    //TODO: on start populate mFishCountList from Cursor because if go out of fishCaught and Back fishCountList is empty.
-    //TODO: First image: add new fish
-    //TODO: Dialog if id = 1 make visibule input text for new fish
-    //TODO: close cursor when get information.
 
     private ImageView mImageView;
 
@@ -63,19 +52,14 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
     private long trackId;
     private boolean mNewPicAdded;
     private String mCatchDestination;
-    private String mReportedPic;
 
     RecyclerView recyclerView;
     GridLayoutManager gridLayoutManager;
 
-    public static final String BUNDLE_STATE_TRACK_ID = "trackId";
-    public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
-    public static final String BUNDLE_EXTRA_CATCH_DESTINATION = "catchDestination";
-    public static final String BUNDLE_EXTRA_REPORTED_PIC ="reportedPic";
-    public static final String BUNDLE_STATE_LAST_SELECTED_IMAGE = "lastSelectedImage";
-    public static final String BUNDLE_STATE_FISH_COUNT_LIST = "fishCountList";
-    public static final String BUNDLE_STATE_OTHER_CAUGHT_FISH = "otherCaughtFish";
-    public static final String BUNDLE_STATE_TAHITIAN_FISH_LIST = "tahitianFishList";
+    private static final String BUNDLE_STATE_LAST_SELECTED_IMAGE = "lastSelectedImage";
+    private static final String BUNDLE_STATE_FISH_COUNT_LIST = "fishCountList";
+    private static final String BUNDLE_STATE_OTHER_CAUGHT_FISH = "otherCaughtFish";
+    private static final String BUNDLE_STATE_TAHITIAN_FISH_LIST = "tahitianFishList";
 
     private ArrayList imageUrlList;
 
@@ -91,10 +75,9 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
         mFishFamilyList = Arrays.asList(getResources().getStringArray(R.array.data_input_fish_caught_fish_family_list));
 
         if(savedInstanceState!=null){
-            trackId = savedInstanceState.getLong(BUNDLE_STATE_TRACK_ID);
-            mNewPicAdded = savedInstanceState.getBoolean(BUNDLE_STATE_NEW_PIC_ADDED);
-            mCatchDestination = savedInstanceState.getString(BUNDLE_EXTRA_CATCH_DESTINATION);
-            mReportedPic = savedInstanceState.getString(BUNDLE_EXTRA_REPORTED_PIC);
+            trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
+            mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
+            mCatchDestination = savedInstanceState.getString(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION);
             mSelImage = savedInstanceState.getInt(BUNDLE_STATE_LAST_SELECTED_IMAGE);
             mFishCountList = new ArrayList<String>(Arrays.asList(savedInstanceState.getStringArray(BUNDLE_STATE_FISH_COUNT_LIST)));
             mFishTahitianList = new ArrayList<String>(Arrays.asList(savedInstanceState.getStringArray(BUNDLE_STATE_TAHITIAN_FISH_LIST)));
@@ -102,8 +85,7 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
         }else{
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
-            mCatchDestination = getIntent().getExtras().getString(BUNDLE_EXTRA_CATCH_DESTINATION);
-            mReportedPic = getIntent().getExtras().getString(BUNDLE_EXTRA_REPORTED_PIC);
+            mCatchDestination = getIntent().getExtras().getString(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION);
             mFishTahitianList = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.data_input_fish_caught_fish_tahitian_list)));
             mSelImage = -1;
 
@@ -135,10 +117,9 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putLong(BUNDLE_STATE_TRACK_ID,trackId);
-        outState.putBoolean(BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
-        outState.putString(BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
-        outState.putString(BUNDLE_EXTRA_REPORTED_PIC,mReportedPic);
+        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+        outState.putString(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
         outState.putInt(BUNDLE_STATE_LAST_SELECTED_IMAGE,mSelImage);
         outState.putString(BUNDLE_STATE_OTHER_CAUGHT_FISH,mOtherCaughtFish);
 
@@ -180,7 +161,7 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
         mSelImage = position;
 
         FragmentManager fm = getSupportFragmentManager();
-        FishPickerDialog alertDialog = FishPickerDialog.newInstance(mSelImage,mFishFamilyList.get(position),mFishTahitianList.get(position),(long) trackId,mCatchDestination,mReportedPic);
+        FishPickerDialog alertDialog = FishPickerDialog.newInstance(mSelImage,mFishFamilyList.get(position),mFishTahitianList.get(position),(long) trackId,mCatchDestination);
         alertDialog.show(fm, "fragment_alert");
 
         Toast.makeText(this, Integer.toString(position), Toast.LENGTH_SHORT).show();
@@ -283,5 +264,4 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
             setFishAdapter();
        }
     }
-
 }
