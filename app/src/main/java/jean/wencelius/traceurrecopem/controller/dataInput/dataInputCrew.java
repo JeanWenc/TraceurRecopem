@@ -98,8 +98,7 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
             mCrewInputN.setVisibility(View.INVISIBLE);
         }
 
-        //TODO:
-        setTitle("Question 3/X");
+        setTitle("Question 3/8");
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +124,7 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
+                finish();
             }
         });
     }

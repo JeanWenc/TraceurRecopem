@@ -92,7 +92,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         mCatchSaleInputWhere = (Spinner) findViewById(R.id.activity_data_input_catch_sale_input_where);
         mCatchSaleInputDetails = (EditText) findViewById(R.id.activity_data_input_catch_sale_input_details);
 
-        //TODO: Modify
         mCatchDestination = "sale";
 
         mCatchSaleInputN.setMinValue(0);
@@ -199,8 +198,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         whereValid = mCatchSaleWhereInt!=0;
         picValid = mCatchSalePicAns.equals("true") || mCatchSalePicAns.equals("false");
 
-        //TODO:
-        setTitle("Question 5/X");
+        setTitle("Question 5/8");
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,6 +232,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_SALE_PIC_ANS, mCatchSalePicAns);
                 startActivity(NextIntent);
+                finish();
             }
         });
     }
@@ -255,7 +254,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                     mCatchSalePriceInt = 0;
                     mCatchSaleWhere = "NA";
                     mCatchSaleWhereInt = 0;
-                    mCatchSalePicAns = "NA";
+                    mCatchSalePicAns = "false";
                 }
                 break;
             case R.id.activity_data_input_catch_sale_question_yes:

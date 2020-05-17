@@ -1,8 +1,10 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,6 +23,9 @@ import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputGear extends AppCompatActivity {
+
+    private ContentResolver mCr;
+    private Cursor mTrackCursor;
 
     private EditText mInputOtherDetail;
     private String mGear;
@@ -44,30 +49,46 @@ public class dataInputGear extends AppCompatActivity {
         if(savedInstanceState != null){
             mGear = savedInstanceState.getString(BUNDLE_STATE_GEAR);
             mOtherDetail = savedInstanceState.getString(BUNDLE_STATE_OTHER_DETAIL);
-            if(mGear.contains("other")){
-                mInputOtherDetail.setVisibility(View.VISIBLE);
-                mInputOtherDetail.setText(mOtherDetail);
-                mInputOtherDetail.setSelection(mOtherDetail.length());
-            }else{
-                mInputOtherDetail.setVisibility(View.INVISIBLE);
-            }
+
             mButton.setEnabled(savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON));
 
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
-
         }else{
-            mGear="empty";
-            mOtherDetail = "";
-            mInputOtherDetail.setVisibility(View.INVISIBLE);
-            mButton.setEnabled(false);
-
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
+
+            mCr = getContentResolver();
+            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK,trackId),null,null,null,null);
+            mTrackCursor.moveToPosition(0);
+            String gear = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_GEAR));
+            String otherDetail = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_GEAR_OTHER_DETAILS));
+            mTrackCursor.close();
+
+            if(gear!=null){
+                mGear = gear;
+                checkResponses(mGear);
+                mOtherDetail = otherDetail;
+                if(mGear.contains("other") && mOtherDetail.equals(""))
+                    mButton.setEnabled(false);
+                else
+                    mButton.setEnabled(true);
+            }else{
+                mGear="empty";
+                mOtherDetail = "";
+                mButton.setEnabled(false);
+            }
         }
 
-        //TODO:
-        setTitle("Question 1/X");
+        if(mGear.contains("other")){
+            mInputOtherDetail.setVisibility(View.VISIBLE);
+            mInputOtherDetail.setText(mOtherDetail);
+            mInputOtherDetail.setSelection(mOtherDetail.length());
+        }else{
+            mInputOtherDetail.setVisibility(View.INVISIBLE);
+        }
+
+        setTitle("Question 1/8");
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,8 +114,40 @@ public class dataInputGear extends AppCompatActivity {
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
+                finish();
             }
         });
+    }
+
+    private void checkResponses(String gear) {
+        if(gear.contains("spear")){
+            CheckBox mSpearCb = (CheckBox) findViewById(R.id.activity_data_input_gear_fusil);
+            mSpearCb.setChecked(true);
+        }
+        if(gear.contains("net")){
+            CheckBox mNetCb = (CheckBox) findViewById(R.id.activity_data_input_gear_filet);
+            mNetCb.setChecked(true);
+        }
+        if(gear.contains("line")){
+            CheckBox mLineCb = (CheckBox) findViewById(R.id.activity_data_input_gear_ligne);
+            mLineCb.setChecked(true);
+        }
+        if(gear.contains("invertebrate")){
+            CheckBox mInvCb = (CheckBox) findViewById(R.id.activity_data_input_gear_rama);
+            mInvCb.setChecked(true);
+        }
+        if(gear.contains("cage")){
+            CheckBox mCageCb = (CheckBox) findViewById(R.id.activity_data_input_gear_cage);
+            mCageCb.setChecked(true);
+        }
+        if(gear.contains("harpoon")){
+            CheckBox mHarpCb = (CheckBox) findViewById(R.id.activity_data_input_gear_harpon);
+            mHarpCb.setChecked(true);
+        }
+        if(gear.contains("other")){
+            CheckBox mOtherCb = (CheckBox) findViewById(R.id.activity_data_input_gear_autre);
+            mOtherCb.setChecked(true);
+        }
     }
 
     @Override
@@ -117,7 +170,6 @@ public class dataInputGear extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.activity_data_input_gear_fusil:
                 if (checked){
-
                     if(!mGear.equals("empty"))
                        mGear+=" & spear";
                     else

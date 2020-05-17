@@ -65,8 +65,7 @@ public class dataInputWind extends AppCompatActivity {
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
         }
 
-        //TODO:
-        setTitle("Question 4/X");
+        setTitle("Question 4/8");
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +87,7 @@ public class dataInputWind extends AppCompatActivity {
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
+                finish();
             }
         });
     }

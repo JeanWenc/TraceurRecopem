@@ -1,8 +1,10 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +22,9 @@ import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputBoat extends AppCompatActivity {
+
+    private ContentResolver mCr;
+    private Cursor mTrackCursor;
 
     public String mBoat;
     public String mBoatOwner;
@@ -58,8 +63,20 @@ public class dataInputBoat extends AppCompatActivity {
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
 
         }else{
-            String boat = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT,getApplicationContext());
-            String boatOwner = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT_OWNER,getApplicationContext());
+            trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+            mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
+
+            mCr = getContentResolver();
+            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK,trackId),null,null,null,null);
+            mTrackCursor.moveToPosition(0);
+            String boat = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_BOAT));
+            String boatOwner = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_BOAT_OWNER));
+            mTrackCursor.close();
+
+            if(boat==null){
+                boat = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT,getApplicationContext());
+                boatOwner = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT_OWNER,getApplicationContext());
+            }
 
             if(null != boat){
                 mBoat = boat;
@@ -68,11 +85,8 @@ public class dataInputBoat extends AppCompatActivity {
                 mBoat = "empty";
                 mBoatOwner = "NA";
             }
-            trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
-            mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
         }
 
-        //if(true){
         if(mBoat.equals("empty")){
             mButton.setEnabled(false);
         }else if(mBoat.equals("motorboat") || mBoat.equals("outrigger")){
@@ -88,8 +102,7 @@ public class dataInputBoat extends AppCompatActivity {
             mButton.setEnabled(true);
         }
 
-        //TODO:
-        setTitle("Question 2/X");
+        setTitle("Question 2/8");
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +125,7 @@ public class dataInputBoat extends AppCompatActivity {
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
+                finish();
             }
         });
     }

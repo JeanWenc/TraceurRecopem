@@ -163,8 +163,6 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
         FragmentManager fm = getSupportFragmentManager();
         FishPickerDialog alertDialog = FishPickerDialog.newInstance(mSelImage,mFishFamilyList.get(position),mFishTahitianList.get(position),(long) trackId,mCatchDestination);
         alertDialog.show(fm, "fragment_alert");
-
-        Toast.makeText(this, Integer.toString(position), Toast.LENGTH_SHORT).show();
     }
 
     private void populateFishCountList() {
@@ -200,8 +198,7 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
             }
         }
 
-        String textToDisplay = Boolean.toString(mCursorFishCaught.moveToFirst());
-        Toast.makeText(this, Integer.toString(mCursorFishCaught.getCount()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Query count = "+Integer.toString(mCursorFishCaught.getCount()), Toast.LENGTH_SHORT).show();
 
         mCursorFishCaught.close();
     }
@@ -235,8 +232,6 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
 
     public void setMyCaughtFish(String fishTahitian, int catchN, String catchType) {
 
-        //Make sure in the dialog to check whether user input of Tahitian name doesn't already exist in cursor.
-        // If it does already exist only update cursor
         if(mSelImage == 0){
             int checkIndex = mFishTahitianList.indexOf(fishTahitian);
             if(checkIndex ==-1){
@@ -247,7 +242,6 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
                 setFishAdapter();
             }
 
-           //int i = mFishFileList.length;
            mOtherCaughtFish="";
            String otherCaughtFish="";
             for(int i = mFishFileList.length;i < mFishCountList.size();i++){

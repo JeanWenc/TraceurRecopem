@@ -178,6 +178,12 @@
     <string name="data_input_catch_order_question">As-tu VENDU du poisson par\nCOMMANDES ?"</string>
     <string name="data_input_catch_order_question_pic_if_sale_pic">"Les poissons vendus par commandes sont-ils visibles sur tes photos ?"</string>
 
+    <!--DATA INPUT CATCH GIVE-->
+    <string name="data_input_catch_give_question">As-tu DONNE du poisson ?"</string>
+    <string name="data_input_catch_give_question_where">"Donné où :"</string>
+
+    <!--DATA INPUT CATCH CONS-->
+    <string name="data_input_catch_cons_question">As-tu GARDE du poisson pour toi ?"</string>
 
     <!--DATA INPUT FISH CAUGHT-->
     <string name="data_input_fish_caught_intro">Clique sur les poissons que tu as pêchés pour indiquer leur nombre</string>

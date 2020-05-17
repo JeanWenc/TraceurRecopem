@@ -42,7 +42,6 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
     private String mCatchOrderDetails;
     private String mCatchOrderPicAns;
 
-    //TODO:Keep Sale
     private String mCatchSalePicAns;
 
     private String mCatchDestination;
@@ -99,7 +98,6 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         mCatchOrderInputWhere = (Spinner) findViewById(R.id.activity_data_input_catch_order_input_where);
         mCatchOrderInputDetails = (EditText) findViewById(R.id.activity_data_input_catch_order_input_details);
 
-        //TODO: Modify
         mCatchDestination = "order";
 
         mCatchOrderInputN.setMinValue(0);
@@ -120,7 +118,6 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         mCatchOrderInputType.setDisplayedValues(type);
         mCatchOrderInputType.setOnValueChangedListener(new dataInputCatchOrder.typePicker());
 
-        //TODO:Keep sale
         prices = this.getResources().getStringArray(R.array.data_input_catch_sale_price);
         ArrayAdapter<CharSequence> priceAdapter = ArrayAdapter.createFromResource(this, R.array.data_input_catch_sale_price,
                 android.R.layout.simple_spinner_item);
@@ -130,7 +127,6 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         mCatchOrderInputPrice.setAdapter(priceAdapter);
         mCatchOrderInputPrice.setOnItemSelectedListener(this);
 
-        //TODO:Keep sale
         places = this.getResources().getStringArray(R.array.data_input_catch_sale_where);
         ArrayAdapter<CharSequence> whereAdapter = ArrayAdapter.createFromResource(this,
                 R.array.data_input_catch_sale_where, android.R.layout.simple_spinner_item);
@@ -154,7 +150,6 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
             mCatchOrderPicAns = savedInstanceState.getString(recopemValues.BUNDLE_STATE_PIC_ANS);
             mCatchOrderDetails = savedInstanceState.getString(recopemValues.BUNDLE_STATE_DETAILS);
 
-            //TODO:Keep sale
             mCatchSalePicAns = savedInstanceState.getString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS);
 
             mCatchOrderInputAnsY.setSelected(mCatchOrderAns.equals("true"));
@@ -195,7 +190,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
             }
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
-            //TODO: Keep below with Sale
+
             mCatchSalePicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS);
         }
 
@@ -207,7 +202,6 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
             mCatchOrderPicFrame.setVisibility(View.INVISIBLE);
         }
 
-        //TODO: Keep below with Sale
         if(mCatchSalePicAns.equals("true")) mPicOrderQuestion.setText(R.string.data_input_catch_order_question_pic_if_sale_pic);
 
         nValid = mCatchOrderN!=0;
@@ -216,8 +210,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         whereValid = mCatchOrderWhereInt!=0;
         picValid = mCatchOrderPicAns.equals("true") || mCatchOrderPicAns.equals("false");
 
-        //TODO: Modify question number
-        setTitle("Question 6/X");
+        setTitle("Question 6/8");
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,18 +235,18 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
                         "Price = " + mCatchOrderPrice +"\n" +
                         "Sold in = "+  mCatchOrderWhere +"\n" +
                         "Details = " + mCatchOrderDetails +"\n" +
-                        "Pictures = " + mCatchSalePicAns;
+                        "Pictures = " + mCatchOrderPicAns;
 
                 Toast.makeText(dataInputCatchOrder.this, textToDisplay, Toast.LENGTH_LONG).show();
 
-                Intent NextIntent = new Intent(dataInputCatchOrder.this, TrackListActivity.class);
+                Intent NextIntent = new Intent(dataInputCatchOrder.this, dataInputCatchGive.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-                //TODO: Keep sale
+
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_SALE_PIC_ANS, mCatchSalePicAns);
-                //TODO: Keep order
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
                 startActivity(NextIntent);
+                finish();
             }
         });
     }
@@ -275,7 +268,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
                     mCatchOrderPriceInt = 0;
                     mCatchOrderWhere = "NA";
                     mCatchOrderWhereInt = 0;
-                    mCatchOrderPicAns = "NA";
+                    mCatchOrderPicAns = "false";
                 }
                 break;
             case R.id.activity_data_input_catch_order_question_yes:
@@ -396,7 +389,6 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
 
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
-        //TODO:Keep Sale
         outState.putString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS,mCatchSalePicAns);
         super.onSaveInstanceState(outState);
     }

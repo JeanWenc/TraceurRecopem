@@ -1,9 +1,5 @@
 package jean.wencelius.traceurrecopem;
 
-import android.os.Environment;
-
-import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
-
 /**
  * Created by Jean Wencélius on 09/04/2020.
  */

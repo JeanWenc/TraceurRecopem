@@ -2,19 +2,10 @@ package jean.wencelius.traceurrecopem.utils;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -23,22 +14,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Arrays;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.dataInput.dataInputCatchSale;
 import jean.wencelius.traceurrecopem.controller.dataInput.dataInputFishCaught;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FishPickerDialog#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FishPickerDialog extends DialogFragment implements NumberPicker.OnValueChangeListener {
 
     private static final String ARG_FISH_FAMILY = "fishFamily";
@@ -184,7 +169,6 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
                 if(mSelPic == 0){
                     mFishTahitian = mInputOtherFish.getText().toString();
                 }
-                Toast.makeText(getActivity(), mFishTahitian, Toast.LENGTH_SHORT).show();
 
                 selectionIn = TrackContentProvider.Schema.COL_CATCH_DESTINATION + " = ? AND " + TrackContentProvider.Schema.COL_FISH_TAHITIAN + " = ?";
                 selectionArgsList = new String [] {mCatchDestination, mFishTahitian};
@@ -195,7 +179,6 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
                 String catchType = "";
 
                 boolean isCursorNotEmpty = mCursorFishCaught.moveToFirst();
-                Toast.makeText(getActivity(), "Cursor not empty = " + Boolean.toString(isCursorNotEmpty), Toast.LENGTH_SHORT).show();
 
                 if(isCursorNotEmpty){
                     catchN = mCursorFishCaught.getInt(mCursorFishCaught.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_N));
