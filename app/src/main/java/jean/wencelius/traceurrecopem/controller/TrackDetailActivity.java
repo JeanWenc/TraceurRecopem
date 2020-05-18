@@ -86,6 +86,11 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     private static final int REQUEST_TAKE_PHOTO = 0;
     public static final int REQUEST_BROWSE_PHOTO = 1;
 
+    private static final String PHOTO_PROVENANCE_CAMERA = "Camera";
+    private static final String PHOTO_PROVENANCE_GALLERY = "Gallery";
+
+    public String mTextToShowInputImageDialog;
+
     public static final String PREF_KEY_FISHER_ID = recopemValues.PREF_KEY_FISHER_ID;
 
     @Override
@@ -206,7 +211,9 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
     @Override
     public void onImageClick(int position) {
-        if(position>0){
+        if(position==0) {
+            getNewPictures(REQUEST_BROWSE_PHOTO);
+        }else{
             Cursor c = mCursorPictures;
             c.moveToPosition(position);
 
@@ -231,9 +238,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        //TODO: Here export should be visible when mDataAdded == TRUE AND mPicEmpty==FALSE & mExported == FALSE
-        menu.findItem(R.id.trackdetail_menu_export).setVisible(!mExported);
-        menu.findItem(R.id.trackdetail_menu_add_data).setVisible(!mDataAdded);
+        menu.findItem(R.id.trackdetail_menu_export).setVisible(mDataAdded && !mPicEmpty);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -250,8 +255,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                 break;
 
             case R.id.trackdetail_menu_camera:
-                getNewPicturesDialog();
-                //TODO: Action should happen on click of placeholder. Placeholder in gallery as last or first picture all the time.
+                getNewPictures(REQUEST_TAKE_PHOTO);
                 break;
 
             case R.id.trackdetail_menu_export:
@@ -263,35 +267,12 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                 ContentValues valuesExp = new ContentValues();
                 valuesExp.put(TrackContentProvider.Schema.COL_EXPORTED,"true");
                 getContentResolver().update(trackUri, valuesExp, null, null);
+
+                Toast.makeText(this, R.string.activity_track_detail_export_msg, Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-
-   private void getNewPicturesDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(getResources().getString(R.string.activity_track_detail_dialog_import_pic_title))
-                .setIcon(android.R.drawable.ic_menu_camera)
-                .setMessage(getResources().getString(R.string.activity_track_detail_dialog_import_pic_content))
-                .setCancelable(true).setPositiveButton(getResources().getString(R.string.activity_track_detail_dialog_import_pic_camera), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                getNewPictures(REQUEST_TAKE_PHOTO);
-            }
-        }).setNegativeButton(getResources().getString(R.string.activity_track_detail_dialog_import_pic_browse), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                getNewPictures(REQUEST_BROWSE_PHOTO);
-            }
-        }).setNeutralButton(getResources().getString(R.string.activity_track_detail_dialog_import_pic_no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                dialog.cancel();
-            }
-        }).create().show();
-    }
-
 
     private void getNewPictures(int requestType) {
         //From OsmTracker
@@ -345,7 +326,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                     picVal.put(TrackContentProvider.Schema.COL_PIC_PATH, imageFile.toString());
                     getContentResolver().insert(Uri.withAppendedPath(picUri, TrackContentProvider.Schema.TBL_PICTURE + "s"), picVal);
                     mNewPicAdded=true;
-                    mPicEmpty = (false);
+                    mPicEmpty = false;
                     trackDataPic.put(TrackContentProvider.Schema.COL_PIC_ADDED,"true");
                     getContentResolver().update(trackUri, trackDataPic, null, null);
                 }
@@ -382,7 +363,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                         picVal.put(TrackContentProvider.Schema.COL_PIC_PATH, imageFile.toString());
                         getContentResolver().insert(Uri.withAppendedPath(picUri, TrackContentProvider.Schema.TBL_PICTURE + "s"), picVal);
                         mNewPicAdded=true;
-                        mPicEmpty = (false);
+                        mPicEmpty = false;
                         trackDataPic.put(TrackContentProvider.Schema.COL_PIC_ADDED,"true");
                         getContentResolver().update(trackUri, trackDataPic, null, null);
                     }

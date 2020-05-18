@@ -49,7 +49,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
         String imagePath = imageUrls.get(i).getImageUrl();
         Uri imageUri = null;
-        if(!imagePath.equals("android.resource://jean.wencelius.traceurrecopem/drawable/add_image")){
+        if(!imagePath.equals("android.resource://jean.wencelius.traceurrecopem/drawable/add_picture")){
             File file = new File(imagePath);
             imageUri = Uri.fromFile(file);
         }else{

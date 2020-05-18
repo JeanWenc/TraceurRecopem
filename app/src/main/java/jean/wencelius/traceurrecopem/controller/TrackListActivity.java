@@ -5,7 +5,9 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Image;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
@@ -19,7 +21,7 @@ import jean.wencelius.traceurrecopem.db.TrackListAdapter;
 public class TrackListActivity extends ListActivity {
 
     private ImageButton mBtnAddManualTrack;
-    private ImageButton mBtnExportAllTracks;
+    private ImageButton mBtnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,19 +31,18 @@ public class TrackListActivity extends ListActivity {
         getListView().setEmptyView(findViewById(R.id.activity_tracklist_empty));
 
         mBtnAddManualTrack = (ImageButton) findViewById(R.id.activity_tracklist_add_track_manual);
-        mBtnExportAllTracks = (ImageButton) findViewById(R.id.activity_tracklist_export_all_tracks);
-
+        mBtnBack = (ImageButton)  findViewById(R.id.activity_tracklist_home);
         mBtnAddManualTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createManualTrack();
             }
         });
-
-        mBtnExportAllTracks.setOnClickListener(new View.OnClickListener() {
+        mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                exportAll();
+                Intent MenuActivityIntent = new Intent(TrackListActivity.this, MenuActivity.class);
+                startActivity(MenuActivityIntent);
             }
         });
     }
@@ -105,7 +106,5 @@ public class TrackListActivity extends ListActivity {
     }
 
     private void createManualTrack() {
-    }
-    private void exportAll() {
     }
 }

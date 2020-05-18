@@ -56,6 +56,8 @@ public class TrackContentProvider extends ContentProvider {
             Schema.COL_CREW_ALONE,
             Schema.COL_CREW_N,
             Schema.COL_CREW_WHO,
+            Schema.COL_WIND_FISHER,
+            Schema.COL_CURRENT_FISHER,
             Schema.COL_CATCH_SALE,
             Schema.COL_CATCH_SALE_N,
             Schema.COL_CATCH_SALE_TYPE,
@@ -570,33 +572,33 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_CREW_ALONE ="crew_alone";//DataInputCrew TBL_TRACK
         public static final String COL_CREW_N ="crew_N";//DataInputCrew TBL_TRACK
         public static final String COL_CREW_WHO ="crew_Who";//DataInputCrew TBL_TRACK
-        public static final String COL_WIND_FISHER = "Wind_est_fisher";
-        public static final String COL_CURRENT_FISHER = "Current_est_fisher";
-        public static final String COL_CATCH_SALE = "Catch_sale";
-        public static final String COL_CATCH_SALE_N = "Catch_sale_N";
-        public static final String COL_CATCH_SALE_TYPE = "Catch_sale_type";
-        public static final String COL_CATCH_SALE_PRICE = "Catch_sale_price";
-        public static final String COL_CATCH_SALE_WHERE= "Catch_sale_where";
-        public static final String COL_CATCH_SALE_DETAILS = "Catch_sale_details";
-        public static final String COL_CATCH_SALE_PIC = "Catch_sale_pic";
-        public static final String COL_CATCH_ORDER ="Catch_order";
-        public static final String COL_CATCH_ORDER_N = "Catch_order_N";
-        public static final String COL_CATCH_ORDER_TYPE = "Catch_order_type";
-        public static final String COL_CATCH_ORDER_PRICE = "Catch_order_price";
-        public static final String COL_CATCH_ORDER_WHERE= "Catch_order_where";
-        public static final String COL_CATCH_ORDER_DETAILS = "Catch_order_details";
-        public static final String COL_CATCH_ORDER_PIC = "Catch_order_pic";
-        public static final String COL_CATCH_CONS = "Catch_cons";
-        public static final String COL_CATCH_CONS_N = "Catch_cons_N";
-        public static final String COL_CATCH_CONS_TYPE = "Catch_cons_type";
-        public static final String COL_CATCH_CONS_DETAILS = "Catch_cons_details";
-        public static final String COL_CATCH_CONS_PIC = "Catch_cons_pic";
-        public static final String COL_CATCH_GIVE = "Catch_give";
-        public static final String COL_CATCH_GIVE_N = "Catch_give_N";
-        public static final String COL_CATCH_GIVE_TYPE = "Catch_give_type";
-        public static final String COL_CATCH_GIVE_WHERE= "Catch_give_where";
-        public static final String COL_CATCH_GIVE_DETAILS = "Catch_give_details";
-        public static final String COL_CATCH_GIVE_PIC = "Catch_give_pic";
+        public static final String COL_WIND_FISHER = "Wind_est_fisher";//DataInputWind TBL_TRACK
+        public static final String COL_CURRENT_FISHER = "Current_est_fisher";//DataInputWind TBL_TRACK
+        public static final String COL_CATCH_SALE = "Catch_sale";//DataInputCatchSale TBL_TRACK
+        public static final String COL_CATCH_SALE_N = "Catch_sale_N";//DataInputCatchSale TBL_TRACK
+        public static final String COL_CATCH_SALE_TYPE = "Catch_sale_type";//DataInputCatchSale TBL_TRACK
+        public static final String COL_CATCH_SALE_PRICE = "Catch_sale_price";//DataInputCatchSale TBL_TRACK
+        public static final String COL_CATCH_SALE_WHERE= "Catch_sale_where";//DataInputCatchSale TBL_TRACK
+        public static final String COL_CATCH_SALE_DETAILS = "Catch_sale_details";//DataInputCatchSale TBL_TRACK
+        public static final String COL_CATCH_SALE_PIC = "Catch_sale_pic";//DataInputCatchSale TBL_TRACK
+        public static final String COL_CATCH_ORDER ="Catch_order";//DataInputCatchOrder TBL_TRACK
+        public static final String COL_CATCH_ORDER_N = "Catch_order_N";//DataInputCatchOrder TBL_TRACK
+        public static final String COL_CATCH_ORDER_TYPE = "Catch_order_type";//DataInputCatchOrder TBL_TRACK
+        public static final String COL_CATCH_ORDER_PRICE = "Catch_order_price";//DataInputCatchOrder TBL_TRACK
+        public static final String COL_CATCH_ORDER_WHERE= "Catch_order_where";//DataInputCatchOrder TBL_TRACK
+        public static final String COL_CATCH_ORDER_DETAILS = "Catch_order_details";//DataInputCatchOrder TBL_TRACK
+        public static final String COL_CATCH_ORDER_PIC = "Catch_order_pic";//DataInputCatchOrder TBL_TRACK
+        public static final String COL_CATCH_CONS = "Catch_cons";//DataInputCatchCons TBL_TRACK
+        public static final String COL_CATCH_CONS_N = "Catch_cons_N";//DataInputCatchCons TBL_TRACK
+        public static final String COL_CATCH_CONS_TYPE = "Catch_cons_type";//DataInputCatchCons TBL_TRACK
+        public static final String COL_CATCH_CONS_DETAILS = "Catch_cons_details";//DataInputCatchCons TBL_TRACK
+        public static final String COL_CATCH_CONS_PIC = "Catch_cons_pic";//DataInputCatchCons TBL_TRACK
+        public static final String COL_CATCH_GIVE = "Catch_give";//DataInputCatchGive TBL_TRACK
+        public static final String COL_CATCH_GIVE_N = "Catch_give_N";//DataInputCatchGive TBL_TRACK
+        public static final String COL_CATCH_GIVE_TYPE = "Catch_give_type";//DataInputCatchGive TBL_TRACK
+        public static final String COL_CATCH_GIVE_WHERE= "Catch_give_where";//DataInputCatchGive TBL_TRACK
+        public static final String COL_CATCH_GIVE_DETAILS = "Catch_give_details";//DataInputCatchGive TBL_TRACK
+        public static final String COL_CATCH_GIVE_PIC = "Catch_give_pic";//DataInputCatchGive TBL_TRACK
         public static final String COL_PIC_NB = "Picture_nb";
         public static final String COL_PIC_SCALE = "Picture_scale";
         public static final String COL_PIC_COMMENTS = "Picture_comments";

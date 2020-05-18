@@ -3,12 +3,15 @@ package jean.wencelius.traceurrecopem.controller.dataInput;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +33,9 @@ import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputCatchCons extends AppCompatActivity{
+
+    private ContentResolver mCr;
+    private Cursor mTrackCursor;
 
     private String mCatchConsAns;
     private int mCatchConsN;
@@ -72,6 +78,9 @@ public class dataInputCatchCons extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_input_catch_cons);
 
+        //Prevent keyboard from showing up on activity start
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         mButton = (Button) findViewById(R.id.activity_data_input_catch_cons_next_btn);
 
         mPicConsQuestion = (TextView) findViewById(R.id.activity_data_input_catch_cons_question_pic);
@@ -109,8 +118,6 @@ public class dataInputCatchCons extends AppCompatActivity{
         mCatchConsInputType.setOnValueChangedListener(new dataInputCatchCons.typePicker());
 
         if(savedInstanceState != null){
-            mButton.setEnabled(savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON));
-
             mCatchConsAns = savedInstanceState.getString(recopemValues.BUNDLE_STATE_ANS);
             mCatchConsN = savedInstanceState.getInt(recopemValues.BUNDLE_STATE_CATCH_N);
             mCatchConsTypeInt = savedInstanceState.getInt(recopemValues.BUNDLE_STATE_TYPE_INT);
@@ -122,35 +129,60 @@ public class dataInputCatchCons extends AppCompatActivity{
             mCatchOrderPicAns = savedInstanceState.getString(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS);
             mCatchGivePicAns = savedInstanceState.getString(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS);
 
-            mCatchConsInputAnsY.setSelected(mCatchConsAns.equals("true"));
-            mCatchConsInputAnsN.setSelected(mCatchConsAns.equals("false"));
-            mCatchConsInputPicAnsY.setSelected(mCatchConsPicAns.equals("true"));
-            mCatchConsInputPicAnsN.setSelected(mCatchConsPicAns.equals("false"));
-
-            mCatchConsInputN.setValue(mCatchConsN);
-            mCatchConsInputType.setValue(mCatchConsTypeInt);
-            mCatchConsInputDetails.setText(mCatchConsDetails);
-            mCatchConsInputDetails.setSelection(mCatchConsDetails.length());
-
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
 
         }else{
-            mButton.setEnabled(false);
-
-            mCatchConsAns = "empty";
-            mCatchConsN = 0;
-            mCatchConsType = "NA";
-            mCatchConsTypeInt = 0;
-            mCatchConsPicAns = "NA";
-            mCatchConsDetails = "NA";
-
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
 
             mCatchSalePicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS);
             mCatchOrderPicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS);
             mCatchGivePicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS);
+
+            mCr = getContentResolver();
+            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
+            mTrackCursor.moveToPosition(0);
+
+            String catchConsAns = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS));
+            int catchConsN = mTrackCursor.getInt(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS_N));
+            String catchConsType = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS_TYPE));
+            String catchConsDetails = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS_DETAILS));
+            String catchConsPicAns = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS_PIC));
+
+            mTrackCursor.close();
+            if(catchConsAns!=null){
+                mCatchConsAns = catchConsAns;
+                mCatchConsN = catchConsN;
+                mCatchConsType = catchConsType;
+                if (catchConsType!=null){
+                    mCatchConsTypeInt = Arrays.asList(type).indexOf(catchConsType);
+                }else{
+                    mCatchConsTypeInt = 0;
+                }
+                mCatchConsPicAns = catchConsPicAns;
+                mCatchConsDetails = catchConsDetails;
+            }else {
+                mCatchConsAns = "empty";
+                mCatchConsN = 0;
+                mCatchConsType = type[0];
+                mCatchConsTypeInt = 0;
+                mCatchConsPicAns = "NA";
+                mCatchConsDetails = "NA";
+            }
+        }
+
+        mCatchConsInputAnsY.setChecked(mCatchConsAns.equals("true"));
+        mCatchConsInputAnsN.setChecked(mCatchConsAns.equals("false"));
+        mCatchConsInputPicAnsY.setChecked(mCatchConsPicAns.equals("true"));
+        mCatchConsInputPicAnsN.setChecked(mCatchConsPicAns.equals("false"));
+
+        mCatchConsInputN.setValue(mCatchConsN);
+        mCatchConsInputType.setValue(mCatchConsTypeInt);
+
+        if(!mCatchConsDetails.equals("NA")){
+            mCatchConsInputDetails.setText(mCatchConsDetails);
+            mCatchConsInputDetails.setSelection(mCatchConsDetails.length());
         }
 
         if(mCatchConsAns.equals("true")){
@@ -161,11 +193,13 @@ public class dataInputCatchCons extends AppCompatActivity{
             mCatchConsPicFrame.setVisibility(View.INVISIBLE);
         }
 
-        if(mCatchSalePicAns.equals("true") || mCatchOrderPicAns.equals("true") || mCatchGivePicAns.equals("true")) mPicConsQuestion.setText(R.string.data_input_catch_order_question_pic_if_sale_pic);
+        if(mCatchSalePicAns.equals("true") || mCatchOrderPicAns.equals("true") || mCatchGivePicAns.equals("true")) mPicConsQuestion.setText(R.string.data_input_catch_cons_question_pic_if_sale_pic);
 
         nValid = mCatchConsN!=0;
         typeValid = mCatchConsTypeInt!=0;
         picValid = mCatchConsPicAns.equals("true") || mCatchConsPicAns.equals("false");
+
+        mButton.setEnabled(nValid && typeValid && picValid);
 
         setTitle("Question 8/8");
 
@@ -176,14 +210,15 @@ public class dataInputCatchCons extends AppCompatActivity{
 
                 Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
 
-                ContentValues catchSaleValues = new ContentValues();
-                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_CONS,mCatchConsAns);
-                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_N,mCatchConsN);
-                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_TYPE,mCatchConsType);
-                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_DETAILS,mCatchConsDetails);
-                catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_PIC,mCatchConsPicAns);
+                ContentValues catchConsValues = new ContentValues();
+                catchConsValues.put(TrackContentProvider.Schema.COL_CATCH_CONS,mCatchConsAns);
+                catchConsValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_N,mCatchConsN);
+                catchConsValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_TYPE,mCatchConsType);
+                catchConsValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_DETAILS,mCatchConsDetails);
+                catchConsValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_PIC,mCatchConsPicAns);
+                catchConsValues.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"true");
 
-                getContentResolver().update(trackUri, catchSaleValues, null, null);
+                getContentResolver().update(trackUri, catchConsValues, null, null);
 
                 String textToDisplay ="Sold Cons Catch = " + mCatchConsAns + "\n" +
                         "Sold N = " +  mCatchConsN + " - " + mCatchConsType +"\n" +
@@ -200,6 +235,13 @@ public class dataInputCatchCons extends AppCompatActivity{
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS,mCatchGivePicAns);
                 startActivity(NextIntent);
+                dataInputGear.getInstance().finish();
+                dataInputBoat.getInstance().finish();
+                dataInputCrew.getInstance().finish();
+                dataInputWind.getInstance().finish();
+                dataInputCatchSale.getInstance().finish();
+                dataInputCatchOrder.getInstance().finish();
+                dataInputCatchGive.getInstance().finish();
                 finish();
             }
         });
@@ -216,7 +258,7 @@ public class dataInputCatchCons extends AppCompatActivity{
                     mCatchConsQuantityFrame.setVisibility(View.INVISIBLE);
                     mCatchConsPicFrame.setVisibility(View.INVISIBLE);
                     mCatchConsN = 0;
-                    mCatchConsType = "NA";
+                    mCatchConsType = type[0];
                     mCatchConsTypeInt = 0;
                     mCatchConsPicAns = "false";
                 }
@@ -233,10 +275,7 @@ public class dataInputCatchCons extends AppCompatActivity{
                 if (checked) {
                     mCatchConsPicAns = "false";
                     picValid=true;
-                    if(nValid && typeValid && picValid)
-                        mButton.setEnabled(true);
-                    else
-                        mButton.setEnabled(false);
+                    mButton.setEnabled(nValid && typeValid && picValid);
                     LaunchFishCaughtIntent();
                 }
                 break;
@@ -244,10 +283,7 @@ public class dataInputCatchCons extends AppCompatActivity{
                 if (checked) {
                     mCatchConsPicAns = "true";
                     picValid=true;
-                    if(nValid && typeValid && picValid)
-                        mButton.setEnabled(true);
-                    else
-                        mButton.setEnabled(false);
+                    mButton.setEnabled(nValid && typeValid && picValid);
 
                     if(mCatchSalePicAns.equals("true") || mCatchOrderPicAns.equals("true") || mCatchGivePicAns.equals("true")) LaunchFishCaughtIntent();
                 }
@@ -259,15 +295,9 @@ public class dataInputCatchCons extends AppCompatActivity{
         @Override
         public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
             mCatchConsN = newVal;
-            if(mCatchConsN==0)
-                nValid = false;
-            else
-                nValid = true;
+            nValid = mCatchConsN!=0;
 
-            if(nValid && typeValid && picValid)
-                mButton.setEnabled(true);
-            else
-                mButton.setEnabled(false);
+            mButton.setEnabled(nValid && typeValid && picValid);
         }
     }
 
@@ -276,15 +306,9 @@ public class dataInputCatchCons extends AppCompatActivity{
         public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
             mCatchConsType = type[newVal];
             mCatchConsTypeInt = newVal;
-            if(mCatchConsType.equals("Choisi"))
-                typeValid = false;
-            else
-                typeValid = true;
+            typeValid = !mCatchConsType.equals("Choisi");
 
-            if(nValid && typeValid && picValid)
-                mButton.setEnabled(true);
-            else
-                mButton.setEnabled(false);
+            mButton.setEnabled(nValid && typeValid && picValid);
         }
     }
 
@@ -295,7 +319,6 @@ public class dataInputCatchCons extends AppCompatActivity{
         outState.putInt(recopemValues.BUNDLE_STATE_TYPE_INT,mCatchConsTypeInt);
         outState.putString(recopemValues.BUNDLE_STATE_DETAILS,mCatchConsInputDetails.getText().toString());
         outState.putString(recopemValues.BUNDLE_STATE_PIC_ANS,mCatchConsPicAns);
-        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,mButton.isEnabled());
 
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);

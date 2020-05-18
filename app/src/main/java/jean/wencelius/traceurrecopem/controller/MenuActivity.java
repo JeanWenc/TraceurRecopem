@@ -165,11 +165,7 @@ public class MenuActivity extends AppCompatActivity {
 
         long trackId = ContentUris.parseId(trackUri);
 
-        //Create image entry
-        //Default add picture image
-        //Uri defImage = Uri.parse("android.resource://jean.wencelius.traceurrecopem/drawable/add_image");
-
-        String defImage = "android.resource://jean.wencelius.traceurrecopem/drawable/add_image";
+        String defImage = "android.resource://jean.wencelius.traceurrecopem/drawable/add_picture";
 
         ContentValues picVal = new ContentValues();
         picVal.put(TrackContentProvider.Schema.COL_TRACK_ID,trackId);

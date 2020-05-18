@@ -81,7 +81,9 @@ public class TrackListAdapter extends CursorAdapter {
 
         if(mDataAdded.equals("false") && mPicAdded.equals("none")){
             vMainLayout.setBackgroundColor(Color.parseColor("#F21A00"));
-        }else if(mDataAdded.equals("false") || !mPicAdded.equals("none")){
+        }else if(mDataAdded.equals("true") && mPicAdded.equals("none")){
+            vMainLayout.setBackgroundColor(Color.parseColor("#E1AF00"));
+        }else if(mDataAdded.equals("false") && !mPicAdded.equals("none")){
             vMainLayout.setBackgroundColor(Color.parseColor("#E1AF00"));
         }else{
             vMainLayout.setBackgroundColor(Color.parseColor("#3B9AB2"));

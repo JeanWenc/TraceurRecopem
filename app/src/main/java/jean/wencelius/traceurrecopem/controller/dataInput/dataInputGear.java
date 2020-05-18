@@ -1,5 +1,6 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -23,6 +25,8 @@ import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputGear extends AppCompatActivity {
+
+    static dataInputGear gearAct;
 
     private ContentResolver mCr;
     private Cursor mTrackCursor;
@@ -42,6 +46,11 @@ public class dataInputGear extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_input_gear);
+
+        //Prevent keyboard from showing up on activity start
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        gearAct = this;
 
         mButton = (Button) findViewById(R.id.activity_data_input_gear_next_btn);
         mInputOtherDetail = (EditText) findViewById(R.id.activity_data_input_gear_autre_detail);
@@ -114,7 +123,6 @@ public class dataInputGear extends AppCompatActivity {
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
-                finish();
             }
         });
     }
@@ -278,5 +286,9 @@ public class dataInputGear extends AppCompatActivity {
         }else{
             mGear="empty";
         }
+    }
+
+    public static dataInputGear getInstance(){
+        return   gearAct;
     }
 }

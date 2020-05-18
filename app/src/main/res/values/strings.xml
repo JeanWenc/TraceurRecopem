@@ -30,6 +30,7 @@
     <string name="menu_exportall">Exporter tous les tracés</string>
 
     <!-- TRACKDETAIL ACTIVITY -->
+    <string name="activity_track_detail_export_msg">Tracé et questions enregistrés</string>
 
     <!-- SHOW PICTURE ACTIVITY -->
     <string name="activity_show_picture_deleting_image">Suppression image...</string>
@@ -39,13 +40,13 @@
     <string name="menu_addpicture">Ajouter des photos de poissons</string>
     <string name="menu_exportGPX">Exporter tracé</string>
 
-    <!--IMPORT PICTURE DIALOG-->
+    <!--IMPORT PICTURE DIALOG
     <string name="activity_track_detail_dialog_import_pic_title">AJOUTER PHOTOS POISSONS</string>
     <string name="activity_track_detail_dialog_import_pic_content">Prendre une photo tout de suite ou choisir dans votre VINI.</string>
     <string name="activity_track_detail_dialog_import_pic_camera">NOUVELLE PHOTO</string>
     <string name="activity_track_detail_dialog_import_pic_browse">CHOISIR PHOTO DANS VINI</string>
     <string name="activity_track_detail_dialog_import_pic_no">ANNULER</string>
-
+-->
 
     <!-- EXPORT GPX -->
     <string name="trackmgr_exporting_prepare">Preparing export&#8230;</string>
@@ -181,9 +182,11 @@
     <!--DATA INPUT CATCH GIVE-->
     <string name="data_input_catch_give_question">As-tu DONNE du poisson ?"</string>
     <string name="data_input_catch_give_question_where">"Donné où :"</string>
+    <string name="data_input_catch_give_question_pic_if_sale_pic">"Les poissons donnés sont-ils visibles sur tes photos ?"</string>
 
     <!--DATA INPUT CATCH CONS-->
     <string name="data_input_catch_cons_question">As-tu GARDE du poisson pour toi ?"</string>
+    <string name="data_input_catch_cons_question_pic_if_sale_pic">"Les poissons gardés sont-ils visibles sur tes photos ?"</string>
 
     <!--DATA INPUT FISH CAUGHT-->
     <string name="data_input_fish_caught_intro">Clique sur les poissons que tu as pêchés pour indiquer leur nombre</string>

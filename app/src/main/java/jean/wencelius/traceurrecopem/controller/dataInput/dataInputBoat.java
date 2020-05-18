@@ -23,6 +23,8 @@ import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputBoat extends AppCompatActivity {
 
+    static dataInputBoat boatAct;
+
     private ContentResolver mCr;
     private Cursor mTrackCursor;
 
@@ -47,6 +49,8 @@ public class dataInputBoat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_input_boat);
+
+        boatAct = this;
 
         mButton = (Button) findViewById(R.id.activity_data_input_boat_next_btn);
         mCheckBox = (CheckBox) findViewById(R.id.activity_data_input_boat_boat_owner);
@@ -125,7 +129,6 @@ public class dataInputBoat extends AppCompatActivity {
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
-                finish();
             }
         });
     }
@@ -193,5 +196,8 @@ public class dataInputBoat extends AppCompatActivity {
                 }
                 break;
         }
+    }
+    public static dataInputBoat getInstance(){
+        return   boatAct;
     }
 }

@@ -1,8 +1,10 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +22,11 @@ import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputWind extends AppCompatActivity {
 
+    static dataInputWind windAct;
+
+    private ContentResolver mCr;
+    private Cursor mTrackCursor;
+
     public String mWindEstFisher;
     public String mCurrentEstFisher;
 
@@ -28,8 +35,8 @@ public class dataInputWind extends AppCompatActivity {
 
     private Button mButton;
 
-    private Boolean cg1;
-    private Boolean cg2;
+    private boolean cg1;
+    private boolean cg2;
 
     private static final String BUNDLE_STATE_WIND = "wind";
     private static final String BUNDLE_STATE_CURRENT = "current";
@@ -39,31 +46,64 @@ public class dataInputWind extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_input_wind);
 
+        windAct = this;
+
         mButton = (Button) findViewById(R.id.activity_data_input_wind_next_btn);
 
         if(savedInstanceState!=null){
-            mButton.setEnabled(savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON));
             mWindEstFisher = savedInstanceState.getString(BUNDLE_STATE_WIND);
             mCurrentEstFisher = savedInstanceState.getString(BUNDLE_STATE_CURRENT);
 
-            cg1 = !mWindEstFisher.equals("empty");
-            cg2 = !mCurrentEstFisher.equals("empty");
-
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
-
-        }else{
-            mButton.setEnabled(false);
-
-            cg1 = false;
-            cg2 = false;
-
-            mWindEstFisher = "empty";
-            mCurrentEstFisher = "empty";
-
+        }else {
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
+
+            mCr = getContentResolver();
+            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
+            mTrackCursor.moveToPosition(0);
+            String windEstFisher = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_WIND_FISHER));
+            String currentEstFisher = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CURRENT_FISHER));
+            mTrackCursor.close();
+
+            if (windEstFisher != null) {
+                mWindEstFisher = windEstFisher;
+                mCurrentEstFisher = currentEstFisher;
+            } else {
+                mWindEstFisher = "empty";
+                mCurrentEstFisher = "empty";
+            }
         }
+
+        if(!mWindEstFisher.equals("empty")){
+            RadioButton mRbWind;
+            if(mWindEstFisher.equals("low")){
+                mRbWind = (RadioButton) findViewById(R.id.activity_data_input_wind_1);
+            }else if(mWindEstFisher.equals("mid")){
+                mRbWind = (RadioButton) findViewById(R.id.activity_data_input_wind_2);
+            }else{
+                mRbWind = (RadioButton) findViewById(R.id.activity_data_input_wind_3);
+            }
+            mRbWind.setChecked(true);
+        }
+        if(!mCurrentEstFisher.equals("empty")){
+            RadioButton mRbCurrent;
+
+            if(mCurrentEstFisher.equals("low")){
+                mRbCurrent = (RadioButton) findViewById(R.id.activity_data_input_current_1);
+            }else if(mCurrentEstFisher.equals("mid")){
+                mRbCurrent = (RadioButton) findViewById(R.id.activity_data_input_current_2);
+            }else{
+                mRbCurrent = (RadioButton) findViewById(R.id.activity_data_input_current_3);
+            }
+            mRbCurrent.setChecked(true);
+        }
+
+        cg1 = !mWindEstFisher.equals("empty");
+        cg2 = !mCurrentEstFisher.equals("empty");
+
+        mButton.setEnabled(cg1 && cg2);
 
         setTitle("Question 4/8");
 
@@ -87,7 +127,6 @@ public class dataInputWind extends AppCompatActivity {
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 startActivity(NextIntent);
-                finish();
             }
         });
     }
@@ -96,7 +135,6 @@ public class dataInputWind extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(BUNDLE_STATE_WIND,mWindEstFisher);
         outState.putString(BUNDLE_STATE_CURRENT,mCurrentEstFisher);
-        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,mButton.isEnabled());
 
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
@@ -144,8 +182,10 @@ public class dataInputWind extends AppCompatActivity {
                 }
                 break;
         }
+        mButton.setEnabled(cg1 && cg2);
+    }
 
-        if(cg1 && cg2)
-            mButton.setEnabled(true);
+    public static dataInputWind getInstance(){
+        return   windAct;
     }
 }
