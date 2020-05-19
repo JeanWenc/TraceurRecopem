@@ -273,7 +273,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
                 ExportCSV.exportCSV(this,trackId,mSaveDir,recopemValues.EXPORT_TRACK_DATA);
                 ExportCSV.exportCSV(this,trackId,mSaveDir,recopemValues.EXPORT_CAUGHT_FISH);
-
+                ExportCSV.zip(mSaveDir);
                 invalidateOptionsMenu();
                 mExported = true;
 
@@ -436,5 +436,5 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
             destination.close();
         }
     }
-    
+
 }
