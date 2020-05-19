@@ -69,6 +69,9 @@ public class recopemValues {
     public static final String BUNDLE_STATE_ORDER_PIC_ANS = "orderPicAnswer";
     public static final String BUNDLE_STATE_GIVE_PIC_ANS = "givePicAnswer";
 
+    public static final String EXPORT_TRACK_DATA = "exportTrackData";
+    public static final String EXPORT_CAUGHT_FISH = "exportCaughtFish";
+
     public static String getWeekdayString (int intWeekday){
         String mWeekdayString = new String();
         switch (intWeekday){

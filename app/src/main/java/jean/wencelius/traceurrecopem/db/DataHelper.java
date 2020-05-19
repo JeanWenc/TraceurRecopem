@@ -26,6 +26,7 @@ public class DataHelper {
      */
     public static final String EXTENSION_GPX = ".gpx";
 
+    public static final String EXTENSION_CSV = ".csv";
     /**
      * JPG file extension
      */

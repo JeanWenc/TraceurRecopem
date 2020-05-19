@@ -40,6 +40,8 @@ dependencies {
     implementation 'org.osmdroid:osmdroid-android:6.1.6'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    implementation 'com.opencsv:opencsv:4.6'
+
     implementation 'com.github.MKergall:osmbonuspack:6.6.0'
     implementation 'org.osmdroid:osmdroid-shape:6.1.6'
 
