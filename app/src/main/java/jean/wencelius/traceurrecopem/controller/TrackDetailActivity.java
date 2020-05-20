@@ -260,7 +260,6 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
             case R.id.trackdetail_menu_export:
                 new ExportToStorageTask(this, mSaveDir, trackId).execute();
-                //ExportZip.zip(mSaveDir);
                 invalidateOptionsMenu();
                 mExported = true;
 
@@ -268,13 +267,11 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                 valuesExp.put(TrackContentProvider.Schema.COL_EXPORTED,"true");
                 getContentResolver().update(trackUri, valuesExp, null, null);
 
-                Toast.makeText(this, R.string.activity_track_detail_export_msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.activity_track_detail_export_message_success, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.trackdetail_menu_email:
                 new ExportZip(this,mSaveDir).execute();
                 invalidateOptionsMenu();
-
-                Toast.makeText(this, R.string.activity_track_detail_zip_task_msg, Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

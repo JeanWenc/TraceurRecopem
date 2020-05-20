@@ -30,9 +30,9 @@
     <string name="menu_exportall">Exporter tous les tracés</string>
 
     <!-- TRACKDETAIL ACTIVITY -->
-    <string name="activity_track_detail_export_msg">Tracé et questions enregistrés</string>
-    <string name="activity_track_detail_zip_task_msg">"Préparation de l'envoi"</string>
+    <string name="activity_track_detail_export_message_success">"Photos et questionnaire enregistrés\nMauruuru!"</string>
     <string name="activity_track_detail_zip_task_msg_error">"Erreur"</string>
+    <string name="activity_track_detail_zip_email">"Préparation de l'envoi..."</string>
 
     <!--TRACKDETAIL MENU-->
     <string name="menu_adddata">Remplir Questionnaire</string>

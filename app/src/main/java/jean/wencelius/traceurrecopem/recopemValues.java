@@ -72,6 +72,8 @@ public class recopemValues {
     public static final String EXPORT_TRACK_DATA = "exportTrackData";
     public static final String EXPORT_CAUGHT_FISH = "exportCaughtFish";
 
+    public static final String EMAIL_RECIPIENT = "jeanwencelius@gmail.com";
+
     public static String getWeekdayString (int intWeekday){
         String mWeekdayString = new String();
         switch (intWeekday){
