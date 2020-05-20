@@ -15,5 +15,9 @@
         android:title="@string/menu_exportGPX"
         android:icon="@android:drawable/ic_menu_save"
         app:showAsAction="ifRoom"></item>
+    <item android:id="@+id/trackdetail_menu_email"
+        android:title="@string/menu_send_data_pic"
+        android:icon="@android:drawable/ic_menu_send"
+        app:showAsAction="ifRoom"></item>
 
 </menu>

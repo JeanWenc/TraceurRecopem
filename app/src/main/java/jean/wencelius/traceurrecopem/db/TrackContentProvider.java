@@ -46,6 +46,8 @@ public class TrackContentProvider extends ContentProvider {
             Schema.COL_EXPORTED,
             Schema.COL_PIC_ADDED,
             Schema.COL_START_DATE,
+            Schema.COL_HOUR_START,
+            Schema.COL_HOUR_END,
             Schema.COL_GPS_METHOD,
             Schema.COL_WEEKDAY,
             Schema.COL_DEVICE,
@@ -599,9 +601,6 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_CATCH_GIVE_WHERE= "Catch_give_where";//DataInputCatchGive TBL_TRACK
         public static final String COL_CATCH_GIVE_DETAILS = "Catch_give_details";//DataInputCatchGive TBL_TRACK
         public static final String COL_CATCH_GIVE_PIC = "Catch_give_pic";//DataInputCatchGive TBL_TRACK
-        public static final String COL_PIC_NB = "Picture_nb";
-        public static final String COL_PIC_SCALE = "Picture_scale";
-        public static final String COL_PIC_COMMENTS = "Picture_comments";
         public static final String COL_PIC_ADDED = "Pic_added"; // MenuActivity TBL_TRACK
         public static final String COL_TRACK_DATA_ADDED = "Track_data_added"; // MenuActivity TBL_TRACK
         public static final String COL_EXPORTED = "Exported"; // MenuActivity TBL_TRACK

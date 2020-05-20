@@ -23,17 +23,15 @@ import jean.wencelius.traceurrecopem.exception.ExportTrackException;
  */
 public abstract class CreateZipTask extends AsyncTask<Void, Long, Boolean> {
 
-    protected String saveDir;
+    private String saveDir;
 
-    protected ProgressDialog dialog;
+    private ProgressDialog dialog;
 
     protected Context context;
 
-    protected File zipExportDirectory;
+    private File zipExportDirectory;
 
-    protected File[] fileList;
-
-    private String errorMsg = null;
+    private File[] fileList;
 
     //protected abstract File getExportDirectory(String startDate) throws ExportTrackException;
 

@@ -52,8 +52,7 @@ public class Track {
         out.trackId = trackId;
         out.cr = cr;
 
-        int mIntWeekday = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_WEEKDAY));
-        out.weekday = recopemValues.getWeekdayString(mIntWeekday);
+        out.weekday = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_WEEKDAY));
 
         out.name = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_NAME));
         out.trackDate = tc.getLong(tc.getColumnIndex(TrackContentProvider.Schema.COL_START_DATE));

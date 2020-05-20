@@ -36,7 +36,7 @@ import java.util.UUID;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.dataInput.dataInputGear;
-import jean.wencelius.traceurrecopem.csv.ExportCSV;
+import jean.wencelius.traceurrecopem.csv.ExportZip;
 import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.ImageAdapter;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
@@ -238,6 +238,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.trackdetail_menu_export).setVisible(mDataAdded && !mPicEmpty);
+        menu.findItem(R.id.trackdetail_menu_email).setVisible(mExported);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -259,10 +260,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
             case R.id.trackdetail_menu_export:
                 new ExportToStorageTask(this, mSaveDir, trackId).execute();
-
-                //ExportCSV.exportCSV(this,trackId,mSaveDir,recopemValues.EXPORT_TRACK_DATA);
-                //ExportCSV.exportCSV(this,trackId,mSaveDir,recopemValues.EXPORT_CAUGHT_FISH);
-                //ExportCSV.zip(mSaveDir);
+                //ExportZip.zip(mSaveDir);
                 invalidateOptionsMenu();
                 mExported = true;
 
@@ -272,6 +270,11 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
                 Toast.makeText(this, R.string.activity_track_detail_export_msg, Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.trackdetail_menu_email:
+                new ExportZip(this,mSaveDir).execute();
+                invalidateOptionsMenu();
+
+                Toast.makeText(this, R.string.activity_track_detail_zip_task_msg, Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

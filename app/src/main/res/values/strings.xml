@@ -34,13 +34,14 @@
     <string name="activity_track_detail_zip_task_msg">"Préparation de l'envoi"</string>
     <string name="activity_track_detail_zip_task_msg_error">"Erreur"</string>
 
-    <!-- SHOW PICTURE ACTIVITY -->
-    <string name="activity_show_picture_deleting_image">Suppression image...</string>
-
     <!--TRACKDETAIL MENU-->
     <string name="menu_adddata">Remplir Questionnaire</string>
     <string name="menu_addpicture">Ajouter des photos de poissons</string>
     <string name="menu_exportGPX">Exporter tracé</string>
+    <string name="menu_send_data_pic">Envoi des données</string>
+
+    <!-- SHOW PICTURE ACTIVITY -->
+    <string name="activity_show_picture_deleting_image">Suppression image...</string>
 
     <!--IMPORT PICTURE DIALOG
     <string name="activity_track_detail_dialog_import_pic_title">AJOUTER PHOTOS POISSONS</string>

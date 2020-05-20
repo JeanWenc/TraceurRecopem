@@ -151,9 +151,11 @@ public class MenuActivity extends AppCompatActivity {
         values.put(TrackContentProvider.Schema.COL_NAME, "");
         values.put(TrackContentProvider.Schema.COL_INF_ID, AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext()));
         values.put(TrackContentProvider.Schema.COL_START_DATE, startDate.getTime());
+        values.put(TrackContentProvider.Schema.COL_HOUR_START,(long)0);
+        values.put(TrackContentProvider.Schema.COL_HOUR_END,(long)0);
         values.put(TrackContentProvider.Schema.COL_RECOPEM_TRACK_ID, mRecopemId);
         values.put(TrackContentProvider.Schema.COL_GPS_METHOD,"GPS");
-        values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDay);
+        values.put(TrackContentProvider.Schema.COL_WEEKDAY,recopemValues.getWeekdayString(mDay));
         values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
         values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"none"); // other value should be "true"
         values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");

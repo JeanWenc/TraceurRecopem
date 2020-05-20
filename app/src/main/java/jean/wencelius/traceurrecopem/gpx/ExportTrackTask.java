@@ -372,6 +372,8 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
                 cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED)),
                 cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED)),
                 startDate,
+                Long.toString(cursor.getLong(cursor.getColumnIndex(TrackContentProvider.Schema.COL_HOUR_START))),
+                Long.toString(cursor.getLong(cursor.getColumnIndex(TrackContentProvider.Schema.COL_HOUR_START))),
                 cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_GPS_METHOD)),
                 cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_WEEKDAY)),
                 cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DEVICE)),
