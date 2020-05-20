@@ -17,11 +17,13 @@ import android.widget.Toast;
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.db.TrackListAdapter;
+import jean.wencelius.traceurrecopem.recopemValues;
 
 public class TrackListActivity extends ListActivity {
 
     private ImageButton mBtnAddManualTrack;
     private ImageButton mBtnBack;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,11 @@ public class TrackListActivity extends ListActivity {
         mBtnAddManualTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createManualTrack();
+                Intent mapAloneActivityIntent = new Intent(TrackListActivity.this,MapAloneActivity.class);
+                mapAloneActivityIntent.putExtra(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK,"true");
+                //TODO: Change below
+                mapAloneActivityIntent.putExtra(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK_ID,(long) 45);
+                startActivity(mapAloneActivityIntent);
             }
         });
         mBtnBack.setOnClickListener(new View.OnClickListener() {

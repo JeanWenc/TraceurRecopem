@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/activity_display_map_ic_show_beacon"
-            android:src="@drawable/marker_default"
+            android:src="@drawable/ic_show_beacon"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_marginBottom="10dp"
@@ -66,4 +66,18 @@
             android:background="@android:color/transparent"
             android:cropToPadding="true"
             />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_display_map_ic_show_my_waypoints"
+        android:src="@drawable/marker_default"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@id/activity_display_map_ic_show_beacon"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="50dp"
+        android:tint="@color/colorPrimaryDark"
+        android:background="@android:color/transparent"
+        android:cropToPadding="true"
+        />
+
     </RelativeLayout>

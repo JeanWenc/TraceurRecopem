@@ -74,6 +74,9 @@ public class recopemValues {
 
     public static final String EMAIL_RECIPIENT = "jeanwencelius@gmail.com";
 
+    public static final String BUNDLE_EXTRA_CREATE_MANUAL_TRACK="createManualTrack";
+    public static final String BUNDLE_EXTRA_CREATE_MANUAL_TRACK_ID="createManualTrackId";
+
     public static final int MAX_TRACK_ID = 99999;
 
     public static String getWeekdayString (int intWeekday){

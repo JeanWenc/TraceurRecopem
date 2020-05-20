@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.app.AlertDialog;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,15 +13,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -30,21 +26,17 @@ import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.modules.OfflineTileProvider;
-import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,9 +47,7 @@ import jean.wencelius.traceurrecopem.service.gpsLogger;
 import jean.wencelius.traceurrecopem.service.gpsLoggerServiceConnection;
 import jean.wencelius.traceurrecopem.recopemValues;
 import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
-import jean.wencelius.traceurrecopem.utils.FishPickerDialog;
 import jean.wencelius.traceurrecopem.utils.MapTileProvider;
-import jean.wencelius.traceurrecopem.utils.WayPointOverlay;
 import jean.wencelius.traceurrecopem.utils.WaypointNameDialog;
 
 public class MapAndTrackActivity extends AppCompatActivity {
@@ -77,15 +67,15 @@ public class MapAndTrackActivity extends AppCompatActivity {
     private ServiceConnection gpsLoggerConnection = new gpsLoggerServiceConnection(this);
 
     private Boolean IS_BEACON_SHOWING;
+    private Boolean IS_WAYPOINTS_SHOWING;
 
     public long currentTrackId;
 
     public TextView mShowPointCount;
 
-    //private ImageButton btRecordTrack;
-
     private ImageButton btCenterMap;
     private ImageButton btShowBeacon;
+    private ImageButton btShowWaypoints;
     private ImageButton btAddWaypoint;
     MapView mMap = null;
 
@@ -113,10 +103,12 @@ public class MapAndTrackActivity extends AppCompatActivity {
         btCenterMap = (ImageButton) findViewById(R.id.activity_display_map_ic_center_map);
         btShowBeacon = (ImageButton) findViewById(R.id.activity_display_map_ic_show_beacon);
         btAddWaypoint = (ImageButton) findViewById(R.id.activity_display_map_add_waypoint);
+        btShowWaypoints = (ImageButton) findViewById(R.id.activity_display_map_ic_show_my_waypoints);
 
         mPersonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_menu_mylocation);
 
         IS_BEACON_SHOWING=false;
+        IS_WAYPOINTS_SHOWING = false;
 
         mGpsLoggerServiceIntent = new Intent(this, gpsLogger.class);
     }
@@ -213,12 +205,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
         //mLocationOverlay.enableFollowLocation();
         mMap.getOverlays().add(mLocationOverlay);
 
-        //TODO: Call From ShowWayPoint Button
-        showWaypoints(MapAndTrackActivity.this);
-
-        //wayPointOverlay = new WayPointOverlay(this, recopemValues.MAX_TRACK_ID);
-        //mMap.getOverlays().add(wayPointOverlay);
-
         btCenterMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,6 +229,24 @@ public class MapAndTrackActivity extends AppCompatActivity {
                  }
              }
         });
+
+        btShowWaypoints.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(!IS_WAYPOINTS_SHOWING){
+                    btShowWaypoints.setColorFilter(Color.argb(255, 0, 255, 0));
+                    showWaypoints(MapAndTrackActivity.this);
+                    mMap.invalidate();
+                    IS_WAYPOINTS_SHOWING=true;
+                }else{
+                    btShowWaypoints.setColorFilter(Color.argb(255, 18, 81, 140));
+                    IS_WAYPOINTS_SHOWING=false;
+                    mMap.getOverlays().remove(mWaypointOverlay);
+                    mMap.invalidate();
+                }
+            }
+        });
+
         btAddWaypoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -253,7 +257,11 @@ public class MapAndTrackActivity extends AppCompatActivity {
                 WaypointNameDialog alertDialog = WaypointNameDialog.newInstance(currentTrackId);
                 alertDialog.show(fm, "fragment_alert");
 
-                //TODO: Disable view of waypoints (button)
+                btShowWaypoints.setColorFilter(Color.argb(255, 18, 81, 140));
+                IS_WAYPOINTS_SHOWING=false;
+                mMap.getOverlays().remove(mWaypointOverlay);
+                mMap.invalidate();
+
             }
         });
         

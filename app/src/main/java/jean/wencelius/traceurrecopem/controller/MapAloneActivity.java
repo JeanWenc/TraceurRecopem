@@ -3,13 +3,17 @@ package jean.wencelius.traceurrecopem.controller;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -22,11 +26,16 @@ import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.modules.OfflineTileProvider;
 import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.MapEventsOverlay;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -34,8 +43,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.db.DataHelper;
+import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.recopemValues;
 import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
 import jean.wencelius.traceurrecopem.utils.MapTileProvider;
 
@@ -45,17 +59,22 @@ public class MapAloneActivity extends AppCompatActivity {
     private boolean checkGPSFlag = true;
 
     private Boolean IS_BEACON_SHOWING;
+    private Boolean IS_WAYPOINTS_SHOWING;
 
     private ImageButton btCenterMap;
     private ImageButton btShowBeacon;
+    private ImageButton btShowWaypoints;
     MapView mMap = null;
 
     private MyLocationNewOverlay mLocationOverlay;
+    private ItemizedOverlayWithFocus<OverlayItem> mWaypointOverlay;
 
     private Bitmap mPersonIcon;
 
     private FolderOverlay westOverlay, eastOverlay, southOverlay, northOverlay;
     private FolderOverlay navOverlay, otherOverlay, portOverlay, starboardOverlay;
+
+    private long newTrackId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +85,40 @@ public class MapAloneActivity extends AppCompatActivity {
 
         btCenterMap = (ImageButton) findViewById(R.id.activity_map_alone_center_map);
         btShowBeacon = (ImageButton) findViewById(R.id.activity_map_alone_show_beacon);
+        btShowWaypoints = (ImageButton) findViewById(R.id.activity_map_alone_show_my_waypoints);
 
         mPersonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_menu_mylocation);
 
         IS_BEACON_SHOWING=false;
+        IS_WAYPOINTS_SHOWING = false;
+
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null){
+            if(extras.getString(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK).equals("true")){
+                newTrackId = extras.getLong(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK_ID);
+
+                final MapEventsReceiver mReceive = new MapEventsReceiver(){
+                    @Override
+                    public boolean singleTapConfirmedHelper(GeoPoint p) {
+                        return false;
+                    }
+                    @Override
+                    public boolean longPressHelper(GeoPoint p) {
+                        ContentValues values = new ContentValues();
+                        values.put(TrackContentProvider.Schema.COL_TRACK_ID, newTrackId);
+                        values.put(TrackContentProvider.Schema.COL_LATITUDE, p.getLatitude());
+                        values.put(TrackContentProvider.Schema.COL_LONGITUDE, p.getLongitude());
+                        values.put(TrackContentProvider.Schema.COL_TIMESTAMP,(long) 0);
+
+                        getContentResolver().insert(TrackContentProvider.trackPointsUri(newTrackId), values);
+                        getContentResolver().insert(TrackContentProvider.trackPointsUri(newTrackId), values);
+                        Toast.makeText(getBaseContext(),p.getLatitude() + " - "+p.getLongitude(), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                };
+                mMap.getOverlays().add(new MapEventsOverlay(mReceive));
+            }
+        }
     }
 
     public void onResume(){
@@ -135,6 +184,23 @@ public class MapAloneActivity extends AppCompatActivity {
                     btShowBeacon.setColorFilter(Color.argb(255, 18, 81, 140));
                     IS_BEACON_SHOWING=false;
                     hideBeacon();
+                    mMap.invalidate();
+                }
+            }
+        });
+
+        btShowWaypoints.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if(!IS_WAYPOINTS_SHOWING){
+                    btShowWaypoints.setColorFilter(Color.argb(255, 0, 255, 0));
+                    showWaypoints(MapAloneActivity.this);
+                    mMap.invalidate();
+                    IS_WAYPOINTS_SHOWING=true;
+                }else{
+                    btShowWaypoints.setColorFilter(Color.argb(255, 18, 81, 140));
+                    IS_WAYPOINTS_SHOWING=false;
+                    mMap.getOverlays().remove(mWaypointOverlay);
                     mMap.invalidate();
                 }
             }
@@ -246,6 +312,74 @@ public class MapAloneActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public final void showWaypoints(Context ctx){
+
+        final Context ctxt = ctx;
+        List<OverlayItem> wayPointItems = new ArrayList<OverlayItem>();
+        wayPointItems.clear();
+        final List<String> uuidList = new ArrayList<String>();
+
+        Cursor c = ctxt.getContentResolver().query(TrackContentProvider.waypointsUri(recopemValues.MAX_TRACK_ID),null,null,null,null);
+
+        for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            OverlayItem i = new OverlayItem(
+                    c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
+                    c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
+                    new GeoPoint(
+                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LATITUDE)),
+                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LONGITUDE)))
+            );
+            uuidList.add(c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID)));
+            wayPointItems.add(i);
+        }
+
+        final DataHelper mDataHelper = new DataHelper(ctxt);
+        mWaypointOverlay = new ItemizedOverlayWithFocus<OverlayItem>(wayPointItems,
+                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+                    @Override
+                    public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+
+                        new AlertDialog.Builder(ctxt)
+                                .setTitle(R.string.activity_map_and_track_waypoint_dialog_title)
+                                .setMessage(item.getTitle().toString())
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).create().show();
+                        return true;
+                    }
+                    @Override
+                    public boolean onItemLongPress(final int index, final OverlayItem item) {
+                        new AlertDialog.Builder(ctxt)
+                                .setTitle(R.string.activity_map_and_track_waypoint_dialog_delete_title)
+                                .setMessage(item.getTitle().toString())
+                                .setPositiveButton("SUPPRIMER", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mWaypointOverlay.removeItem(index);
+                                        String uuid = uuidList.get(index);
+                                        mDataHelper.deleteWaypoint(uuid);
+                                        uuidList.remove(index);
+                                        dialog.dismiss();
+                                    }
+                                }).setNegativeButton("ANNULER", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+                        return true;
+                    }
+                },ctxt);
+        c.close();
+        mWaypointOverlay.setFocusItemsOnTap(false);
+
+
+        mMap.getOverlays().add(mWaypointOverlay);
     }
 
 }
