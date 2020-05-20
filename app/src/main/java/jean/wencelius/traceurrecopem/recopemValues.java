@@ -74,6 +74,8 @@ public class recopemValues {
 
     public static final String EMAIL_RECIPIENT = "jeanwencelius@gmail.com";
 
+    public static final int MAX_TRACK_ID = 99999;
+
     public static String getWeekdayString (int intWeekday){
         String mWeekdayString = new String();
         switch (intWeekday){

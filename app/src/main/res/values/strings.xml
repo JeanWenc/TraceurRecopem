@@ -20,9 +20,11 @@
     </string-array>
 
     <!--MAP AND TRACK ACTIVITY-->
+    <string name="activity_map_and_track_waypoint_dialog_title">Mon marqueur</string>
+    <string name="activity_map_and_track_waypoint_dialog_delete_title">Supprimer le marqueur?</string>
     <!--WAYPOINT NAME DIALOG-->
     <string name="dialog_waypoint_name_text">Nom du marqueur</string>
-    <string name="dialog_waypoint_name_input_hint">Ecris ici le nom du marqueur et valide par OK</string>
+    <string name="dialog_waypoint_name_input_hint">Donne un nom à ton marqueur</string>
 
     <!-- TRACKLIST ACTIVITY -->
     <string name="activity_track_list_empty">Aucun tracé enregistré</string>

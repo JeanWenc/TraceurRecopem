@@ -29,8 +29,11 @@ public class TrackContentProvider extends ContentProvider {
     /**Uri for the active track*/
     public static final Uri CONTENT_URI_TRACK_ACTIVE = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_TRACK + "/active");
 
-    /**Uri for a specific waypoint*/
+    /**Uri for a specific picture*/
     public static final Uri CONTENT_URI_PICTURE_UUID = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_PICTURE + "/uuid");
+
+    /**Uri for a specific waypoint*/
+    public static final Uri CONTENT_URI_WAYPOINT_UUID = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_WAYPOINT + "/uuid");
 
     /**tables and joins to be used within a query to get the important informations of a track*/
     private static final String TRACK_TABLES = Schema.TBL_TRACK + " left join " + Schema.TBL_TRACKPOINT + " on " + Schema.TBL_TRACK + "." + Schema.COL_ID + " = " + Schema.TBL_TRACKPOINT + "." + Schema.COL_TRACK_ID;
@@ -105,6 +108,7 @@ public class TrackContentProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_TRACKPOINT + "s", Schema.URI_CODE_TRACK_TRACKPOINTS);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_PICTURE + "s", Schema.URI_CODE_TRACK_PICTURES);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/" + Schema.TBL_POISSON + "s", Schema.URI_CODE_TRACK_POISSONS);
+        uriMatcher.addURI(AUTHORITY, Schema.TBL_WAYPOINT + "/uuid/*", Schema.URI_CODE_WAYPOINT_UUID);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_PICTURE + "/uuid/*", Schema.URI_CODE_PICTURE_UUID);
     }
 
@@ -182,6 +186,7 @@ public class TrackContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int count;
+        String uuid;
         // Select which data type to delete
         switch (uriMatcher.match(uri)) {
             case Schema.URI_CODE_TRACK:
@@ -195,9 +200,17 @@ public class TrackContentProvider extends ContentProvider {
                 count = dbHelper.getWritableDatabase().delete(Schema.TBL_TRACK, Schema.COL_ID + " = ?", new String[] {trackId});
                 break;
             case Schema.URI_CODE_PICTURE_UUID:
-                String uuid = uri.getLastPathSegment();
+                uuid = uri.getLastPathSegment();
                 if(uuid != null){
                     count = dbHelper.getWritableDatabase().delete(Schema.TBL_PICTURE, Schema.COL_UUID + " = ?", new String[]{uuid});
+                }else{
+                    count = 0;
+                }
+                break;
+            case Schema.URI_CODE_WAYPOINT_UUID:
+                uuid = uri.getLastPathSegment();
+                if(uuid != null){
+                    count = dbHelper.getWritableDatabase().delete(Schema.TBL_WAYPOINT, Schema.COL_UUID + " = ?", new String[]{uuid});
                 }else{
                     count = 0;
                 }
@@ -410,8 +423,14 @@ public class TrackContentProvider extends ContentProvider {
                 }
                 trackId = uri.getPathSegments().get(1);
                 qb.setTables(Schema.TBL_WAYPOINT);
-                selection = Schema.COL_TRACK_ID + " = ?";
-                selectionArgs = new String[] {trackId};
+                if(!trackId.equals(Integer.toString(recopemValues.MAX_TRACK_ID))){
+                    selection = Schema.COL_TRACK_ID + " = ?";
+                    selectionArgs = new String[] {trackId};
+                }else{
+                    selection = null;
+                    selectionArgs=null;
+                }
+
                 break;
             case Schema.URI_CODE_TRACK_START:
                 if (selectionIn != null || selectionArgsIn != null) {
@@ -625,6 +644,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final int URI_CODE_TRACK_END = 10;
         public static final int URI_CODE_TRACK_PICTURES = 11;
         public static final int URI_CODE_TRACK_POISSONS = 12;
+        public static final int URI_CODE_WAYPOINT_UUID = 13;
 
         public static final int VAL_TRACK_ACTIVE = 1;
         public static final int VAL_TRACK_INACTIVE = 0;

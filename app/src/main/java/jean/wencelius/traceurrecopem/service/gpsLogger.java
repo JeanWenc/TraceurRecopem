@@ -121,7 +121,7 @@ public class gpsLogger extends Service implements LocationListener {
                         if (lastLocation != null) {
                             Long trackId = extras.getLong(TrackContentProvider.Schema.COL_TRACK_ID);
                             String uuid = extras.getString(recopemValues.INTENT_KEY_UUID);
-                            String name = extras.getString(recopemValues.INTENT_KEY_UUID);
+                            String name = extras.getString(recopemValues.INTENT_KEY_NAME);
 
                             dataHelper.wayPoint(trackId, lastLocation, name, uuid);
                         }

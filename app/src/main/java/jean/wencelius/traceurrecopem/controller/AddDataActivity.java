@@ -23,7 +23,7 @@ public class AddDataActivity extends AppCompatActivity  implements AdapterView.O
     //TODO: Implement Add Manual Track Activity
     //TODO: Enable waypoint creation on MapTrack (Dialog to input name). Means to think of a way to: create a layout with all waypoints in DB, clickable, evenutally possibility to delete them
     //TODO: Status of emailSent in TrackDetailActivity not satisfying because appears as true even if action cancelled by user.
-    
+
     //TODO: once all dataInput activities created, delete this one.
 
 /*

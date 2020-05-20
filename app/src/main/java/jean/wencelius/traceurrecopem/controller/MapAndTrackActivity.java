@@ -35,6 +35,9 @@ import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.FolderOverlay;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -42,8 +45,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.service.gpsLogger;
 import jean.wencelius.traceurrecopem.service.gpsLoggerServiceConnection;
@@ -51,6 +57,7 @@ import jean.wencelius.traceurrecopem.recopemValues;
 import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
 import jean.wencelius.traceurrecopem.utils.FishPickerDialog;
 import jean.wencelius.traceurrecopem.utils.MapTileProvider;
+import jean.wencelius.traceurrecopem.utils.WayPointOverlay;
 import jean.wencelius.traceurrecopem.utils.WaypointNameDialog;
 
 public class MapAndTrackActivity extends AppCompatActivity {
@@ -83,6 +90,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
     MapView mMap = null;
 
     private MyLocationNewOverlay mLocationOverlay;
+    private ItemizedOverlayWithFocus<OverlayItem> mWaypointOverlay;
 
     private Bitmap mPersonIcon;
 
@@ -205,6 +213,12 @@ public class MapAndTrackActivity extends AppCompatActivity {
         //mLocationOverlay.enableFollowLocation();
         mMap.getOverlays().add(mLocationOverlay);
 
+        //TODO: Call From ShowWayPoint Button
+        showWaypoints(MapAndTrackActivity.this);
+
+        //wayPointOverlay = new WayPointOverlay(this, recopemValues.MAX_TRACK_ID);
+        //mMap.getOverlays().add(wayPointOverlay);
+
         btCenterMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -232,13 +246,14 @@ public class MapAndTrackActivity extends AppCompatActivity {
         btAddWaypoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Cursor wptCursor = getContentResolver().query(TrackContentProvider.waypointsUri(currentTrackId),null,null,null,null);
+                Cursor wptCursor = getContentResolver().query(TrackContentProvider.waypointsUri(recopemValues.MAX_TRACK_ID),null,null,null,null);
                 Toast.makeText(MapAndTrackActivity.this, Integer.toString(wptCursor.getCount()), Toast.LENGTH_SHORT).show();
 
                 FragmentManager fm = getSupportFragmentManager();
                 WaypointNameDialog alertDialog = WaypointNameDialog.newInstance(currentTrackId);
                 alertDialog.show(fm, "fragment_alert");
+
+                //TODO: Disable view of waypoints (button)
             }
         });
         
@@ -380,6 +395,72 @@ public class MapAndTrackActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    public final void showWaypoints(Context ctx){
+
+        final Context ctxt = ctx;
+        List<OverlayItem> wayPointItems = new ArrayList<OverlayItem>();
+        wayPointItems.clear();
+        final List<String> uuidList = new ArrayList<String>();
+
+        Cursor c = ctxt.getContentResolver().query(TrackContentProvider.waypointsUri(recopemValues.MAX_TRACK_ID),null,null,null,null);
+
+        for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            OverlayItem i = new OverlayItem(
+                    c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
+                    c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
+                    new GeoPoint(
+                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LATITUDE)),
+                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LONGITUDE)))
+            );
+            uuidList.add(c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID)));
+            wayPointItems.add(i);
+        }
+
+        final DataHelper mDataHelper = new DataHelper(ctxt);
+        mWaypointOverlay = new ItemizedOverlayWithFocus<OverlayItem>(wayPointItems,
+                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+                    @Override
+                    public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+
+                        new AlertDialog.Builder(ctxt)
+                                .setTitle(R.string.activity_map_and_track_waypoint_dialog_title)
+                                .setMessage(item.getTitle().toString())
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+                        return true;
+                    }
+                    @Override
+                    public boolean onItemLongPress(final int index, final OverlayItem item) {
+                        new AlertDialog.Builder(ctxt)
+                                .setTitle(R.string.activity_map_and_track_waypoint_dialog_delete_title)
+                                .setMessage(item.getTitle().toString())
+                                .setPositiveButton("SUPPRIMER", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mWaypointOverlay.removeItem(index);
+                                        String uuid = uuidList.get(index);
+                                        mDataHelper.deleteWaypoint(uuid);
+                                        uuidList.remove(index);
+                                        dialog.dismiss();
+                                    }
+                                }).setNegativeButton("ANNULER", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                            }
+                        }).create().show();
+                        return true;
+                    }
+        },ctxt);
+        c.close();
+        mWaypointOverlay.setFocusItemsOnTap(false);
+
+        mMap.getOverlays().add(mWaypointOverlay);
+    }
 
     @Override
     public void onBackPressed() {

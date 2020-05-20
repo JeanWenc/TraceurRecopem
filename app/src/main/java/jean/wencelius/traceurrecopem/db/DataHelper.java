@@ -9,6 +9,8 @@ import android.net.Uri;
 
 import java.text.SimpleDateFormat;
 
+import jean.wencelius.traceurrecopem.controller.MapAndTrackActivity;
+
 /**
  * Created by Jean Wencélius on 09/04/2020.
  */
@@ -109,6 +111,12 @@ public class DataHelper {
     public void deletePicture(String uuid) {
         if (uuid != null) {
             contentResolver.delete(Uri.withAppendedPath(TrackContentProvider.CONTENT_URI_PICTURE_UUID, uuid), null, null);
+        }
+    }
+
+    public void deleteWaypoint(String uuid) {
+        if (uuid != null) {
+            contentResolver.delete(Uri.withAppendedPath(TrackContentProvider.CONTENT_URI_WAYPOINT_UUID, uuid), null, null);
         }
     }
 
