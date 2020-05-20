@@ -19,16 +19,19 @@ import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 public class AddDataActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener {
-    //TODO: Export to gpx on finish tracking just to ensure no data loss
-    //TODO: If pictures true & AddData true => enable emailing (replace save by email, because normally track & csv generated at end of activities of dataInput activities and tracking activities)
-    //TODO: For emailing implies zipping folder
-    //TODO: Issue on StartDate (probably doesn't matter, also discard unncessary colums from DB (pic, scale, hour start, hour end)).
+
     //TODO: Implement Add Manual Track Activity
     //TODO: Enable waypoint creation on MapTrack (Dialog to input name). Means to think of a way to: create a layout with all waypoints in DB, clickable, evenutally possibility to delete them
-
-
+    //TODO: Status of emailSent in TrackDetailActivity not satisfying because appears as true even if action cancelled by user.
+    
     //TODO: once all dataInput activities created, delete this one.
 
+/*
+Map And Track Activity
+  => Find a way to create overlay from waypoints and refresh it when new waypoint created => HAve to make query on whole WAYPOINTS TBL and not only trackId's waypoint table
+            => Create a button to display waypoints => waypoint markers should be clickable and on click link to delete waypoint.
+
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

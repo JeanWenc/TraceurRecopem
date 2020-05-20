@@ -110,7 +110,7 @@ public class gpsLogger extends Service implements LocationListener {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            /**if (recopemValues.INTENT_TRACK_WP.equals(intent.getAction())) {
+            if (recopemValues.INTENT_TRACK_WP.equals(intent.getAction())) {
                 // Track a way point
                 Bundle extras = intent.getExtras();
                 if (extras != null) {
@@ -119,15 +119,15 @@ public class gpsLogger extends Service implements LocationListener {
                     if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         lastLocation = lmgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         if (lastLocation != null) {
-                            Long trackId = extras.getInt(TrackContentProvider.Schema.COL_TRACK_ID);
+                            Long trackId = extras.getLong(TrackContentProvider.Schema.COL_TRACK_ID);
                             String uuid = extras.getString(recopemValues.INTENT_KEY_UUID);
-                            String name = extras.getString(recopemValues.INTENT_KEY_NAME);
+                            String name = extras.getString(recopemValues.INTENT_KEY_UUID);
 
                             dataHelper.wayPoint(trackId, lastLocation, name, uuid);
                         }
                     }
                 }
-            } else*/
+            } else
             if (recopemValues.INTENT_START_TRACKING.equals(intent.getAction()) ) {
                 Bundle extras = intent.getExtras();
                 if (extras != null) {
@@ -151,7 +151,7 @@ public class gpsLogger extends Service implements LocationListener {
 
         // Register our broadcast receiver
         IntentFilter filter = new IntentFilter();
-        //filter.addAction(recopemValues.INTENT_TRACK_WP);
+        filter.addAction(recopemValues.INTENT_TRACK_WP);
         filter.addAction(recopemValues.INTENT_START_TRACKING);
         filter.addAction(recopemValues.INTENT_STOP_TRACKING);
         registerReceiver(receiver, filter);

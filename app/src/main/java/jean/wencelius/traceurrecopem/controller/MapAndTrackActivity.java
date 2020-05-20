@@ -1,22 +1,28 @@
 package jean.wencelius.traceurrecopem.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.app.AlertDialog;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -43,7 +49,9 @@ import jean.wencelius.traceurrecopem.service.gpsLogger;
 import jean.wencelius.traceurrecopem.service.gpsLoggerServiceConnection;
 import jean.wencelius.traceurrecopem.recopemValues;
 import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
+import jean.wencelius.traceurrecopem.utils.FishPickerDialog;
 import jean.wencelius.traceurrecopem.utils.MapTileProvider;
+import jean.wencelius.traceurrecopem.utils.WaypointNameDialog;
 
 public class MapAndTrackActivity extends AppCompatActivity {
 
@@ -65,13 +73,13 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
     public long currentTrackId;
 
-    public TextView mShowTrackId;
     public TextView mShowPointCount;
 
     //private ImageButton btRecordTrack;
 
     private ImageButton btCenterMap;
     private ImageButton btShowBeacon;
+    private ImageButton btAddWaypoint;
     MapView mMap = null;
 
     private MyLocationNewOverlay mLocationOverlay;
@@ -88,7 +96,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
         currentTrackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
 
-        mShowTrackId = (TextView) findViewById(R.id.activity_display_map_show_track_id);
         mShowPointCount = (TextView) findViewById(R.id.activity_display_map_show_point_count);
 
         mMap = (MapView) findViewById(R.id.activity_display_map_map);
@@ -97,6 +104,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
         btCenterMap = (ImageButton) findViewById(R.id.activity_display_map_ic_center_map);
         btShowBeacon = (ImageButton) findViewById(R.id.activity_display_map_ic_show_beacon);
+        btAddWaypoint = (ImageButton) findViewById(R.id.activity_display_map_add_waypoint);
 
         mPersonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_menu_mylocation);
 
@@ -117,8 +125,9 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
         startTrackLoggerForNewTrack();
 
+
         String fulltext = "Enregistrement tracé # "+ Long.toString(currentTrackId);
-        mShowTrackId.setText(fulltext);
+        setTitle(fulltext);
 
         mMap.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
@@ -162,8 +171,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
                 Toast.makeText(MapAndTrackActivity.this, "Tracé enregistré. Mauururu !",Toast.LENGTH_SHORT).show();
 
-                mShowTrackId.setTextColor(Color.BLACK);
-
                 item.setVisible(false);
 
                 new Handler().postDelayed(new Runnable() {
@@ -182,7 +189,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
     public void showMap(){
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-
+        
         mMap.setMultiTouchControls(true);
         mMap.setUseDataConnection(false);
         mMap.setTileProvider(MapTileProvider.setMapTileProvider(ctx));
@@ -198,7 +205,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
         //mLocationOverlay.enableFollowLocation();
         mMap.getOverlays().add(mLocationOverlay);
 
-
         btCenterMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,7 +213,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
             }
         });
 
-         btShowBeacon.setOnClickListener(new View.OnClickListener() {
+        btShowBeacon.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v){
                  if(!IS_BEACON_SHOWING){
@@ -222,7 +228,20 @@ public class MapAndTrackActivity extends AppCompatActivity {
                      mMap.invalidate();
                  }
              }
-         });
+        });
+        btAddWaypoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Cursor wptCursor = getContentResolver().query(TrackContentProvider.waypointsUri(currentTrackId),null,null,null,null);
+                Toast.makeText(MapAndTrackActivity.this, Integer.toString(wptCursor.getCount()), Toast.LENGTH_SHORT).show();
+
+                FragmentManager fm = getSupportFragmentManager();
+                WaypointNameDialog alertDialog = WaypointNameDialog.newInstance(currentTrackId);
+                alertDialog.show(fm, "fragment_alert");
+            }
+        });
+        
     }
 
     private void generateBeaconOverlays() {
@@ -360,6 +379,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
         }
         super.onSaveInstanceState(outState);
     }
+
 
     @Override
     public void onBackPressed() {

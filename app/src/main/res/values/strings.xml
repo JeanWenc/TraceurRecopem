@@ -19,6 +19,11 @@
         <item>"from_shore"</item>
     </string-array>
 
+    <!--MAP AND TRACK ACTIVITY-->
+    <!--WAYPOINT NAME DIALOG-->
+    <string name="dialog_waypoint_name_text">Nom du marqueur</string>
+    <string name="dialog_waypoint_name_input_hint">Ecris ici le nom du marqueur et valide par OK</string>
+
     <!-- TRACKLIST ACTIVITY -->
     <string name="activity_track_list_empty">Aucun tracé enregistré</string>
 
