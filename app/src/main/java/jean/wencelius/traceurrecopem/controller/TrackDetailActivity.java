@@ -1,18 +1,12 @@
 package jean.wencelius.traceurrecopem.controller;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -22,11 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.opencsv.CSVWriter;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
@@ -36,7 +27,6 @@ import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
@@ -50,7 +40,6 @@ import jean.wencelius.traceurrecopem.csv.ExportCSV;
 import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.ImageAdapter;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
-import jean.wencelius.traceurrecopem.exception.ExportTrackException;
 import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.model.ImageUrl;
@@ -271,9 +260,9 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
             case R.id.trackdetail_menu_export:
                 new ExportToStorageTask(this, mSaveDir, trackId).execute();
 
-                ExportCSV.exportCSV(this,trackId,mSaveDir,recopemValues.EXPORT_TRACK_DATA);
-                ExportCSV.exportCSV(this,trackId,mSaveDir,recopemValues.EXPORT_CAUGHT_FISH);
-                ExportCSV.zip(mSaveDir);
+                //ExportCSV.exportCSV(this,trackId,mSaveDir,recopemValues.EXPORT_TRACK_DATA);
+                //ExportCSV.exportCSV(this,trackId,mSaveDir,recopemValues.EXPORT_CAUGHT_FISH);
+                //ExportCSV.zip(mSaveDir);
                 invalidateOptionsMenu();
                 mExported = true;
 
@@ -383,7 +372,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                 }
                 break;
         }
-
+        invalidateOptionsMenu();
         super.onActivityResult(requestCode, resultCode, data);
     }
 

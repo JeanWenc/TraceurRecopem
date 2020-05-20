@@ -78,7 +78,7 @@ public class ExportCSV {
                         csvWrite.writeNext(cursor.getColumnNames());
                         while (cursor.moveToNext()) {
                             if (exportType.equals(recopemValues.EXPORT_TRACK_DATA)) {
-                                String trackArrStr[] ={
+                                String trackArrStr [] = {
                                         cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_ID)),
                                         Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_ACTIVE))),
                                         cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DIR)),
@@ -87,7 +87,7 @@ public class ExportCSV {
                                         cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED)),
                                         cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED)),
                                         cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED)),
-                                        cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_START_DATE)),
+                                        startDateYearMonthDay,
                                         cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_GPS_METHOD)),
                                         cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_WEEKDAY)),
                                         cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DEVICE)),

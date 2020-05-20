@@ -31,6 +31,8 @@
 
     <!-- TRACKDETAIL ACTIVITY -->
     <string name="activity_track_detail_export_msg">Tracé et questions enregistrés</string>
+    <string name="activity_track_detail_zip_task_msg">"Préparation de l'envoi"</string>
+    <string name="activity_track_detail_zip_task_msg_error">"Erreur"</string>
 
     <!-- SHOW PICTURE ACTIVITY -->
     <string name="activity_show_picture_deleting_image">Suppression image...</string>

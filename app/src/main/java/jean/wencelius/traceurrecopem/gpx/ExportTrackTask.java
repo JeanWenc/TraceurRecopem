@@ -10,10 +10,13 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 
 import androidx.core.content.ContextCompat;
+
+import com.opencsv.CSVWriter;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,6 +32,7 @@ import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.exception.ExportTrackException;
 import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.recopemValues;
 
 /**
  * Created by Jean Wencélius on 09/04/2020.
@@ -183,31 +187,60 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
     private void exportTrackAsGpx(long trackId) throws ExportTrackException {
 
-        String state = Environment.getExternalStorageState();
         File sdRoot = Environment.getExternalStorageDirectory();
+        ContentResolver cr = context.getContentResolver();
+        Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
 
         if (ContextCompat.checkSelfPermission(context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
             if (sdRoot.canWrite()) {
 
-                File trackGPXExportDirectory = new File(saveDir);
-                //File trackGPXExportDirectory = getExportDirectory(saveDir);
+                File trackExportDirectory = new File(saveDir);
 
-                //JW: For file name
                 String startDateYearMonthDay = saveDir.substring(saveDir.length()-19);
                 startDateYearMonthDay = startDateYearMonthDay.substring(0,10);
 
-                String filenameBase = startDateYearMonthDay + DataHelper.EXTENSION_GPX;
+                String filenameBaseGpx = startDateYearMonthDay + DataHelper.EXTENSION_GPX;
+                String filenameBaseTrackCsv= startDateYearMonthDay + DataHelper.EXTENSION_CSV;
+                String filenameBaseFishCsv= startDateYearMonthDay +"_fish_caught"+ DataHelper.EXTENSION_CSV;
 
-                File trackFile = new File(trackGPXExportDirectory, filenameBase);
-
-                ContentResolver cr = context.getContentResolver();
+                File trackFile = new File(trackExportDirectory, filenameBaseGpx);
+                File trackCsvFile = new File(trackExportDirectory,filenameBaseTrackCsv);
+                File fishCsvFile = new File(trackExportDirectory,filenameBaseFishCsv);
 
                 Cursor cTrackPoints = cr.query(TrackContentProvider.trackPointsUri(trackId), null,
                         null, null, TrackContentProvider.Schema.COL_TIMESTAMP + " asc");
+                Cursor cTrack = cr.query(trackUri, null, null, null, null);
+                Cursor cFishCaught = cr.query(Uri.withAppendedPath(trackUri, TrackContentProvider.Schema.TBL_POISSON + "s"), null, null, null, null);
 
-                if (null != cTrackPoints) {
+                boolean goExportTrackPoints = false;
+                if(null!=cTrackPoints) goExportTrackPoints = cTrackPoints.getCount()>0;
+                boolean goExportTrackCsv = false;
+                if(null!=cTrack) goExportTrackCsv = cTrack.getCount()>0;
+                boolean goExportFishCsv = false;
+                if(null!=cFishCaught) goExportFishCsv = cFishCaught.getCount()>0;
+
+                if(goExportTrackCsv){
+                    try{
+                        writeCsvFile(trackCsvFile,cTrack,startDateYearMonthDay,recopemValues.EXPORT_TRACK_DATA);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally{
+                        cTrack.close();
+                    }
+                }
+                if(goExportFishCsv){
+                    try{
+                        writeCsvFile(fishCsvFile,cFishCaught,startDateYearMonthDay,recopemValues.EXPORT_CAUGHT_FISH);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally{
+                        cTrack.close();
+                    }
+                }
+
+                if (goExportTrackPoints) {
                     publishProgress(new Long[]{trackId, (long) cTrackPoints.getCount()});
 
                     try {
@@ -220,7 +253,7 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
                     // Force rescan of directory
                     ArrayList<String> files = new ArrayList<String>();
-                    for (File file : trackGPXExportDirectory.listFiles()) {
+                    for (File file : trackExportDirectory.listFiles()) {
                         files.add(file.getAbsolutePath());
                     }
                     MediaScannerConnection.scanFile(context, files.toArray(new String[0]), null, null);
@@ -309,6 +342,90 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
         fw.write("\t\t" + "</trkseg>" + "\n");
         fw.write("\t" + "</trk>" + "\n");
+    }
+
+    private void writeCsvFile(File fileToExport,Cursor cursor,String startDate,String csvType) throws IOException{
+        fileToExport.createNewFile();
+        CSVWriter csvWrite = new CSVWriter(new FileWriter(fileToExport));
+        csvWrite.writeNext(cursor.getColumnNames());
+        while (cursor.moveToNext()) {
+            String arrStr[] = null;
+            if(csvType.equals(recopemValues.EXPORT_TRACK_DATA)){
+                arrStr = returnTrackValues(cursor,startDate);
+            }else if(csvType.equals(recopemValues.EXPORT_CAUGHT_FISH)){
+                arrStr = returnFishCaughtValues(cursor);
+            }
+            csvWrite.writeNext(arrStr);
+        }
+        csvWrite.close();
+    }
+
+
+    private String [] returnTrackValues(Cursor cursor, String startDate){
+        String arrStr [] = {
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_ID)),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_ACTIVE))),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DIR)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_RECOPEM_TRACK_ID)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED)),
+                startDate,
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_GPS_METHOD)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_WEEKDAY)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DEVICE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_GEAR)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_GEAR_OTHER_DETAILS)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_BOAT)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_BOAT_OWNER)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CREW_ALONE)),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CREW_N))),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CREW_WHO)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_WIND_FISHER)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CURRENT_FISHER)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_SALE)),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_SALE_N))),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_SALE_TYPE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_SALE_PRICE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_SALE_WHERE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_SALE_DETAILS)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_SALE_PIC)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_ORDER)),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_ORDER_N))),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_ORDER_TYPE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_ORDER_PRICE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_ORDER_WHERE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_ORDER_DETAILS)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_ORDER_PIC)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_GIVE)),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_GIVE_N))),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_GIVE_TYPE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_GIVE_WHERE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_GIVE_DETAILS)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_GIVE_PIC)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS)),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS_N))),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS_TYPE)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS_DETAILS)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS_PIC)),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACKPOINT_COUNT))),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_WAYPOINT_COUNT)))
+        };
+        return arrStr;
+    }
+
+    private String [] returnFishCaughtValues(Cursor cursor){
+        String arrStr [] = {
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_ID))),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_ID))),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_DESTINATION)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_FISH_FAMILY)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_FISH_TAHITIAN)),
+                Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_N))),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_N_TYPE))
+        };
+        return arrStr;
     }
 
 
