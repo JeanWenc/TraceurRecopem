@@ -44,6 +44,7 @@ public class TrackContentProvider extends ContentProvider {
             Schema.COL_RECOPEM_TRACK_ID,
             Schema.COL_TRACK_DATA_ADDED,
             Schema.COL_EXPORTED,
+            Schema.COL_SENT_EMAIL,
             Schema.COL_PIC_ADDED,
             Schema.COL_START_DATE,
             Schema.COL_HOUR_START,
@@ -604,6 +605,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_PIC_ADDED = "Pic_added"; // MenuActivity TBL_TRACK
         public static final String COL_TRACK_DATA_ADDED = "Track_data_added"; // MenuActivity TBL_TRACK
         public static final String COL_EXPORTED = "Exported"; // MenuActivity TBL_TRACK
+        public static final String COL_SENT_EMAIL = "emailSent"; //MenuActivity TBL_TRACK
         public static final String COL_DIR = "directory"; // MenuActivity TBL_TRACK
         public static final String COL_DEVICE = "device";// MenuActivity TBL_TRACK
         public static final String COL_ACTIVE = "active";// MenuActivity TBL_TRACK

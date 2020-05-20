@@ -88,6 +88,7 @@ public class TrackListActivity extends ListActivity {
        String picAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
        String dataAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
        String exported = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED));
+       String sentEmail = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_SENT_EMAIL));
        String saveDir = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DIR));
 
        cursor.close();
@@ -99,6 +100,7 @@ public class TrackListActivity extends ListActivity {
        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED, dataAdded);
        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_EXPORTED, exported);
        TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_DIR,saveDir);
+       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_SENT_EMAIL,sentEmail);
 
        startActivity(TrackListDetailIntent);
 

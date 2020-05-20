@@ -159,6 +159,7 @@ public class MenuActivity extends AppCompatActivity {
         values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
         values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"none"); // other value should be "true"
         values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");
+        values.put(TrackContentProvider.Schema.COL_SENT_EMAIL,"false");
         values.put(TrackContentProvider.Schema.COL_DIR,saveDirectory);
         values.put(TrackContentProvider.Schema.COL_DEVICE,android.os.Build.MODEL);
         values.put(TrackContentProvider.Schema.COL_ACTIVE, TrackContentProvider.Schema.VAL_TRACK_ACTIVE);

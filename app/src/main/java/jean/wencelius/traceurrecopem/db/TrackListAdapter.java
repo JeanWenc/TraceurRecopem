@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.Track;
@@ -55,6 +57,8 @@ public class TrackListAdapter extends CursorAdapter {
         TextView vRecopemId = (TextView) v.findViewById(R.id.tracklist_item_recopem_id);
         TextView vDataAdded = (TextView) v.findViewById(R.id.tracklist_item_data_value);
         TextView vPicAdded = (TextView) v.findViewById(R.id.tracklist_item_pictures_value);
+        TextView vExported = (TextView) v.findViewById(R.id.tracklist_item_exported_value);
+        TextView vSentEmail = (TextView) v.findViewById(R.id.tracklist_item_sent_email_value);
         LinearLayout vMainLayout = (LinearLayout) v.findViewById(R.id.tracklist_item_mainlayout);
 
         TextView vTps = (TextView) v.findViewById(R.id.tracklist_item_tps);
@@ -75,9 +79,29 @@ public class TrackListAdapter extends CursorAdapter {
 
         String mDataAdded = t.getDataAdded();
         String mPicAdded = t.getPicAdded();
+        String mExported = t.getExported();
+        String mSentEmail = t.getSentEmail();
 
-        vDataAdded.setText(mDataAdded);
-        vPicAdded.setText(mPicAdded);
+        if(mDataAdded.equals("true")){
+            vDataAdded.setText(R.string.answer_yes);
+        }else{
+            vDataAdded.setText(R.string.answer_no);
+        }
+        if(mPicAdded.equals("true")){
+            vPicAdded.setText(R.string.answer_yes);
+        }else{
+            vPicAdded.setText(R.string.answer_no);
+        }
+        if(mExported.equals("true")){
+            vExported.setText(R.string.answer_yes);
+        }else{
+            vExported.setText(R.string.answer_no);
+        }
+        if(mSentEmail.equals("true")){
+            vSentEmail.setText(R.string.answer_yes);
+        }else{
+            vSentEmail.setText(R.string.answer_no);
+        }
 
         if(mDataAdded.equals("false") && mPicAdded.equals("none")){
             vMainLayout.setBackgroundColor(Color.parseColor("#F21A00"));
@@ -86,8 +110,15 @@ public class TrackListAdapter extends CursorAdapter {
         }else if(mDataAdded.equals("false") && !mPicAdded.equals("none")){
             vMainLayout.setBackgroundColor(Color.parseColor("#E1AF00"));
         }else{
-            vMainLayout.setBackgroundColor(Color.parseColor("#3B9AB2"));
+            if(mExported.equals("false") && mSentEmail.equals("false")){
+                vMainLayout.setBackgroundColor(Color.parseColor("#78B7C5"));
+            }else if(mSentEmail.equals("false")){
+                vMainLayout.setBackgroundColor(Color.parseColor("#3B9AB2"));
+            }else if(mSentEmail.equals("true")){
+                vMainLayout.setBackgroundColor(Color.parseColor("#A0A0A0"));
+            }
         }
+
         return v;
     }
 }

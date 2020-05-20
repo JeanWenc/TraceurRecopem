@@ -40,6 +40,13 @@
     <string name="menu_exportGPX">Exporter tracé</string>
     <string name="menu_send_data_pic">Envoi des données</string>
 
+    <!-- TRACKDETAIL ACTIVITY WIFI ALERT DIALOG -->
+    <string name="activity_track_detail_wifi_dialog_title">PAS DE CONNEXION WIFI</string>
+    <string name="activity_track_detail_wifi_dialog_message">"Tu n'es pas connecté au WiFi.
+        \n\nIl est déconseillé d'envoyer les données, cela peut te coûter de l'argent (ou finir ton crédit)."</string>
+    <string name="activity_track_detail_wifi_dialog_yes">POURSUIVRE QUAND MEME</string>
+    <string name="activity_track_detail_wifi_dialog_no">ANNULER</string>
+
     <!-- SHOW PICTURE ACTIVITY -->
     <string name="activity_show_picture_deleting_image">Suppression image...</string>
 

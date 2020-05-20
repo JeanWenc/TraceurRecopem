@@ -26,6 +26,8 @@ public class Track {
     private String recopemId;
     private String dataAdded;
     private String picAdded;
+    private String mExported;
+    private String mSentEmail;
 
     private long trackDate;
     private long trackId;
@@ -64,6 +66,10 @@ public class Track {
         out.dataAdded = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
 
         out.picAdded = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
+
+        out.mExported = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED));
+
+        out.mSentEmail = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_SENT_EMAIL));
 
         out.tpCount = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_TRACKPOINT_COUNT));
         //out.wpCount = tc.getInt(tc.getColumnIndex(TrackContentProvider.Schema.COL_WAYPOINT_COUNT));
@@ -242,5 +248,21 @@ public class Track {
     public Float getEndLong() {
         readExtraInformation();
         return endLong;
+    }
+
+    public String getExported() {
+        return mExported;
+    }
+
+    public void setExported(String exported) {
+        mExported = exported;
+    }
+
+    public String getSentEmail() {
+        return mSentEmail;
+    }
+
+    public void setSentEmail(String sentEmail) {
+        mSentEmail = sentEmail;
     }
 }

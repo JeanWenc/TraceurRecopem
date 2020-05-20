@@ -78,13 +78,13 @@
 
 
         <TextView
+            android:id="@+id/tracklist_item_data"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="3dp"
             android:text="Questions = "
             android:textStyle="bold"
-            android:id="@+id/tracklist_item_data"
             android:layout_below="@id/tracklist_item_recopem_id"
             style="@android:style/TextAppearance.Small"
             />
@@ -110,7 +110,7 @@
             />
         <TextView
             android:layout_height="wrap_content"
-            android:text="{none/manuel/camera}"
+            android:text="{none/true}"
             android:id="@+id/tracklist_item_pictures_value"
             android:layout_below="@id/tracklist_item_gpsmethod"
             android:layout_toRightOf="@id/tracklist_item_pictures"
@@ -118,9 +118,50 @@
             android:layout_width="wrap_content"/>
 
         <TextView
+            android:id="@+id/tracklist_item_exported"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="3dp"
+            android:text="Exporté = "
+            android:textStyle="bold"
+            android:layout_below="@id/tracklist_item_data"
+            style="@android:style/TextAppearance.Small"
+            />
+        <TextView
+            android:id="@+id/tracklist_item_exported_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="{false}"
+            android:layout_below="@id/tracklist_item_data"
+            android:layout_toRightOf="@id/tracklist_item_exported"
+            style="@android:style/TextAppearance.Small"
+            />
+        <TextView
+            android:id="@+id/tracklist_item_sent_email"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="3dp"
+            android:text="Envoyé (email) = "
+            android:textStyle="bold"
+            android:layout_below="@id/tracklist_item_data"
+            android:layout_toRightOf="@id/tracklist_item_exported_value"
+            style="@android:style/TextAppearance.Small"
+            />
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="{none/true}"
+            android:id="@+id/tracklist_item_sent_email_value"
+            android:layout_below="@id/tracklist_item_data"
+            android:layout_toRightOf="@id/tracklist_item_sent_email"
+            style="@android:style/TextAppearance.Small"
+            android:layout_width="wrap_content"/>
+
+        <TextView
             android:layout_height="wrap_content"
             android:id="@+id/tracklist_item_trackpoints"
-            android:layout_below="@id/tracklist_item_data"
+            android:layout_below="@id/tracklist_item_exported"
             android:layout_marginLeft="8dp"
             android:textStyle="bold"
             android:layout_marginRight="3dp"
@@ -131,7 +172,7 @@
             android:layout_height="wrap_content"
             android:text="{y}"
             android:id="@+id/tracklist_item_tps"
-            android:layout_below="@id/tracklist_item_data"
+            android:layout_below="@id/tracklist_item_exported"
             android:layout_toRightOf="@id/tracklist_item_trackpoints"
             style="@android:style/TextAppearance.Small"
             android:layout_width="wrap_content"/>
