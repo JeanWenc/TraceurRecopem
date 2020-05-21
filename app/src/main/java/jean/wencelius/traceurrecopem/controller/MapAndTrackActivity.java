@@ -129,17 +129,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
             mCurrentLat=mMooreaCenterLat;
             mCurrentLon=mMooreaCenterLon;
         }
-        if(IS_BEACON_SHOWING){
-            btShowBeacon.setColorFilter(Color.argb(255, 0, 255, 0));
-            generateBeaconOverlays();
-            showBeacon();
-            mMap.invalidate();
-        }
-        if(IS_WAYPOINTS_SHOWING){
-            btShowWaypoints.setColorFilter(Color.argb(255, 0, 255, 0));
-            showWaypoints(MapAndTrackActivity.this);
-            mMap.invalidate();
-        }
+
         mGpsLoggerServiceIntent = new Intent(this, gpsLogger.class);
     }
 
@@ -177,7 +167,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
         mMap.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
     public void onPause(){
-        if(IS_BEACON_SHOWING) hideBeacon();
         super.onPause();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
@@ -251,6 +240,24 @@ public class MapAndTrackActivity extends AppCompatActivity {
         //mLocationOverlay.enableFollowLocation();
         mMap.getOverlays().add(mLocationOverlay);
 
+        if(IS_BEACON_SHOWING) {
+            hideBeacon();
+            mMap.invalidate();
+            btShowBeacon.setColorFilter(Color.argb(255, 0, 255, 0));
+            generateBeaconOverlays();
+            showBeacon();
+            mMap.invalidate();
+        }
+        if(IS_WAYPOINTS_SHOWING){
+            mMap.getOverlays().remove(mWaypointOverlay);
+            btShowWaypoints.setColorFilter(Color.argb(255, 0, 255, 0));
+            showWaypoints(MapAndTrackActivity.this);
+            mMap.invalidate();
+        }
+        if(IS_CURRENT_TRACK_SHOWING){
+            showCurrentTrack();
+        }
+
         btCenterMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,6 +270,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showCurrentTrack();
+                IS_CURRENT_TRACK_SHOWING=true;
             }
         });
 

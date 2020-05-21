@@ -139,18 +139,6 @@ public class MapAloneActivity extends AppCompatActivity {
             }
         }
 
-        if(IS_BEACON_SHOWING){
-            btShowBeacon.setColorFilter(Color.argb(255, 0, 255, 0));
-            generateBeaconOverlays();
-            showBeacon();
-            mMap.invalidate();
-        }
-        if(IS_WAYPOINTS_SHOWING){
-            btShowWaypoints.setColorFilter(Color.argb(255, 0, 255, 0));
-            showWaypoints(MapAloneActivity.this);
-            mMap.invalidate();
-        }
-
         if(createNewTrack){
 
             final MapEventsReceiver mReceive = new MapEventsReceiver(){
@@ -214,9 +202,9 @@ public class MapAloneActivity extends AppCompatActivity {
             checkGPSProvider();
         }
         generateBeaconOverlays();
-        if(createNewTrack) resumeActivity();
 
         showMap();
+        if(createNewTrack) resumeActivity();
 
         mMap.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
@@ -234,7 +222,6 @@ public class MapAloneActivity extends AppCompatActivity {
     public void onPause(){
         // Unregister content observer
         if(createNewTrack) getContentResolver().unregisterContentObserver(trackpointContentObserver);
-        if(IS_BEACON_SHOWING) hideBeacon();
         super.onPause();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
@@ -262,6 +249,22 @@ public class MapAloneActivity extends AppCompatActivity {
         mLocationOverlay.enableMyLocation();
         //mLocationOverlay.enableFollowLocation();
         mMap.getOverlays().add(mLocationOverlay);
+
+        if(IS_BEACON_SHOWING) {
+            hideBeacon();
+            mMap.invalidate();
+            btShowBeacon.setColorFilter(Color.argb(255, 0, 255, 0));
+            generateBeaconOverlays();
+            showBeacon();
+            mMap.invalidate();
+        }
+        if(IS_WAYPOINTS_SHOWING){
+            mMap.getOverlays().remove(mWaypointOverlay);
+            btShowWaypoints.setColorFilter(Color.argb(255, 0, 255, 0));
+            showWaypoints(MapAloneActivity.this);
+            mMap.invalidate();
+        }
+
 
         btCenterMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -307,7 +310,7 @@ public class MapAloneActivity extends AppCompatActivity {
     }
 
     private void pathChanged() {
-        if(mLineIndex!=-1) mMap.getOverlayManager().remove(mLineIndex);
+        hideManualTrack();
         List<GeoPoint> geoPoints = new ArrayList<>();
 
         Cursor c = getContentResolver().query(
@@ -327,6 +330,10 @@ public class MapAloneActivity extends AppCompatActivity {
         geoPoints.clear();
         mMap.getOverlayManager().add(mLine);
         mLineIndex = mMap.getOverlays().indexOf(mLine);
+    }
+
+    private void hideManualTrack(){
+        mMap.getOverlays().remove(mLine);
     }
 
     private void generateBeaconOverlays() {
@@ -389,69 +396,6 @@ public class MapAloneActivity extends AppCompatActivity {
         mMap.getOverlays().remove(navOverlay);
 
         mMap.getOverlays().remove(otherOverlay);
-    }
-
-    private void checkGPSProvider() {
-        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            // GPS isn't enabled. Offer user to go enable it
-            new AlertDialog.Builder(this)
-                    .setTitle(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_title))
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setMessage(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_content))
-                    .setCancelable(true).setPositiveButton(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_yes), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                }
-            }).setNegativeButton(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_no), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            }).create().show();
-            checkGPSFlag = false;
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mapalone_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.activity_map_alone_delete_last_trackpoint).setVisible(createNewTrack);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.activity_map_alone_back:
-                Intent menuActivityIntent = new Intent(MapAloneActivity.this, MenuActivity.class);
-                startActivity(menuActivityIntent);
-                break;
-            case R.id.activity_map_alone_delete_last_trackpoint:
-                Cursor c = getContentResolver().query(
-                        TrackContentProvider.trackPointsUri(newTrackId),
-                        null, null, null, TrackContentProvider.Schema.COL_ID + " asc");
-                final DataHelper mDataHelper = new DataHelper(this);
-                String targetUuid="";
-                if(c.moveToFirst()){
-                    c.moveToLast();
-                    targetUuid = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID));
-                    mDataHelper.deleteTrackpoint(targetUuid);
-                    c.moveToLast();
-                    targetUuid = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID));
-                    mDataHelper.deleteTrackpoint(targetUuid);
-                }
-                c.close();
-                pathChanged();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public final void showWaypoints(Context ctx){
@@ -521,4 +465,66 @@ public class MapAloneActivity extends AppCompatActivity {
         mMap.getOverlays().add(mWaypointOverlay);
     }
 
+    private void checkGPSProvider() {
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // GPS isn't enabled. Offer user to go enable it
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_title))
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setMessage(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_content))
+                    .setCancelable(true).setPositiveButton(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+            }).setNegativeButton(getResources().getString(R.string.activity_display_map_dialog_GPS_disabled_no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            }).create().show();
+            checkGPSFlag = false;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mapalone_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_map_alone_delete_last_trackpoint).setVisible(createNewTrack);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.activity_map_alone_back:
+                Intent menuActivityIntent = new Intent(MapAloneActivity.this, MenuActivity.class);
+                startActivity(menuActivityIntent);
+                break;
+            case R.id.activity_map_alone_delete_last_trackpoint:
+                Cursor c = getContentResolver().query(
+                        TrackContentProvider.trackPointsUri(newTrackId),
+                        null, null, null, TrackContentProvider.Schema.COL_ID + " asc");
+                final DataHelper mDataHelper = new DataHelper(this);
+                String targetUuid="";
+                if(c.moveToFirst()){
+                    c.moveToLast();
+                    targetUuid = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID));
+                    mDataHelper.deleteTrackpoint(targetUuid);
+                    c.moveToLast();
+                    targetUuid = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID));
+                    mDataHelper.deleteTrackpoint(targetUuid);
+                }
+                c.close();
+                pathChanged();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
