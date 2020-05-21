@@ -64,6 +64,9 @@ public class MapAloneActivity extends AppCompatActivity {
     private boolean checkGPSFlag = true;
 
     private boolean createNewTrack;
+    private long newTrackId;
+
+    private ContentObserver trackpointContentObserver;
 
     private Boolean IS_BEACON_SHOWING;
     private Boolean IS_WAYPOINTS_SHOWING;
@@ -71,29 +74,25 @@ public class MapAloneActivity extends AppCompatActivity {
     private ImageButton btCenterMap;
     private ImageButton btShowBeacon;
     private ImageButton btShowWaypoints;
+
     MapView mMap = null;
 
+    private double mZoomLevel, mCurrentLon, mCurrentLat;
+    private final static double mMooreaCenterLon=-149.831712;
+    private final static double mMooreaCenterLat=-17.543859;
+
+
+    private Bitmap mPersonIcon;
     private MyLocationNewOverlay mLocationOverlay;
     private ItemizedOverlayWithFocus<OverlayItem> mWaypointOverlay;
-
+    private Polyline mLine;
     private int mLineIndex;
+    private FolderOverlay westOverlay, eastOverlay, southOverlay, northOverlay;
+    private FolderOverlay navOverlay, otherOverlay, portOverlay, starboardOverlay;
 
     private static final String BUNDLE_STATE_CREATE_NEW_TRACK = "createNewTrack";
     private static final String BUNDLE_STATE_CREATE_NEW_TRACK_ID = "createNewTrackId";
     public static final String BUNDLE_STATE_MLINE_INDEX ="mLineIndex";
-    /**
-     * Observes changes on trackpoints
-     */
-    private ContentObserver trackpointContentObserver;
-
-    private Bitmap mPersonIcon;
-
-    private FolderOverlay westOverlay, eastOverlay, southOverlay, northOverlay;
-    private FolderOverlay navOverlay, otherOverlay, portOverlay, starboardOverlay;
-
-    private long newTrackId;
-
-    private Polyline mLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,16 +107,29 @@ public class MapAloneActivity extends AppCompatActivity {
 
         mPersonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_menu_mylocation);
 
-        IS_BEACON_SHOWING=false;
-        IS_WAYPOINTS_SHOWING = false;
-
         if(null!=savedInstanceState){
+            IS_BEACON_SHOWING = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_SHOW_BEACON);
+            IS_WAYPOINTS_SHOWING = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_SHOW_WAYPOINTS);
+
+            mZoomLevel = savedInstanceState.getDouble(recopemValues.BUNDLE_STATE_CURRENT_ZOOM);
+            mCurrentLon = savedInstanceState.getDouble(recopemValues.BUNDLE_STATE_CURRENT_LONGITUDE);
+            mCurrentLat = savedInstanceState.getDouble(recopemValues.BUNDLE_STATE_CURRENT_LATITUDE);
+
+            mLineIndex = savedInstanceState.getInt(BUNDLE_STATE_MLINE_INDEX);
+
             createNewTrack = savedInstanceState.getBoolean(BUNDLE_STATE_CREATE_NEW_TRACK);
             newTrackId = savedInstanceState.getLong(BUNDLE_STATE_CREATE_NEW_TRACK_ID);
-            mLineIndex = savedInstanceState.getInt(BUNDLE_STATE_MLINE_INDEX);
         }else{
-            Bundle extras = getIntent().getExtras();
+            mZoomLevel = 13.0;
+            mCurrentLat=mMooreaCenterLat;
+            mCurrentLon=mMooreaCenterLon;
+
+            IS_BEACON_SHOWING=false;
+            IS_WAYPOINTS_SHOWING = false;
+
             mLineIndex=-1;
+
+            Bundle extras = getIntent().getExtras();
             if(extras!=null){
                 createNewTrack = extras.getString(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK).equals("true");
                 newTrackId = extras.getLong(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK_ID);
@@ -125,6 +137,18 @@ public class MapAloneActivity extends AppCompatActivity {
                 createNewTrack = false;
                 newTrackId = (long) -1;
             }
+        }
+
+        if(IS_BEACON_SHOWING){
+            btShowBeacon.setColorFilter(Color.argb(255, 0, 255, 0));
+            generateBeaconOverlays();
+            showBeacon();
+            mMap.invalidate();
+        }
+        if(IS_WAYPOINTS_SHOWING){
+            btShowWaypoints.setColorFilter(Color.argb(255, 0, 255, 0));
+            showWaypoints(MapAloneActivity.this);
+            mMap.invalidate();
         }
 
         if(createNewTrack){
@@ -161,14 +185,21 @@ public class MapAloneActivity extends AppCompatActivity {
                 }
             };
         }
-
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putDouble(recopemValues.BUNDLE_STATE_CURRENT_ZOOM,mMap.getZoomLevelDouble());
+        outState.putDouble(recopemValues.BUNDLE_STATE_CURRENT_LATITUDE,mMap.getMapCenter().getLatitude());
+        outState.putDouble(recopemValues.BUNDLE_STATE_CURRENT_LONGITUDE,mMap.getMapCenter().getLongitude());
+
+        outState.putBoolean(recopemValues.BUNDLE_STATE_SHOW_BEACON,IS_BEACON_SHOWING);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_SHOW_WAYPOINTS,IS_WAYPOINTS_SHOWING);
+
+        outState.putInt(BUNDLE_STATE_MLINE_INDEX,mLineIndex);
+
         outState.putBoolean(BUNDLE_STATE_CREATE_NEW_TRACK,createNewTrack);
         outState.putLong(BUNDLE_STATE_CREATE_NEW_TRACK_ID,newTrackId);
-        outState.putInt(BUNDLE_STATE_MLINE_INDEX,mLineIndex);
         super.onSaveInstanceState(outState);
     }
 
@@ -203,7 +234,7 @@ public class MapAloneActivity extends AppCompatActivity {
     public void onPause(){
         // Unregister content observer
         if(createNewTrack) getContentResolver().unregisterContentObserver(trackpointContentObserver);
-
+        if(IS_BEACON_SHOWING) hideBeacon();
         super.onPause();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
@@ -221,8 +252,9 @@ public class MapAloneActivity extends AppCompatActivity {
         mMap.setTileProvider(MapTileProvider.setMapTileProvider(ctx));
 
         IMapController mapController = mMap.getController();
-        mapController.setZoom(13);
-        GeoPoint startPoint = new GeoPoint(-17.543859, -149.831712);
+        mapController.setZoom(mZoomLevel);
+
+        GeoPoint startPoint = new GeoPoint(mCurrentLat, mCurrentLon);
         mapController.setCenter(startPoint);
 
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this),mMap);
@@ -485,7 +517,6 @@ public class MapAloneActivity extends AppCompatActivity {
                 },ctxt);
         c.close();
         mWaypointOverlay.setFocusItemsOnTap(false);
-
 
         mMap.getOverlays().add(mWaypointOverlay);
     }

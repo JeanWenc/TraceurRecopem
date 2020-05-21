@@ -79,6 +79,14 @@ public class recopemValues {
 
     public static final int MAX_TRACK_ID = 99999;
 
+    public static final String BUNDLE_STATE_SHOW_BEACON = "showBeacon";
+    public static final String BUNDLE_STATE_SHOW_WAYPOINTS = "showWaypoints";
+    public static final String BUNDLE_STATE_SHOW_CURRENT_TRACK = "showCurrentTrack";
+
+    public static final String BUNDLE_STATE_CURRENT_ZOOM = "currentZoom";
+    public static final String BUNDLE_STATE_CURRENT_LATITUDE = "currentLat";
+    public static final String BUNDLE_STATE_CURRENT_LONGITUDE  = "currentLong";
+
     public static String getWeekdayString (int intWeekday){
         String mWeekdayString = new String();
         switch (intWeekday){

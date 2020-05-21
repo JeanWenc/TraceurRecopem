@@ -1,5 +1,6 @@
 package jean.wencelius.traceurrecopem.controller;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -15,6 +16,7 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.Menu;
@@ -36,6 +38,7 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,26 +51,20 @@ import jean.wencelius.traceurrecopem.service.gpsLoggerServiceConnection;
 import jean.wencelius.traceurrecopem.recopemValues;
 import jean.wencelius.traceurrecopem.utils.BeaconOverlay;
 import jean.wencelius.traceurrecopem.utils.MapTileProvider;
+import jean.wencelius.traceurrecopem.utils.OverlayTrackPoints;
 import jean.wencelius.traceurrecopem.utils.WaypointNameDialog;
 
 public class MapAndTrackActivity extends AppCompatActivity {
 
     private static final String STATE_IS_TRACKING = "isTracking";
-
     /**GPS Logger service, to receive events and be able to update UI.*/
     private gpsLogger mGpsLogger;
-
     /**GPS Logger service intent, to be used in start/stopService();*/
     private Intent mGpsLoggerServiceIntent;
-
     /**Flag to check GPS status at startup.*/
     private boolean checkGPSFlag = true;
-
     /** Handles the bind to the GPS Logger service*/
     private ServiceConnection gpsLoggerConnection = new gpsLoggerServiceConnection(this);
-
-    private Boolean IS_BEACON_SHOWING;
-    private Boolean IS_WAYPOINTS_SHOWING;
 
     public long currentTrackId;
 
@@ -77,13 +74,23 @@ public class MapAndTrackActivity extends AppCompatActivity {
     private ImageButton btShowBeacon;
     private ImageButton btShowWaypoints;
     private ImageButton btAddWaypoint;
-    MapView mMap = null;
+    private ImageButton btShowCurrentTrack;
 
-    private MyLocationNewOverlay mLocationOverlay;
-    private ItemizedOverlayWithFocus<OverlayItem> mWaypointOverlay;
+    private Boolean IS_BEACON_SHOWING;
+    private Boolean IS_WAYPOINTS_SHOWING;
+    private Boolean IS_CURRENT_TRACK_SHOWING;
+
+    private double mZoomLevel, mCurrentLon, mCurrentLat;
+    private final static double mMooreaCenterLon = -149.831712;
+    private final static double mMooreaCenterLat = -17.543859;
+
+    MapView mMap = null;
+    private IMapController mapController;
 
     private Bitmap mPersonIcon;
 
+    private MyLocationNewOverlay mLocationOverlay;
+    private ItemizedOverlayWithFocus<OverlayItem> mWaypointOverlay;
     private FolderOverlay westOverlay, eastOverlay, southOverlay, northOverlay;
     private FolderOverlay navOverlay, otherOverlay, portOverlay, starboardOverlay;
 
@@ -92,25 +99,64 @@ public class MapAndTrackActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_and_track);
 
-        currentTrackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
-
         mShowPointCount = (TextView) findViewById(R.id.activity_display_map_show_point_count);
 
         mMap = (MapView) findViewById(R.id.activity_display_map_map);
-
-        //btRecordTrack = (ImageButton) findViewById(R.id.activity_display_map_ic_record_track);
 
         btCenterMap = (ImageButton) findViewById(R.id.activity_display_map_ic_center_map);
         btShowBeacon = (ImageButton) findViewById(R.id.activity_display_map_ic_show_beacon);
         btAddWaypoint = (ImageButton) findViewById(R.id.activity_display_map_add_waypoint);
         btShowWaypoints = (ImageButton) findViewById(R.id.activity_display_map_ic_show_my_waypoints);
+        btShowCurrentTrack = (ImageButton) findViewById(R.id.activity_display_map_show_current_track);
 
         mPersonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_menu_mylocation);
 
-        IS_BEACON_SHOWING=false;
-        IS_WAYPOINTS_SHOWING = false;
 
+        if(null!=savedInstanceState){
+            currentTrackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
+            IS_BEACON_SHOWING = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_SHOW_BEACON);
+            IS_WAYPOINTS_SHOWING = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_SHOW_WAYPOINTS);
+            IS_CURRENT_TRACK_SHOWING = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_SHOW_CURRENT_TRACK);
+            mZoomLevel = savedInstanceState.getDouble(recopemValues.BUNDLE_STATE_CURRENT_ZOOM);
+            mCurrentLon = savedInstanceState.getDouble(recopemValues.BUNDLE_STATE_CURRENT_LONGITUDE);
+            mCurrentLat = savedInstanceState.getDouble(recopemValues.BUNDLE_STATE_CURRENT_LATITUDE);
+        }else{
+            currentTrackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+            IS_BEACON_SHOWING=false;
+            IS_WAYPOINTS_SHOWING = false;
+            IS_CURRENT_TRACK_SHOWING = false;
+            mZoomLevel = 13.0;
+            mCurrentLat=mMooreaCenterLat;
+            mCurrentLon=mMooreaCenterLon;
+        }
+        if(IS_BEACON_SHOWING){
+            btShowBeacon.setColorFilter(Color.argb(255, 0, 255, 0));
+            generateBeaconOverlays();
+            showBeacon();
+            mMap.invalidate();
+        }
+        if(IS_WAYPOINTS_SHOWING){
+            btShowWaypoints.setColorFilter(Color.argb(255, 0, 255, 0));
+            showWaypoints(MapAndTrackActivity.this);
+            mMap.invalidate();
+        }
         mGpsLoggerServiceIntent = new Intent(this, gpsLogger.class);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,currentTrackId);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_SHOW_BEACON,IS_BEACON_SHOWING);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_SHOW_WAYPOINTS,IS_WAYPOINTS_SHOWING);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_SHOW_CURRENT_TRACK,IS_CURRENT_TRACK_SHOWING);
+        outState.putDouble(recopemValues.BUNDLE_STATE_CURRENT_ZOOM,mMap.getZoomLevelDouble());
+        outState.putDouble(recopemValues.BUNDLE_STATE_CURRENT_LATITUDE,mMap.getMapCenter().getLatitude());
+        outState.putDouble(recopemValues.BUNDLE_STATE_CURRENT_LONGITUDE,mMap.getMapCenter().getLongitude());
+        if(mGpsLogger != null){
+            outState.putBoolean(STATE_IS_TRACKING, mGpsLogger.isTracking());
+        }
+        //outState.putInt(BUNDLE_STATE_MLINE_INDEX,mLineIndex);
+        super.onSaveInstanceState(outState);
     }
 
     public void onResume(){
@@ -125,13 +171,13 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
         startTrackLoggerForNewTrack();
 
-
         String fulltext = "Enregistrement tracé # "+ Long.toString(currentTrackId);
         setTitle(fulltext);
 
         mMap.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
     public void onPause(){
+        if(IS_BEACON_SHOWING) hideBeacon();
         super.onPause();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
@@ -145,7 +191,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
                 unbindService(gpsLoggerConnection);
             }
         }
-
         mMap.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
@@ -194,10 +239,11 @@ public class MapAndTrackActivity extends AppCompatActivity {
         mMap.setUseDataConnection(false);
         mMap.setTileProvider(MapTileProvider.setMapTileProvider(ctx));
 
-        IMapController mapController = mMap.getController();
-        mapController.setZoom(13);
-        GeoPoint startPoint = new GeoPoint(-17.543859, -149.831712);
-        mapController.setCenter(startPoint);
+        mapController = mMap.getController();
+        mapController.setZoom(mZoomLevel);
+
+       GeoPoint startPoint = new GeoPoint(mCurrentLat, mCurrentLon);
+       mapController.setCenter(startPoint);
 
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this),mMap);
         mLocationOverlay.setPersonIcon(mPersonIcon);
@@ -210,6 +256,13 @@ public class MapAndTrackActivity extends AppCompatActivity {
             public void onClick(View v) {
                 GeoPoint myPosition = mLocationOverlay.getMyLocation();
                 mMap.getController().animateTo(myPosition);
+            }
+        });
+
+        btShowCurrentTrack.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                showCurrentTrack();
             }
         });
 
@@ -258,7 +311,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
                 IS_WAYPOINTS_SHOWING=false;
                 mMap.getOverlays().remove(mWaypointOverlay);
                 mMap.invalidate();
-
             }
         });
         
@@ -326,6 +378,93 @@ public class MapAndTrackActivity extends AppCompatActivity {
         mMap.getOverlays().remove(otherOverlay);
     }
 
+    public final void showWaypoints(Context ctx){
+
+        final Context ctxt = ctx;
+        List<OverlayItem> wayPointItems = new ArrayList<OverlayItem>();
+        wayPointItems.clear();
+        final List<String> uuidList = new ArrayList<String>();
+
+        Cursor c = ctxt.getContentResolver().query(TrackContentProvider.waypointsUri(recopemValues.MAX_TRACK_ID),null,null,null,null);
+
+        for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            OverlayItem i = new OverlayItem(
+                    c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
+                    c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
+                    new GeoPoint(
+                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LATITUDE)),
+                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LONGITUDE)))
+            );
+            uuidList.add(c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID)));
+            wayPointItems.add(i);
+        }
+
+        final DataHelper mDataHelper = new DataHelper(ctxt);
+        mWaypointOverlay = new ItemizedOverlayWithFocus<OverlayItem>(wayPointItems,
+                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+                    @Override
+                    public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+
+                        new AlertDialog.Builder(ctxt)
+                                .setTitle(R.string.activity_map_and_track_waypoint_dialog_title)
+                                .setMessage(item.getTitle().toString())
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).create().show();
+                        return true;
+                    }
+                    @Override
+                    public boolean onItemLongPress(final int index, final OverlayItem item) {
+                        new AlertDialog.Builder(ctxt)
+                                .setTitle(R.string.activity_map_and_track_waypoint_dialog_delete_title)
+                                .setMessage(item.getTitle().toString())
+                                .setPositiveButton("SUPPRIMER", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mWaypointOverlay.removeItem(index);
+                                        String uuid = uuidList.get(index);
+                                        mDataHelper.deleteWaypoint(uuid);
+                                        uuidList.remove(index);
+                                        dialog.dismiss();
+                                    }
+                                }).setNegativeButton("ANNULER", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+                        return true;
+                    }
+                },ctxt);
+        c.close();
+        mWaypointOverlay.setFocusItemsOnTap(false);
+        mMap.getOverlays().add(mWaypointOverlay);
+    }
+
+    public void showCurrentTrack(){
+        Cursor c = getContentResolver().query(TrackContentProvider.trackPointsUri(currentTrackId),null,null,null,null);
+        if(c.getCount()>0){
+            final SimpleFastPointOverlay sfpo = OverlayTrackPoints.createPointOverlay(c);
+
+            mMap.getOverlays().add(sfpo);
+
+            final double nor = sfpo.getBoundingBox().getLatNorth();
+            final double sou = sfpo.getBoundingBox().getLatSouth();
+            final double eas = sfpo.getBoundingBox().getLonEast();
+            final double wes = sfpo.getBoundingBox().getLonWest();
+            mMap.post(new Runnable() {
+                @Override
+                public void run() {
+                    mapController.zoomToSpan((int) (nor-sou), (int) (eas-wes));
+                    mapController.setCenter(new GeoPoint((nor + sou) / 2, (eas + wes) / 2));
+                }
+            });
+        }
+        c.close();
+    }
 
     private void checkGPSProvider() {
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -389,83 +528,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
     public void setGpsLogger(gpsLogger l) {
         this.mGpsLogger = l;
      }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        // Save the fact that we are currently tracking or not
-        if(mGpsLogger != null){
-            outState.putBoolean(STATE_IS_TRACKING, mGpsLogger.isTracking());
-            outState.putLong(TrackContentProvider.Schema.COL_TRACK_ID,currentTrackId);
-        }
-        super.onSaveInstanceState(outState);
-    }
-
-    public final void showWaypoints(Context ctx){
-
-        final Context ctxt = ctx;
-        List<OverlayItem> wayPointItems = new ArrayList<OverlayItem>();
-        wayPointItems.clear();
-        final List<String> uuidList = new ArrayList<String>();
-
-        Cursor c = ctxt.getContentResolver().query(TrackContentProvider.waypointsUri(recopemValues.MAX_TRACK_ID),null,null,null,null);
-
-        for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            OverlayItem i = new OverlayItem(
-                    c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
-                    c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
-                    new GeoPoint(
-                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LATITUDE)),
-                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LONGITUDE)))
-            );
-            uuidList.add(c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID)));
-            wayPointItems.add(i);
-        }
-
-        final DataHelper mDataHelper = new DataHelper(ctxt);
-        mWaypointOverlay = new ItemizedOverlayWithFocus<OverlayItem>(wayPointItems,
-                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-                    @Override
-                    public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
-
-                        new AlertDialog.Builder(ctxt)
-                                .setTitle(R.string.activity_map_and_track_waypoint_dialog_title)
-                                .setMessage(item.getTitle().toString())
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).create().show();
-                        return true;
-                    }
-                    @Override
-                    public boolean onItemLongPress(final int index, final OverlayItem item) {
-                        new AlertDialog.Builder(ctxt)
-                                .setTitle(R.string.activity_map_and_track_waypoint_dialog_delete_title)
-                                .setMessage(item.getTitle().toString())
-                                .setPositiveButton("SUPPRIMER", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        mWaypointOverlay.removeItem(index);
-                                        String uuid = uuidList.get(index);
-                                        mDataHelper.deleteWaypoint(uuid);
-                                        uuidList.remove(index);
-                                        dialog.dismiss();
-                                    }
-                                }).setNegativeButton("ANNULER", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                            }
-                        }).create().show();
-                        return true;
-                    }
-        },ctxt);
-        c.close();
-        mWaypointOverlay.setFocusItemsOnTap(false);
-
-        mMap.getOverlays().add(mWaypointOverlay);
-    }
 
     @Override
     public void onBackPressed() {
