@@ -120,6 +120,12 @@ public class DataHelper {
         }
     }
 
+    public void deleteTrackpoint(String uuid) {
+        if (uuid != null) {
+            contentResolver.delete(Uri.withAppendedPath(TrackContentProvider.CONTENT_URI_TRACKPOINT_UUID, uuid), null, null);
+        }
+    }
+
     /** Stop tracking by making the track inactive
      * @param trackId Id of the track
      */

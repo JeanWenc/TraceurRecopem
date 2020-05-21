@@ -1,5 +1,6 @@
 package jean.wencelius.traceurrecopem.controller;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -8,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,8 +38,10 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +49,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.DataHelper;
@@ -58,6 +63,8 @@ public class MapAloneActivity extends AppCompatActivity {
     /**Flag to check GPS status at startup.*/
     private boolean checkGPSFlag = true;
 
+    private boolean createNewTrack;
+
     private Boolean IS_BEACON_SHOWING;
     private Boolean IS_WAYPOINTS_SHOWING;
 
@@ -69,12 +76,24 @@ public class MapAloneActivity extends AppCompatActivity {
     private MyLocationNewOverlay mLocationOverlay;
     private ItemizedOverlayWithFocus<OverlayItem> mWaypointOverlay;
 
+    private int mLineIndex;
+
+    private static final String BUNDLE_STATE_CREATE_NEW_TRACK = "createNewTrack";
+    private static final String BUNDLE_STATE_CREATE_NEW_TRACK_ID = "createNewTrackId";
+    public static final String BUNDLE_STATE_MLINE_INDEX ="mLineIndex";
+    /**
+     * Observes changes on trackpoints
+     */
+    private ContentObserver trackpointContentObserver;
+
     private Bitmap mPersonIcon;
 
     private FolderOverlay westOverlay, eastOverlay, southOverlay, northOverlay;
     private FolderOverlay navOverlay, otherOverlay, portOverlay, starboardOverlay;
 
     private long newTrackId;
+
+    private Polyline mLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,33 +111,65 @@ public class MapAloneActivity extends AppCompatActivity {
         IS_BEACON_SHOWING=false;
         IS_WAYPOINTS_SHOWING = false;
 
-        Bundle extras = getIntent().getExtras();
-        if(extras!=null){
-            if(extras.getString(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK).equals("true")){
+        if(null!=savedInstanceState){
+            createNewTrack = savedInstanceState.getBoolean(BUNDLE_STATE_CREATE_NEW_TRACK);
+            newTrackId = savedInstanceState.getLong(BUNDLE_STATE_CREATE_NEW_TRACK_ID);
+            mLineIndex = savedInstanceState.getInt(BUNDLE_STATE_MLINE_INDEX);
+        }else{
+            Bundle extras = getIntent().getExtras();
+            mLineIndex=-1;
+            if(extras!=null){
+                createNewTrack = extras.getString(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK).equals("true");
                 newTrackId = extras.getLong(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK_ID);
-
-                final MapEventsReceiver mReceive = new MapEventsReceiver(){
-                    @Override
-                    public boolean singleTapConfirmedHelper(GeoPoint p) {
-                        return false;
-                    }
-                    @Override
-                    public boolean longPressHelper(GeoPoint p) {
-                        ContentValues values = new ContentValues();
-                        values.put(TrackContentProvider.Schema.COL_TRACK_ID, newTrackId);
-                        values.put(TrackContentProvider.Schema.COL_LATITUDE, p.getLatitude());
-                        values.put(TrackContentProvider.Schema.COL_LONGITUDE, p.getLongitude());
-                        values.put(TrackContentProvider.Schema.COL_TIMESTAMP,(long) 0);
-
-                        getContentResolver().insert(TrackContentProvider.trackPointsUri(newTrackId), values);
-                        getContentResolver().insert(TrackContentProvider.trackPointsUri(newTrackId), values);
-                        Toast.makeText(getBaseContext(),p.getLatitude() + " - "+p.getLongitude(), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                };
-                mMap.getOverlays().add(new MapEventsOverlay(mReceive));
+            }else{
+                createNewTrack = false;
+                newTrackId = (long) -1;
             }
         }
+
+        if(createNewTrack){
+
+            final MapEventsReceiver mReceive = new MapEventsReceiver(){
+                @Override
+                public boolean singleTapConfirmedHelper(GeoPoint p) {
+                    return false;
+                }
+                @Override
+                public boolean longPressHelper(GeoPoint p) {
+                    String trackPointUuid = UUID.randomUUID().toString();
+
+                    ContentValues values = new ContentValues();
+                    values.put(TrackContentProvider.Schema.COL_TRACK_ID, newTrackId);
+                    values.put(TrackContentProvider.Schema.COL_LATITUDE, p.getLatitude());
+                    values.put(TrackContentProvider.Schema.COL_LONGITUDE, p.getLongitude());
+                    values.put(TrackContentProvider.Schema.COL_UUID,trackPointUuid);
+                    values.put(TrackContentProvider.Schema.COL_TIMESTAMP,(long) 0);
+
+                    getContentResolver().insert(TrackContentProvider.trackPointsUri(newTrackId), values);
+                    getContentResolver().insert(TrackContentProvider.trackPointsUri(newTrackId), values);
+                    Toast.makeText(getBaseContext(),p.getLatitude() + " - "+p.getLongitude(), Toast.LENGTH_LONG).show();
+                    return false;
+                }
+            };
+            mMap.getOverlays().add(new MapEventsOverlay(mReceive));
+
+            // Create content observer for trackpoints
+            trackpointContentObserver = new ContentObserver(new Handler()) {
+                @Override
+                public void onChange(boolean selfChange) {
+                    pathChanged();
+                }
+            };
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean(BUNDLE_STATE_CREATE_NEW_TRACK,createNewTrack);
+        outState.putLong(BUNDLE_STATE_CREATE_NEW_TRACK_ID,newTrackId);
+        outState.putInt(BUNDLE_STATE_MLINE_INDEX,mLineIndex);
+        super.onSaveInstanceState(outState);
     }
 
     public void onResume(){
@@ -132,11 +183,27 @@ public class MapAloneActivity extends AppCompatActivity {
             checkGPSProvider();
         }
         generateBeaconOverlays();
+        if(createNewTrack) resumeActivity();
+
         showMap();
 
         mMap.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
+
+    private void resumeActivity(){
+        // Register content observer for any trackpoint changes
+        getContentResolver().registerContentObserver(
+                TrackContentProvider.trackPointsUri(newTrackId),
+                true, trackpointContentObserver);
+
+        // Reload path
+        pathChanged();
+    }
+
     public void onPause(){
+        // Unregister content observer
+        if(createNewTrack) getContentResolver().unregisterContentObserver(trackpointContentObserver);
+
         super.onPause();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
@@ -205,6 +272,29 @@ public class MapAloneActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void pathChanged() {
+        if(mLineIndex!=-1) mMap.getOverlayManager().remove(mLineIndex);
+        List<GeoPoint> geoPoints = new ArrayList<>();
+
+        Cursor c = getContentResolver().query(
+                TrackContentProvider.trackPointsUri(newTrackId),
+                null, null, null, TrackContentProvider.Schema.COL_ID + " asc");
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            GeoPoint i = new  GeoPoint(
+                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LATITUDE)),
+                            c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LONGITUDE))
+            );
+            geoPoints.add(i);
+        }
+        c.close();
+        mLine = new Polyline();   //see note below!
+        mLine.setPoints(geoPoints);
+        geoPoints.clear();
+        mMap.getOverlayManager().add(mLine);
+        mLineIndex = mMap.getOverlays().indexOf(mLine);
     }
 
     private void generateBeaconOverlays() {
@@ -300,6 +390,7 @@ public class MapAloneActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_map_alone_delete_last_trackpoint).setVisible(createNewTrack);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -309,6 +400,23 @@ public class MapAloneActivity extends AppCompatActivity {
             case R.id.activity_map_alone_back:
                 Intent menuActivityIntent = new Intent(MapAloneActivity.this, MenuActivity.class);
                 startActivity(menuActivityIntent);
+                break;
+            case R.id.activity_map_alone_delete_last_trackpoint:
+                Cursor c = getContentResolver().query(
+                        TrackContentProvider.trackPointsUri(newTrackId),
+                        null, null, null, TrackContentProvider.Schema.COL_ID + " asc");
+                final DataHelper mDataHelper = new DataHelper(this);
+                String targetUuid="";
+                if(c.moveToFirst()){
+                    c.moveToLast();
+                    targetUuid = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID));
+                    mDataHelper.deleteTrackpoint(targetUuid);
+                    c.moveToLast();
+                    targetUuid = c.getString(c.getColumnIndex(TrackContentProvider.Schema.COL_UUID));
+                    mDataHelper.deleteTrackpoint(targetUuid);
+                }
+                c.close();
+                pathChanged();
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -40,7 +40,7 @@ public class TrackListActivity extends ListActivity {
                 Intent mapAloneActivityIntent = new Intent(TrackListActivity.this,MapAloneActivity.class);
                 mapAloneActivityIntent.putExtra(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK,"true");
                 //TODO: Change below
-                mapAloneActivityIntent.putExtra(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK_ID,(long) 45);
+                mapAloneActivityIntent.putExtra(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK_ID,(long) 1);
                 startActivity(mapAloneActivityIntent);
             }
         });

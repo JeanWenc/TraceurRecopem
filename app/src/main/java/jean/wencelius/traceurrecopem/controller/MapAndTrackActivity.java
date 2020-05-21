@@ -250,9 +250,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
         btAddWaypoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Cursor wptCursor = getContentResolver().query(TrackContentProvider.waypointsUri(recopemValues.MAX_TRACK_ID),null,null,null,null);
-                Toast.makeText(MapAndTrackActivity.this, Integer.toString(wptCursor.getCount()), Toast.LENGTH_SHORT).show();
-
                 FragmentManager fm = getSupportFragmentManager();
                 WaypointNameDialog alertDialog = WaypointNameDialog.newInstance(currentTrackId);
                 alertDialog.show(fm, "fragment_alert");

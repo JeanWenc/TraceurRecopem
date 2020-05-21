@@ -4,5 +4,9 @@
     <item android:id="@+id/activity_map_alone_back"
         android:title="Menu Principal"
         android:icon="@android:drawable/ic_menu_revert"
-        app:showAsAction="ifRoom|withText"/>
+        app:showAsAction="ifRoom"/>
+    <item android:id="@+id/activity_map_alone_delete_last_trackpoint"
+        android:title="Menu Principal"
+        android:icon="@android:drawable/ic_delete"
+        app:showAsAction="ifRoom"/>
 </menu>

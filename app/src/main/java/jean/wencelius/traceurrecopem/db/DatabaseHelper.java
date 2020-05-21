@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_TABLE_TRACKPOINT = ""
             + "create table " + TrackContentProvider.Schema.TBL_TRACKPOINT + " ("
             + TrackContentProvider.Schema.COL_ID	+ " integer primary key autoincrement,"
+            + TrackContentProvider.Schema.COL_UUID + " text,"
             + TrackContentProvider.Schema.COL_TRACK_ID + " integer not null,"
             + TrackContentProvider.Schema.COL_LATITUDE + " double not null,"
             + TrackContentProvider.Schema.COL_LONGITUDE + " double not null,"
