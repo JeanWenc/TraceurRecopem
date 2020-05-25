@@ -203,7 +203,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
                 String fulltext = "Nb points = " + Integer.toString(mGpsLogger.getPointCount());
                 mShowPointCount.setText(fulltext);
 
-                Toast.makeText(MapAndTrackActivity.this, "Tracé enregistré. Mauururu !",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapAndTrackActivity.this, R.string.thank_you_message,Toast.LENGTH_SHORT).show();
 
                 item.setVisible(false);
 

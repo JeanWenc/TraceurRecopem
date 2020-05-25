@@ -5,6 +5,7 @@
     <string name="answer_yes">Oui</string>
     <string name="answer_no">Non</string>
 
+    <string name ="thank_you_message">"Tracé enregistré. Mauruuru maita'i !"</string>
     <!-- LOGIN ACTIVITY -->
     <string name="activity_login_name_hint">Nom du collaborateur</string>
     <string name="activity_login_id_hint">Identifiant du collaborateur</string>
@@ -25,6 +26,18 @@
     <!--WAYPOINT NAME DIALOG-->
     <string name="dialog_waypoint_name_text">Nom du marqueur</string>
     <string name="dialog_waypoint_name_input_hint">Donne un nom à ton marqueur</string>
+
+    <!--MAP ALONE ACTIVITY MENU-->
+    <string name="activity_map_alone_menu_back">Retour</string>
+    <string name="activity_map_alone_menu_delete">Effacer dernier point</string>
+    <string name="activity_map_alone_menu_done">Terminé</string>
+
+    <!--MANUAL TRACK ACTIVITY-->
+    <string name="activity_manual_track_title">Créer un tracé manuel</string>
+    <string name="activity_manual_track_input_day_question">Quel jour es-tu parti ?</string>
+    <string name="activity_manual_track_input_dep_time_question">A quelle heure es-tu parti ?</string>
+    <string name="activity_manual_track_input_arr_time_question">A quelle heure es-tu revenu ?</string>
+    <string name="activity_manual_track_btn_text">Choisi</string>
 
     <!-- TRACKLIST ACTIVITY -->
     <string name="activity_track_list_empty">Aucun tracé enregistré</string>
@@ -235,5 +248,8 @@
         <item>Acanthurus xanthopterus</item>
         <item>Cephalopholis argus</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

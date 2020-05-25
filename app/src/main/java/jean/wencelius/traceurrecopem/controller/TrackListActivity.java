@@ -24,7 +24,6 @@ public class TrackListActivity extends ListActivity {
     private ImageButton mBtnAddManualTrack;
     private ImageButton mBtnBack;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,10 +36,7 @@ public class TrackListActivity extends ListActivity {
         mBtnAddManualTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mapAloneActivityIntent = new Intent(TrackListActivity.this,MapAloneActivity.class);
-                mapAloneActivityIntent.putExtra(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK,"true");
-                //TODO: Change below
-                mapAloneActivityIntent.putExtra(recopemValues.BUNDLE_EXTRA_CREATE_MANUAL_TRACK_ID,(long) 1);
+                Intent mapAloneActivityIntent = new Intent(TrackListActivity.this,ManualTrackActivity.class);
                 startActivity(mapAloneActivityIntent);
             }
         });
@@ -59,6 +55,7 @@ public class TrackListActivity extends ListActivity {
         Cursor cursor = getContentResolver().query(
                 TrackContentProvider.CONTENT_URI_TRACK, null, null, null,
                 TrackContentProvider.Schema.COL_START_DATE + " desc");
+
         startManagingCursor(cursor);
         setListAdapter(new TrackListAdapter(TrackListActivity.this, cursor));
         getListView().setEmptyView(findViewById(R.id.activity_tracklist_empty));  // undo change from onPause
@@ -111,8 +108,5 @@ public class TrackListActivity extends ListActivity {
        startActivity(TrackListDetailIntent);
 
         Toast.makeText(this, "Track # "+Long.toString(id), Toast.LENGTH_LONG).show();
-    }
-
-    private void createManualTrack() {
     }
 }

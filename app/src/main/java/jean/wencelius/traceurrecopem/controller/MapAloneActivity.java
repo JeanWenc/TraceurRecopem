@@ -37,7 +37,9 @@ import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.MapEventsOverlay;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.PolyOverlayWithIW;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -86,6 +88,8 @@ public class MapAloneActivity extends AppCompatActivity {
     private MyLocationNewOverlay mLocationOverlay;
     private ItemizedOverlayWithFocus<OverlayItem> mWaypointOverlay;
     private Polyline mLine;
+    private Marker mFirstPoint;
+
     private int mLineIndex;
     private FolderOverlay westOverlay, eastOverlay, southOverlay, northOverlay;
     private FolderOverlay navOverlay, otherOverlay, portOverlay, starboardOverlay;
@@ -159,7 +163,6 @@ public class MapAloneActivity extends AppCompatActivity {
 
                     getContentResolver().insert(TrackContentProvider.trackPointsUri(newTrackId), values);
                     getContentResolver().insert(TrackContentProvider.trackPointsUri(newTrackId), values);
-                    Toast.makeText(getBaseContext(),p.getLatitude() + " - "+p.getLongitude(), Toast.LENGTH_LONG).show();
                     return false;
                 }
             };
@@ -265,7 +268,6 @@ public class MapAloneActivity extends AppCompatActivity {
             mMap.invalidate();
         }
 
-
         btCenterMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -312,7 +314,7 @@ public class MapAloneActivity extends AppCompatActivity {
     private void pathChanged() {
         hideManualTrack();
         List<GeoPoint> geoPoints = new ArrayList<>();
-
+        List<GeoPoint> firstPoint = new ArrayList<>();
         Cursor c = getContentResolver().query(
                 TrackContentProvider.trackPointsUri(newTrackId),
                 null, null, null, TrackContentProvider.Schema.COL_ID + " asc");
@@ -323,16 +325,27 @@ public class MapAloneActivity extends AppCompatActivity {
                             c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LONGITUDE))
             );
             geoPoints.add(i);
+            if(geoPoints.size()==1){
+                firstPoint.add(i);
+                mFirstPoint = new Marker(mMap);
+                mFirstPoint.setPosition(firstPoint.get(0));
+                mMap.getOverlays().add(mFirstPoint);
+            }
         }
         c.close();
+
+
         mLine = new Polyline();   //see note below!
         mLine.setPoints(geoPoints);
+        mLine.setColor(Color.RED);
         geoPoints.clear();
+        firstPoint.clear();
         mMap.getOverlayManager().add(mLine);
         mLineIndex = mMap.getOverlays().indexOf(mLine);
     }
 
     private void hideManualTrack(){
+        mMap.getOverlays().remove(mFirstPoint);
         mMap.getOverlays().remove(mLine);
     }
 
@@ -496,7 +509,9 @@ public class MapAloneActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_map_alone_back).setVisible(!createNewTrack);
         menu.findItem(R.id.activity_map_alone_delete_last_trackpoint).setVisible(createNewTrack);
+        menu.findItem(R.id.activity_map_alone_done).setVisible(createNewTrack);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -504,8 +519,10 @@ public class MapAloneActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.activity_map_alone_back:
-                Intent menuActivityIntent = new Intent(MapAloneActivity.this, MenuActivity.class);
-                startActivity(menuActivityIntent);
+                if(createNewTrack==false){
+                    Intent menuActivityIntent = new Intent(MapAloneActivity.this, MenuActivity.class);
+                    startActivity(menuActivityIntent);
+                }
                 break;
             case R.id.activity_map_alone_delete_last_trackpoint:
                 Cursor c = getContentResolver().query(
@@ -524,6 +541,17 @@ public class MapAloneActivity extends AppCompatActivity {
                 c.close();
                 pathChanged();
                 break;
+            case R.id.activity_map_alone_done:
+                Toast.makeText(this, R.string.thank_you_message, Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run(){
+                        Intent TrackListActivityIntent = new Intent(MapAloneActivity.this, TrackListActivity.class);
+                        startActivity(TrackListActivityIntent);
+                    }
+                },2000); //LENGTH_SHORT is usually 2 second long
+
+
         }
         return super.onOptionsItemSelected(item);
     }

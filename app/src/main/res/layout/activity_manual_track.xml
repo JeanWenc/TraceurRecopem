@@ -1,9 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controller.ManualTrackActivity">
+    tools:context=".controller.ManualTrackActivity"
+    android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="@string/activity_manual_track_input_day_question"
+                android:textStyle="bold"
+                style="@android:style/TextAppearance.Large"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+                <Button
+                    android:id="@+id/activity_manual_track_day_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="20dp"
+                    android:text="@string/activity_manual_track_btn_text"
+                    android:onClick="showDatePickerDialog"/>
+                <TextView
+                    android:id="@+id/activity_manual_track_date_input_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="{Date}"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical"
+                    style="@android:style/TextAppearance.Large"
+                    />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="@string/activity_manual_track_input_dep_time_question"
+                android:textStyle="bold"
+                style="@android:style/TextAppearance.Large"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+                <Button
+                    android:id="@+id/activity_manual_track_dep_time_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="20dp"
+                    android:text="@string/activity_manual_track_btn_text"
+                    android:onClick="showTimePickerDialog"/>
+                <TextView
+                    android:id="@+id/activity_manual_track_dep_time_input_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="{Dep_time}"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical"
+                    style="@android:style/TextAppearance.Large"
+                    />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="@string/activity_manual_track_input_arr_time_question"
+                android:textStyle="bold"
+                style="@android:style/TextAppearance.Large"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+                <Button
+                    android:id="@+id/activity_manual_track_arr_time_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="20dp"
+                    android:text="@string/activity_manual_track_btn_text"
+                    android:onClick="showTimePickerDialog"/>
+                <TextView
+                    android:id="@+id/activity_manual_track_arr_time_input_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="{Arr_time}"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical"
+                    style="@android:style/TextAppearance.Large"
+                    />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/activity_manual_track_next_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="30dp"
+                android:layout_marginTop="20dp"
+                android:text="Suivant"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

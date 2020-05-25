@@ -46,8 +46,6 @@ public class MenuActivity extends AppCompatActivity {
 
     public static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
 
-    public static final String PREF_KEY_FISHER_ID = recopemValues.PREF_KEY_FISHER_ID;
-
     public long currentTrackId;
 
     @Override
@@ -139,20 +137,26 @@ public class MenuActivity extends AppCompatActivity {
     private long createNewTrack() throws CreateTrackException{
         Date startDate = new Date();
         int mDay  = mCalendar.get(Calendar.DAY_OF_WEEK);
-        String mSimpleDate = Integer.toString(mCalendar.get(Calendar.YEAR))+"/"+Integer.toString(mCalendar.get(Calendar.MONTH)+1)+"/"+Integer.toString(mCalendar.get(Calendar.DATE));
+
+        String strYear = Integer.toString(mCalendar.get(Calendar.YEAR));
+        String strMonth = Integer.toString(mCalendar.get(Calendar.MONTH)+1);
+        if(strMonth.length()==1) strMonth = "0"+strMonth;
+        String strDay = Integer.toString(mCalendar.get(Calendar.DATE));
+        if(strDay.length()==1) strDay = "0"+strDay;
+        String mSimpleDate = strYear+"-"+strMonth+"-"+strDay;
 
         String saveDirectory = getDataTrackDirectory(startDate);
 
-        String fisherId = AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext());
+        String fisherId = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_ID,getApplicationContext());
         String mRecopemId = fisherId + "_" + mSimpleDate;
 
         // Create entry in TRACK table
         ContentValues values = new ContentValues();
         values.put(TrackContentProvider.Schema.COL_NAME, "");
-        values.put(TrackContentProvider.Schema.COL_INF_ID, AppPreferences.getDefaultsString(PREF_KEY_FISHER_ID,getApplicationContext()));
+        values.put(TrackContentProvider.Schema.COL_INF_ID, fisherId);
         values.put(TrackContentProvider.Schema.COL_START_DATE, startDate.getTime());
-        values.put(TrackContentProvider.Schema.COL_HOUR_START,(long)0);
-        values.put(TrackContentProvider.Schema.COL_HOUR_END,(long)0);
+        values.put(TrackContentProvider.Schema.COL_HOUR_START,"");
+        values.put(TrackContentProvider.Schema.COL_HOUR_END,"");
         values.put(TrackContentProvider.Schema.COL_RECOPEM_TRACK_ID, mRecopemId);
         values.put(TrackContentProvider.Schema.COL_GPS_METHOD,"GPS");
         values.put(TrackContentProvider.Schema.COL_WEEKDAY,recopemValues.getWeekdayString(mDay));
@@ -180,7 +184,7 @@ public class MenuActivity extends AppCompatActivity {
         return trackId;
     }
 
-    public String getDataTrackDirectory(Date startDate){
+    public static String getDataTrackDirectory(Date startDate){
         File sdRoot = Environment.getExternalStorageDirectory();
 
         // The location that the user has specified gpx files and associated content to be written
@@ -203,7 +207,7 @@ public class MenuActivity extends AppCompatActivity {
 
         if (! storageDir.exists()) {
             if (! storageDir.mkdirs()) {
-                Toast.makeText(this, "Directory [" + storageDir.getAbsolutePath() + "] does not exist and cannot be created", Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "Directory [" + storageDir.getAbsolutePath() + "] does not exist and cannot be created", Toast.LENGTH_LONG).show();
             }else{
                 File noMedia = new File(storageDir,".nomedia");
                 try {

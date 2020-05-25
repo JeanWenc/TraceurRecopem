@@ -20,18 +20,10 @@ import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 
 public class AddDataActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener {
 
-    //TODO: Implement Add Manual Track Activity
-    //TODO: Enable waypoint creation on MapTrack (Dialog to input name). Means to think of a way to: create a layout with all waypoints in DB, clickable, evenutally possibility to delete them
     //TODO: Status of emailSent in TrackDetailActivity not satisfying because appears as true even if action cancelled by user.
+    //TODO: Implement the ManualTrack Activity (Date Picker, St hour and Stop Hour) and insert dB with same info as in MenuActivity, from that Activity go to MapAlone with Extra.
 
     //TODO: once all dataInput activities created, delete this one.
-
-/*
-Map And Track Activity
-  => Find a way to create overlay from waypoints and refresh it when new waypoint created => HAve to make query on whole WAYPOINTS TBL and not only trackId's waypoint table
-            => Create a button to display waypoints => waypoint markers should be clickable and on click link to delete waypoint.
-
-*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
