@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         if(mFisherName!=null){
-            String fulltext = "Ia Ora " + mFisherName + " !";
+            String fulltext = getResources().getString(R.string.activity_main_hello);
+            if(mFisherName.length()>0) fulltext+=mFisherName;
             mGreetingText.setText(fulltext);
         }
     }

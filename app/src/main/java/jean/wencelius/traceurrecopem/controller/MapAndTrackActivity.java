@@ -46,6 +46,7 @@ import java.util.List;
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.service.gpsLogger;
 import jean.wencelius.traceurrecopem.service.gpsLoggerServiceConnection;
 import jean.wencelius.traceurrecopem.recopemValues;
@@ -79,6 +80,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
     private Boolean IS_BEACON_SHOWING;
     private Boolean IS_WAYPOINTS_SHOWING;
     private Boolean IS_CURRENT_TRACK_SHOWING;
+    private String selTileProvider;
 
     private double mZoomLevel, mCurrentLon, mCurrentLat;
     private final static double mMooreaCenterLon = -149.831712;
@@ -111,7 +113,6 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
         mPersonIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_menu_mylocation);
 
-
         if(null!=savedInstanceState){
             currentTrackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             IS_BEACON_SHOWING = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_SHOW_BEACON);
@@ -120,6 +121,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
             mZoomLevel = savedInstanceState.getDouble(recopemValues.BUNDLE_STATE_CURRENT_ZOOM);
             mCurrentLon = savedInstanceState.getDouble(recopemValues.BUNDLE_STATE_CURRENT_LONGITUDE);
             mCurrentLat = savedInstanceState.getDouble(recopemValues.BUNDLE_STATE_CURRENT_LATITUDE);
+            selTileProvider = savedInstanceState.getString(recopemValues.BUNDLE_STATE_SEL_TILE_PROVIDER);
         }else{
             currentTrackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             IS_BEACON_SHOWING=false;
@@ -128,6 +130,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
             mZoomLevel = 13.0;
             mCurrentLat=mMooreaCenterLat;
             mCurrentLon=mMooreaCenterLon;
+            selTileProvider = recopemValues.MAP_TILE_PROVIDER_MOOREA_SAT;
         }
 
         mGpsLoggerServiceIntent = new Intent(this, gpsLogger.class);
@@ -142,6 +145,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
         outState.putDouble(recopemValues.BUNDLE_STATE_CURRENT_ZOOM,mMap.getZoomLevelDouble());
         outState.putDouble(recopemValues.BUNDLE_STATE_CURRENT_LATITUDE,mMap.getMapCenter().getLatitude());
         outState.putDouble(recopemValues.BUNDLE_STATE_CURRENT_LONGITUDE,mMap.getMapCenter().getLongitude());
+        outState.putString(recopemValues.BUNDLE_STATE_SEL_TILE_PROVIDER,selTileProvider);
         if(mGpsLogger != null){
             outState.putBoolean(STATE_IS_TRACKING, mGpsLogger.isTracking());
         }
@@ -191,6 +195,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        if(AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_NAME,getApplicationContext()).equals(recopemValues.USER_NAME_JEROME)) menu.findItem(R.id.activity_map_and_track_jerome).setVisible(true);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -216,6 +221,14 @@ public class MapAndTrackActivity extends AppCompatActivity {
                 },2000); //LENGTH_SHORT is usually 2 second long
 
                 break;
+            case R.id.activity_map_and_track_jerome:
+                if (selTileProvider.equals(recopemValues.MAP_TILE_PROVIDER_MOOREA_SAT)){
+                    selTileProvider = recopemValues.MAP_TILE_PROVIDER_NAVIONICS;
+                    mMap.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext(),selTileProvider));
+                }else{
+                    selTileProvider = recopemValues.MAP_TILE_PROVIDER_MOOREA_SAT;
+                    mMap.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext(),selTileProvider));
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -226,7 +239,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
         
         mMap.setMultiTouchControls(true);
         mMap.setUseDataConnection(false);
-        mMap.setTileProvider(MapTileProvider.setMapTileProvider(ctx));
+        mMap.setTileProvider(MapTileProvider.setMapTileProvider(ctx,selTileProvider));
 
         mapController = mMap.getController();
         mapController.setZoom(mZoomLevel);

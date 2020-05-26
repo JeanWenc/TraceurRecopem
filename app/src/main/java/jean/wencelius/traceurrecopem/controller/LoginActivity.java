@@ -6,6 +6,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -124,15 +125,19 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT_OWNER,boatOwner,getApplicationContext());
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_LOCATION_SALE_PREF,location,getApplicationContext());
 
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY,17);
-                calendar.set(Calendar.MINUTE,00);
+                Calendar alarmStartTime = Calendar.getInstance();
+                Calendar now = Calendar.getInstance();
+                alarmStartTime.set(Calendar.HOUR_OF_DAY,11);
+                alarmStartTime.set(Calendar.MINUTE,30);
+                if(now.after(alarmStartTime)){
+                    alarmStartTime.add(Calendar.MINUTE,15);
+                }
 
                 Intent notificationIntent = new Intent(getApplicationContext(), Notification_receiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),recopemValues.REQUEST_CODE_DAILY_NOTIFICATION,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
                 AlarmManager alarmManager =(AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
                 //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),2*AlarmManager.INTERVAL_DAY,pendingIntent);
 
                 //User clicked button

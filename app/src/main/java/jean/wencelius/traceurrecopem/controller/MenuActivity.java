@@ -16,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
@@ -241,10 +242,11 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public static void cancelDailyNotification(Context ctx) {
+
         Intent intent = new Intent(ctx, Notification_receiver.class);
         AlarmManager alarmManager =(AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getService(ctx, recopemValues.REQUEST_CODE_DAILY_NOTIFICATION, intent,
-                        PendingIntent.FLAG_NO_CREATE);
+                        PendingIntent.FLAG_UPDATE_CURRENT);
         if (pendingIntent != null && alarmManager != null) {
             alarmManager.cancel(pendingIntent);
         }

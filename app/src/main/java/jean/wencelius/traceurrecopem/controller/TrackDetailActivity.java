@@ -102,7 +102,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         mMapView = (MapView) findViewById(R.id.activity_track_detail_display_track);
         mMapView.setMultiTouchControls(true);
         mMapView.setUseDataConnection(false);
-        mMapView.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext()));
+        mMapView.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext(),recopemValues.MAP_TILE_PROVIDER_MOOREA_SAT));
         mMapViewController = mMapView.getController();
         mMapViewController.setZoom(13);
 

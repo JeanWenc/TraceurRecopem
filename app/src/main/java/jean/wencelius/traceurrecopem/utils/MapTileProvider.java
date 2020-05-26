@@ -17,7 +17,7 @@ import java.io.InputStream;
  */
 public class MapTileProvider {
 
-    public static OfflineTileProvider setMapTileProvider(Context ctx) {
+    public static OfflineTileProvider setMapTileProvider(Context ctx,String tileType) {
 
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
@@ -25,7 +25,7 @@ public class MapTileProvider {
 
         File file = null;
         try {
-            file = getFileFromAssets("moorea.mbtiles", ctx);
+            file = getFileFromAssets(tileType, ctx);
         } catch (IOException e) {
             e.printStackTrace();
         }

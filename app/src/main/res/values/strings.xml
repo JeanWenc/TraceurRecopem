@@ -6,6 +6,8 @@
     <string name="answer_no">Non</string>
 
     <string name ="thank_you_message">"Tracé enregistré. Mauruuru maita'i !"</string>
+    <!-- MAIN ACTIVITY -->
+    <string name="activity_main_hello">"'Ia ora na "</string>
     <!-- LOGIN ACTIVITY -->
     <string name="activity_login_name_hint">Nom du collaborateur</string>
     <string name="activity_login_id_hint">Identifiant du collaborateur</string>

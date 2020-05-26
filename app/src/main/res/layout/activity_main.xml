@@ -11,7 +11,7 @@
         android:id="@+id/activity_main_greeting_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ia Ora Na"
+        android:text="@string/activity_main_hello"
         android:textSize="26sp"
         android:textColor="#12518C"
         android:layout_centerHorizontal="true"
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:padding="20dp"
-        android:src="@drawable/ic_recopem_sub"
+        android:src="@drawable/ic_recopem_sub_img"
         android:layout_centerInParent="true"
         />
 

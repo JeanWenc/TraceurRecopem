@@ -239,7 +239,7 @@ public class MapAloneActivity extends AppCompatActivity {
 
         mMap.setMultiTouchControls(true);
         mMap.setUseDataConnection(false);
-        mMap.setTileProvider(MapTileProvider.setMapTileProvider(ctx));
+        mMap.setTileProvider(MapTileProvider.setMapTileProvider(ctx,recopemValues.MAP_TILE_PROVIDER_MOOREA_SAT));
 
         IMapController mapController = mMap.getController();
         mapController.setZoom(mZoomLevel);

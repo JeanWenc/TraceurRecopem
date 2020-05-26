@@ -89,6 +89,12 @@ public class recopemValues {
     public static final String BUNDLE_STATE_CURRENT_LATITUDE = "currentLat";
     public static final String BUNDLE_STATE_CURRENT_LONGITUDE  = "currentLong";
 
+    public static final String MAP_TILE_PROVIDER_MOOREA_SAT ="moorea.mbtiles";
+    public static final String MAP_TILE_PROVIDER_NAVIONICS ="navionics.mbtiles";
+
+    public static final String USER_NAME_JEROME = "Jérôme";
+    public static final String BUNDLE_STATE_SEL_TILE_PROVIDER = "selTileProvider";
+
     public static String getWeekdayString (int intWeekday){
         String mWeekdayString = new String();
         switch (intWeekday){
