@@ -20,6 +20,10 @@
         <item>"from_shore"</item>
     </string-array>
 
+    <!--MAIN NOTIFICATION-->
+    <string name="main_notification_title">Traceur ReCoPeM</string>
+    <string name="main_notification_message">Es-tu allé à la pêche?</string>
+
     <!--MAP AND TRACK ACTIVITY-->
     <string name="activity_map_and_track_waypoint_dialog_title">Mon marqueur</string>
     <string name="activity_map_and_track_waypoint_dialog_delete_title">Supprimer le marqueur?</string>

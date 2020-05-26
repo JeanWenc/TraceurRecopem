@@ -2,6 +2,8 @@ package jean.wencelius.traceurrecopem.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,10 +19,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.Calendar;
+
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.model.User;
 import jean.wencelius.traceurrecopem.recopemValues;
+import jean.wencelius.traceurrecopem.utils.Notification_receiver;
 
 public class LoginActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -118,6 +123,15 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT,boat,getApplicationContext());
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT_OWNER,boatOwner,getApplicationContext());
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_LOCATION_SALE_PREF,location,getApplicationContext());
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY,17);
+
+                Intent notificationIntent = new Intent(getApplicationContext(), Notification_receiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),100,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+                AlarmManager alarmManager =(AlarmManager) getSystemService(ALARM_SERVICE);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
 
                 //User clicked button
                 Intent menuActivityIntent = new Intent(LoginActivity.this, MenuActivity.class);
