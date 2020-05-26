@@ -95,14 +95,6 @@
                     android:onClick="onRadioButtonClicked"/>
             </RadioGroup>
 
-            <Button
-                android:id="@+id/activity_data_input_wind_next_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="30dp"
-                android:layout_marginTop="20dp"
-                android:text="Suivant"/>
         </LinearLayout>
     </ScrollView>
 

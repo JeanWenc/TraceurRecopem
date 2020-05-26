@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -53,7 +55,6 @@ public class dataInputCatchCons extends AppCompatActivity{
     private boolean mNewPicAdded;
 
     //Views
-    private Button mButton;
     private TextView mPicConsQuestion;
     private RelativeLayout mCatchConsQuantityFrame;
     private LinearLayout mCatchConsPicFrame;
@@ -72,6 +73,7 @@ public class dataInputCatchCons extends AppCompatActivity{
     private boolean nValid;
     private boolean typeValid;
     private boolean picValid;
+    private boolean showNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +82,6 @@ public class dataInputCatchCons extends AppCompatActivity{
 
         //Prevent keyboard from showing up on activity start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-        mButton = (Button) findViewById(R.id.activity_data_input_catch_cons_next_btn);
 
         mPicConsQuestion = (TextView) findViewById(R.id.activity_data_input_catch_cons_question_pic);
 
@@ -189,7 +189,8 @@ public class dataInputCatchCons extends AppCompatActivity{
         typeValid = mCatchConsTypeInt!=0;
         picValid = mCatchConsPicAns.equals("true") || mCatchConsPicAns.equals("false");
 
-        mButton.setEnabled(mCatchConsAns.equals("false") ||(nValid && typeValid && picValid));
+        showNext = mCatchConsAns.equals("false") ||(nValid && typeValid && picValid);
+        invalidateOptionsMenu();
 
         if(mCatchConsAns.equals("true")){
             mCatchConsQuantityFrame.setVisibility(View.VISIBLE);
@@ -204,17 +205,125 @@ public class dataInputCatchCons extends AppCompatActivity{
 
 
         setTitle("Question 8/8");
+    }
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch (view.getId()) {
+            case R.id.activity_data_input_catch_cons_question_no:
+                if (checked) {
+                    mCatchConsAns="false";
+                    showNext = true;
+                    mCatchConsQuantityFrame.setVisibility(View.INVISIBLE);
+                    mCatchConsPicFrame.setVisibility(View.INVISIBLE);
+                    mCatchConsN = 0;
+                    mCatchConsType = type[0];
+                    mCatchConsTypeInt = 0;
+                    mCatchConsPicAns = "false";
+                }
+                break;
+            case R.id.activity_data_input_catch_cons_question_yes:
+                if (checked) {
+                    mCatchConsAns="true";
+                    showNext = false;
+                    mCatchConsQuantityFrame.setVisibility(View.VISIBLE);
+                    mCatchConsPicFrame.setVisibility(View.VISIBLE);
+                }
+                break;
+            case R.id.activity_data_input_catch_cons_question_pic_no:
+                if (checked) {
+                    mCatchConsPicAns = "false";
+                    picValid=true;
+                    showNext = mCatchConsAns.equals("false") ||(nValid && typeValid && picValid);
+                    LaunchFishCaughtIntent();
+                }
+                break;
+            case R.id.activity_data_input_catch_cons_question_pic_yes:
+                if (checked) {
+                    mCatchConsPicAns = "true";
+                    picValid=true;
+                    showNext = mCatchConsAns.equals("false") ||(nValid && typeValid && picValid);
+
+                    if(mCatchSalePicAns.equals("true") || mCatchOrderPicAns.equals("true") || mCatchGivePicAns.equals("true")) LaunchFishCaughtIntent();
+                }
+                break;
+        }
+        invalidateOptionsMenu();
+    }
+
+    class nPicker implements NumberPicker.OnValueChangeListener{
+        @Override
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            mCatchConsN = newVal;
+            nValid = mCatchConsN!=0;
+
+            showNext = mCatchConsAns.equals("false") ||(nValid && typeValid && picValid);
+            invalidateOptionsMenu();
+        }
+    }
+
+    class typePicker implements NumberPicker.OnValueChangeListener{
+        @Override
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            mCatchConsType = type[newVal];
+            mCatchConsTypeInt = newVal;
+            typeValid = !mCatchConsType.equals("Choisi");
+
+            showNext = mCatchConsAns.equals("false") ||(nValid && typeValid && picValid);
+            invalidateOptionsMenu();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(recopemValues.BUNDLE_STATE_ANS,mCatchConsAns);
+        outState.putInt(recopemValues.BUNDLE_STATE_CATCH_N,mCatchConsN);
+        outState.putInt(recopemValues.BUNDLE_STATE_TYPE_INT,mCatchConsTypeInt);
+        outState.putString(recopemValues.BUNDLE_STATE_DETAILS,mCatchConsInputDetails.getText().toString());
+        outState.putString(recopemValues.BUNDLE_STATE_PIC_ANS,mCatchConsPicAns);
+
+        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+
+        outState.putString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS,mCatchSalePicAns);
+        outState.putString(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
+        outState.putString(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS,mCatchGivePicAns);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void LaunchFishCaughtIntent() {
+        Intent fishCaughtIntent = new Intent(dataInputCatchCons.this, dataInputFishCaught.class);
+        fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+        fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+        fishCaughtIntent.putExtra(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
+        startActivity(fishCaughtIntent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.datainput_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_data_input_menu_next).setVisible(showNext);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.activity_data_input_menu_next:
                 mCatchConsDetails = mCatchConsInputDetails.getText().toString();
 
                 boolean addedFishCaughtInfo = false;
                 if(!mNewPicAdded){
                     Cursor mCursorFishCaught = getContentResolver().query(TrackContentProvider.poissonsUri(trackId), null,
                             null, null, null);
-                     addedFishCaughtInfo= mCursorFishCaught.getCount()>0;
+                    addedFishCaughtInfo= mCursorFishCaught.getCount()>0;
                     mCursorFishCaught.close();
                 }
 
@@ -247,97 +356,8 @@ public class dataInputCatchCons extends AppCompatActivity{
                 dataInputCatchOrder.getInstance().finish();
                 dataInputCatchGive.getInstance().finish();
                 finish();
-            }
-        });
-    }
-
-    public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-        // Check which radio button was clicked
-        switch (view.getId()) {
-            case R.id.activity_data_input_catch_cons_question_no:
-                if (checked) {
-                    mCatchConsAns="false";
-                    mButton.setEnabled(true);
-                    mCatchConsQuantityFrame.setVisibility(View.INVISIBLE);
-                    mCatchConsPicFrame.setVisibility(View.INVISIBLE);
-                    mCatchConsN = 0;
-                    mCatchConsType = type[0];
-                    mCatchConsTypeInt = 0;
-                    mCatchConsPicAns = "false";
-                }
-                break;
-            case R.id.activity_data_input_catch_cons_question_yes:
-                if (checked) {
-                    mCatchConsAns="true";
-                    mButton.setEnabled(false);
-                    mCatchConsQuantityFrame.setVisibility(View.VISIBLE);
-                    mCatchConsPicFrame.setVisibility(View.VISIBLE);
-                }
-                break;
-            case R.id.activity_data_input_catch_cons_question_pic_no:
-                if (checked) {
-                    mCatchConsPicAns = "false";
-                    picValid=true;
-                    mButton.setEnabled(mCatchConsAns.equals("false") ||(nValid && typeValid && picValid));
-                    LaunchFishCaughtIntent();
-                }
-                break;
-            case R.id.activity_data_input_catch_cons_question_pic_yes:
-                if (checked) {
-                    mCatchConsPicAns = "true";
-                    picValid=true;
-                    mButton.setEnabled(mCatchConsAns.equals("false") ||(nValid && typeValid && picValid));
-
-                    if(mCatchSalePicAns.equals("true") || mCatchOrderPicAns.equals("true") || mCatchGivePicAns.equals("true")) LaunchFishCaughtIntent();
-                }
                 break;
         }
-    }
-
-    class nPicker implements NumberPicker.OnValueChangeListener{
-        @Override
-        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-            mCatchConsN = newVal;
-            nValid = mCatchConsN!=0;
-
-            mButton.setEnabled(mCatchConsAns.equals("false") ||(nValid && typeValid && picValid));
-        }
-    }
-
-    class typePicker implements NumberPicker.OnValueChangeListener{
-        @Override
-        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-            mCatchConsType = type[newVal];
-            mCatchConsTypeInt = newVal;
-            typeValid = !mCatchConsType.equals("Choisi");
-
-            mButton.setEnabled(mCatchConsAns.equals("false") ||(nValid && typeValid && picValid));
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString(recopemValues.BUNDLE_STATE_ANS,mCatchConsAns);
-        outState.putInt(recopemValues.BUNDLE_STATE_CATCH_N,mCatchConsN);
-        outState.putInt(recopemValues.BUNDLE_STATE_TYPE_INT,mCatchConsTypeInt);
-        outState.putString(recopemValues.BUNDLE_STATE_DETAILS,mCatchConsInputDetails.getText().toString());
-        outState.putString(recopemValues.BUNDLE_STATE_PIC_ANS,mCatchConsPicAns);
-
-        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
-        outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
-
-        outState.putString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS,mCatchSalePicAns);
-        outState.putString(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
-        outState.putString(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS,mCatchGivePicAns);
-        super.onSaveInstanceState(outState);
-    }
-
-    private void LaunchFishCaughtIntent() {
-        Intent fishCaughtIntent = new Intent(dataInputCatchCons.this, dataInputFishCaught.class);
-        fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-        fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-        fishCaughtIntent.putExtra(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
-        startActivity(fishCaughtIntent);
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -33,7 +35,7 @@ public class dataInputWind extends AppCompatActivity {
     private long trackId;
     private boolean mNewPicAdded;
 
-    private Button mButton;
+    private boolean showNext;
 
     private boolean cg1;
     private boolean cg2;
@@ -47,8 +49,6 @@ public class dataInputWind extends AppCompatActivity {
         setContentView(R.layout.activity_data_input_wind);
 
         windAct = this;
-
-        mButton = (Button) findViewById(R.id.activity_data_input_wind_next_btn);
 
         if(savedInstanceState!=null){
             mWindEstFisher = savedInstanceState.getString(BUNDLE_STATE_WIND);
@@ -103,27 +103,10 @@ public class dataInputWind extends AppCompatActivity {
         cg1 = !mWindEstFisher.equals("empty");
         cg2 = !mCurrentEstFisher.equals("empty");
 
-        mButton.setEnabled(cg1 && cg2);
+        showNext = cg1 && cg2;
+        invalidateOptionsMenu();
 
         setTitle("Question 4/8");
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
-
-                ContentValues windValues = new ContentValues();
-                windValues.put(TrackContentProvider.Schema.COL_WIND_FISHER,mWindEstFisher);
-                windValues.put(TrackContentProvider.Schema.COL_CURRENT_FISHER,mCurrentEstFisher);
-
-                getContentResolver().update(trackUri, windValues, null, null);
-
-                Intent NextIntent = new Intent(dataInputWind.this, dataInputCatchSale.class);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-                startActivity(NextIntent);
-            }
-        });
     }
 
     @Override
@@ -177,7 +160,42 @@ public class dataInputWind extends AppCompatActivity {
                 }
                 break;
         }
-        mButton.setEnabled(cg1 && cg2);
+        showNext = cg1 && cg2;
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.datainput_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_data_input_menu_next).setVisible(showNext);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.activity_data_input_menu_next:
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+
+                ContentValues windValues = new ContentValues();
+                windValues.put(TrackContentProvider.Schema.COL_WIND_FISHER,mWindEstFisher);
+                windValues.put(TrackContentProvider.Schema.COL_CURRENT_FISHER,mCurrentEstFisher);
+
+                getContentResolver().update(trackUri, windValues, null, null);
+
+                Intent NextIntent = new Intent(dataInputWind.this, dataInputCatchSale.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                startActivity(NextIntent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static dataInputWind getInstance(){

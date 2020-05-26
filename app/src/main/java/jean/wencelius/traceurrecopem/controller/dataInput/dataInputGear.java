@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -34,10 +36,10 @@ public class dataInputGear extends AppCompatActivity {
     private EditText mInputOtherDetail;
     private String mGear;
     private String mOtherDetail;
-    private Button mButton;
 
     private long trackId;
     private boolean mNewPicAdded;
+    private boolean showNext;
 
     private static final String BUNDLE_STATE_GEAR = "gear";
     private static final String BUNDLE_STATE_OTHER_DETAIL = "otherDetail";
@@ -52,14 +54,13 @@ public class dataInputGear extends AppCompatActivity {
 
         gearAct = this;
 
-        mButton = (Button) findViewById(R.id.activity_data_input_gear_next_btn);
         mInputOtherDetail = (EditText) findViewById(R.id.activity_data_input_gear_autre_detail);
 
         if(savedInstanceState != null){
             mGear = savedInstanceState.getString(BUNDLE_STATE_GEAR);
             mOtherDetail = savedInstanceState.getString(BUNDLE_STATE_OTHER_DETAIL);
 
-            mButton.setEnabled(savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON));
+            showNext = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON);
 
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
@@ -79,13 +80,13 @@ public class dataInputGear extends AppCompatActivity {
                 checkResponses(mGear);
                 mOtherDetail = otherDetail;
                 if(mGear.contains("other") && mOtherDetail.equals(""))
-                    mButton.setEnabled(false);
+                    showNext = false;
                 else
-                    mButton.setEnabled(true);
+                    showNext = true;
             }else{
                 mGear="empty";
                 mOtherDetail = "";
-                mButton.setEnabled(false);
+                showNext = false;
             }
         }
 
@@ -97,29 +98,25 @@ public class dataInputGear extends AppCompatActivity {
             mInputOtherDetail.setVisibility(View.INVISIBLE);
         }
 
-        setTitle("Question 1/8");
-
-        mButton.setOnClickListener(new View.OnClickListener() {
+        mInputOtherDetail.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-                ContentValues gearValues = new ContentValues();
-                gearValues.put(TrackContentProvider.Schema.COL_GEAR,mGear);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                showNext = s.toString().length()!=0;
+                invalidateOptionsMenu();
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
 
-                if(mGear.contains("other")){
-                    mOtherDetail = mInputOtherDetail.getText().toString();
-                    gearValues.put(TrackContentProvider.Schema.COL_GEAR_OTHER_DETAILS,mOtherDetail);
-                }
-
-                getContentResolver().update(trackUri, gearValues, null, null);
-
-                Intent NextIntent = new Intent(dataInputGear.this, dataInputBoat.class);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-                startActivity(NextIntent);
             }
         });
+
+        invalidateOptionsMenu();
+
+        setTitle("Question 1/8");
     }
 
     private void checkResponses(String gear) {
@@ -157,7 +154,7 @@ public class dataInputGear extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(BUNDLE_STATE_GEAR,mGear);
         outState.putString(BUNDLE_STATE_OTHER_DETAIL,mInputOtherDetail.getText().toString());
-        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,mButton.isEnabled());
+        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,showNext);
 
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
@@ -251,26 +248,13 @@ public class dataInputGear extends AppCompatActivity {
 
         if(mGear.contains("other")){
             if (mInputOtherDetail.getText().toString().equals(""))
-                mButton.setEnabled(false);
+                showNext = false;
             else
-                mButton.setEnabled(true);
-            mInputOtherDetail.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    mButton.setEnabled(s.toString().length()!=0);
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
+                showNext =true;
         }else{
-            mButton.setEnabled(mGear!="empty");
+           showNext = mGear!="empty";
         }
+        invalidateOptionsMenu();
     }
 
     public void removeString(String string){
@@ -282,6 +266,45 @@ public class dataInputGear extends AppCompatActivity {
             mGear="empty";
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.datainput_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_data_input_menu_next).setVisible(showNext);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.activity_data_input_menu_next:
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+
+                ContentValues gearValues = new ContentValues();
+                gearValues.put(TrackContentProvider.Schema.COL_GEAR,mGear);
+
+                if(mGear.contains("other")){
+                    mOtherDetail = mInputOtherDetail.getText().toString();
+                    gearValues.put(TrackContentProvider.Schema.COL_GEAR_OTHER_DETAILS,mOtherDetail);
+                }
+
+                getContentResolver().update(trackUri, gearValues, null, null);
+
+                Intent NextIntent = new Intent(dataInputGear.this, dataInputBoat.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                startActivity(NextIntent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     public static dataInputGear getInstance(){
         return   gearAct;

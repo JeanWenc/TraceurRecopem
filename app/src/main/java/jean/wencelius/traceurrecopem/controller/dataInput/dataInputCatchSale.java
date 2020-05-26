@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -54,7 +56,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
     private boolean mNewPicAdded;
 
     //Views
-    private Button mButton;
     private RelativeLayout mCatchSaleQuantityFrame;
     private LinearLayout mCatchSalePicFrame;
 
@@ -79,6 +80,8 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
     private boolean whereValid;
     private boolean picValid;
 
+    private boolean showNext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +91,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         saleAct = this;
-
-        mButton = (Button) findViewById(R.id.activity_data_input_catch_sale_next_btn);
 
         mCatchSaleQuantityFrame = (RelativeLayout) findViewById(R.id.activity_catch_sale_quantity_frame);
         mCatchSalePicFrame = (LinearLayout) findViewById(R.id.activity_catch_sale_pic_frame);
@@ -242,7 +243,8 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         whereValid = mCatchSaleWhereInt!=0;
         picValid = mCatchSalePicAns.equals("true") || mCatchSalePicAns.equals("false");
 
-        mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
+        showNext = mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+        invalidateOptionsMenu();
 
         if(mCatchSaleAns.equals("true")){
             mCatchSaleQuantityFrame.setVisibility(View.VISIBLE);
@@ -253,10 +255,144 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         }
 
         setTitle("Question 5/8");
+    }
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch (view.getId()) {
+            case R.id.activity_data_input_catch_sale_question_no:
+                if (checked) {
+                    mCatchSaleAns="false";
+                    showNext = true;
+                    mCatchSaleQuantityFrame.setVisibility(View.INVISIBLE);
+                    mCatchSalePicFrame.setVisibility(View.INVISIBLE);
+                    mCatchSaleN = 0;
+                    mCatchSaleType = type[0];
+                    mCatchSaleTypeInt = 0;
+                    mCatchSalePrice = prices[0];
+                    mCatchSalePriceInt = 0;
+                    mCatchSaleWhere = places[0];
+                    mCatchSaleWhereInt = 0;
+                    mCatchSalePicAns = "false";
+                }
+                break;
+            case R.id.activity_data_input_catch_sale_question_yes:
+                if (checked) {
+                    mCatchSaleAns="true";
+                    showNext = false;
+                    mCatchSaleQuantityFrame.setVisibility(View.VISIBLE);
+                    mCatchSalePicFrame.setVisibility(View.VISIBLE);
+                }
+                break;
+            case R.id.activity_data_input_catch_sale_question_pic_no:
+                if (checked) {
+                    mCatchSalePicAns = "false";
+                    picValid=true;
+
+                    showNext = mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+
+                    Intent fishCaughtIntent = new Intent(dataInputCatchSale.this, dataInputFishCaught.class);
+                    fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                    fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                    fishCaughtIntent.putExtra(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
+                    startActivity(fishCaughtIntent);
+                }
+                break;
+            case R.id.activity_data_input_catch_sale_question_pic_yes:
+                if (checked) {
+                    mCatchSalePicAns = "true";
+                    picValid=true;
+                   showNext = mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+                }
+                break;
+        }
+        invalidateOptionsMenu();
+    }
+
+   @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Spinner spin = (Spinner)parent;
+
+        if(spin.getId() == R.id.activity_data_input_catch_sale_input_price)
+        {
+            mCatchSalePrice = prices[position];
+            mCatchSalePriceInt=position;
+
+            priceValid = !mCatchSalePrice.equals(prices[0]);
+
+            showNext = mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+        }else{
+            mCatchSaleWhere = places[position];
+            mCatchSaleWhereInt=position;
+
+            whereValid = !mCatchSaleWhere.equals(places[0]);
+
+            showNext = mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+        }
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        showNext = false;
+        invalidateOptionsMenu();
+    }
+
+    class nPicker implements NumberPicker.OnValueChangeListener{
+        @Override
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            mCatchSaleN = newVal;
+            nValid = mCatchSaleN!=0;
+            showNext = mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+            invalidateOptionsMenu();
+        }
+    }
+
+    class typePicker implements NumberPicker.OnValueChangeListener{
+        @Override
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            mCatchSaleType = type[newVal];
+            mCatchSaleTypeInt = newVal;
+            typeValid = !mCatchSaleType.equals(type[0]);
+           showNext = mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+           invalidateOptionsMenu();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+
+        outState.putString(recopemValues.BUNDLE_STATE_ANS,mCatchSaleAns);
+        outState.putInt(recopemValues.BUNDLE_STATE_CATCH_N,mCatchSaleN);
+        outState.putInt(recopemValues.BUNDLE_STATE_TYPE_INT,mCatchSaleTypeInt);
+        outState.putInt(recopemValues.BUNDLE_STATE_PRICE_INT,mCatchSalePriceInt);
+        outState.putInt(recopemValues.BUNDLE_STATE_WHERE_INT,mCatchSaleWhereInt);
+        outState.putString(recopemValues.BUNDLE_STATE_DETAILS,mCatchSaleInputDetails.getText().toString());
+        outState.putString(recopemValues.BUNDLE_STATE_PIC_ANS,mCatchSalePicAns);
+
+        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
+        outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.datainput_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_data_input_menu_next).setVisible(showNext);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.activity_data_input_menu_next:
                 mCatchSaleDetails = mCatchSaleInputDetails.getText().toString();
 
                 Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
@@ -277,122 +413,9 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_SALE_PIC_ANS, mCatchSalePicAns);
                 startActivity(NextIntent);
-            }
-        });
-    }
-
-    public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-        // Check which radio button was clicked
-        switch (view.getId()) {
-            case R.id.activity_data_input_catch_sale_question_no:
-                if (checked) {
-                    mCatchSaleAns="false";
-                    mButton.setEnabled(true);
-                    mCatchSaleQuantityFrame.setVisibility(View.INVISIBLE);
-                    mCatchSalePicFrame.setVisibility(View.INVISIBLE);
-                    mCatchSaleN = 0;
-                    mCatchSaleType = type[0];
-                    mCatchSaleTypeInt = 0;
-                    mCatchSalePrice = prices[0];
-                    mCatchSalePriceInt = 0;
-                    mCatchSaleWhere = places[0];
-                    mCatchSaleWhereInt = 0;
-                    mCatchSalePicAns = "false";
-                }
-                break;
-            case R.id.activity_data_input_catch_sale_question_yes:
-                if (checked) {
-                    mCatchSaleAns="true";
-                    mButton.setEnabled(false);
-                    mCatchSaleQuantityFrame.setVisibility(View.VISIBLE);
-                    mCatchSalePicFrame.setVisibility(View.VISIBLE);
-                }
-                break;
-            case R.id.activity_data_input_catch_sale_question_pic_no:
-                if (checked) {
-                    mCatchSalePicAns = "false";
-                    picValid=true;
-
-                    mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
-
-                    Intent fishCaughtIntent = new Intent(dataInputCatchSale.this, dataInputFishCaught.class);
-                    fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-                    fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-                    fishCaughtIntent.putExtra(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
-                    startActivity(fishCaughtIntent);
-                }
-                break;
-            case R.id.activity_data_input_catch_sale_question_pic_yes:
-                if (checked) {
-                    mCatchSalePicAns = "true";
-                    picValid=true;
-                    mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
-                }
                 break;
         }
-    }
-
-   @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Spinner spin = (Spinner)parent;
-
-        if(spin.getId() == R.id.activity_data_input_catch_sale_input_price)
-        {
-            mCatchSalePrice = prices[position];
-            mCatchSalePriceInt=position;
-
-            priceValid = !mCatchSalePrice.equals(prices[0]);
-
-            mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
-        }else{
-            mCatchSaleWhere = places[position];
-            mCatchSaleWhereInt=position;
-
-            whereValid = !mCatchSaleWhere.equals(places[0]);
-
-            mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        mButton.setEnabled(false);
-    }
-
-    class nPicker implements NumberPicker.OnValueChangeListener{
-        @Override
-        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-            mCatchSaleN = newVal;
-            nValid = mCatchSaleN!=0;
-            mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
-        }
-    }
-
-    class typePicker implements NumberPicker.OnValueChangeListener{
-        @Override
-        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-            mCatchSaleType = type[newVal];
-            mCatchSaleTypeInt = newVal;
-            typeValid = !mCatchSaleType.equals(type[0]);
-            mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-
-        outState.putString(recopemValues.BUNDLE_STATE_ANS,mCatchSaleAns);
-        outState.putInt(recopemValues.BUNDLE_STATE_CATCH_N,mCatchSaleN);
-        outState.putInt(recopemValues.BUNDLE_STATE_TYPE_INT,mCatchSaleTypeInt);
-        outState.putInt(recopemValues.BUNDLE_STATE_PRICE_INT,mCatchSalePriceInt);
-        outState.putInt(recopemValues.BUNDLE_STATE_WHERE_INT,mCatchSaleWhereInt);
-        outState.putString(recopemValues.BUNDLE_STATE_DETAILS,mCatchSaleInputDetails.getText().toString());
-        outState.putString(recopemValues.BUNDLE_STATE_PIC_ANS,mCatchSalePicAns);
-
-        outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
-        outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
-        super.onSaveInstanceState(outState);
+        return super.onOptionsItemSelected(item);
     }
 
     public static dataInputCatchSale getInstance(){

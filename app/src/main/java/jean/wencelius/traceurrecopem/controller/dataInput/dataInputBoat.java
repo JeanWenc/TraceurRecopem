@@ -3,10 +3,15 @@ package jean.wencelius.traceurrecopem.controller.dataInput;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,10 +19,13 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.controller.TrackDetailActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
+import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
 
@@ -34,7 +42,7 @@ public class dataInputBoat extends AppCompatActivity {
     private long trackId;
     private boolean mNewPicAdded;
 
-    private Button mButton;
+
     private CheckBox mCheckBox;
     private RadioButton radioMotorboat;
     private RadioButton radioOutrigger;
@@ -44,6 +52,7 @@ public class dataInputBoat extends AppCompatActivity {
     private static final String BUNDLE_STATE_BOAT = "boatType";
     private static final String BUNDLE_STATE_BOAT_OWNER = "boatOwner";
 
+    private boolean showNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +61,6 @@ public class dataInputBoat extends AppCompatActivity {
 
         boatAct = this;
 
-        mButton = (Button) findViewById(R.id.activity_data_input_boat_next_btn);
         mCheckBox = (CheckBox) findViewById(R.id.activity_data_input_boat_boat_owner);
         radioMotorboat = (RadioButton) findViewById(R.id.activity_data_input_boat_motor);
         radioOutrigger = (RadioButton) findViewById(R.id.activity_data_input_boat_pirogue);
@@ -60,7 +68,7 @@ public class dataInputBoat extends AppCompatActivity {
         radioShore = (RadioButton) findViewById(R.id.activity_data_input_boat_shore);
 
         if(savedInstanceState!=null){
-            mButton.setEnabled(savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON));
+            showNext = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON);
             mBoat = savedInstanceState.getString(BUNDLE_STATE_BOAT);
             mBoatOwner = savedInstanceState.getString(BUNDLE_STATE_BOAT_OWNER);
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
@@ -92,47 +100,30 @@ public class dataInputBoat extends AppCompatActivity {
         }
 
         if(mBoat.equals("empty")){
-            mButton.setEnabled(false);
+            showNext = false;
         }else if(mBoat.equals("motorboat") || mBoat.equals("outrigger")){
             radioMotorboat.setChecked(mBoat.equals("motorboat"));
             radioOutrigger.setChecked(mBoat.equals("outrigger"));
             mCheckBox.setVisibility((View.VISIBLE));
             mCheckBox.setChecked(mBoatOwner.equals("true"));
-            mButton.setEnabled(true);
+            showNext = true;
         }else{
             radioShore.setChecked(mBoat.equals("from_shore"));
             radioSwim.setChecked(mBoat.equals("swim"));
             mCheckBox.setVisibility(View.INVISIBLE);
-            mButton.setEnabled(true);
+            showNext = true;
         }
 
+        invalidateOptionsMenu();
+
         setTitle("Question 2/8");
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
-
-                ContentValues boatValues = new ContentValues();
-                boatValues.put(TrackContentProvider.Schema.COL_BOAT,mBoat);
-                boatValues.put(TrackContentProvider.Schema.COL_BOAT_OWNER,mBoatOwner);
-
-                getContentResolver().update(trackUri, boatValues, null, null);
-
-                Intent NextIntent = new Intent(dataInputBoat.this, dataInputCrew.class);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-                startActivity(NextIntent);
-            }
-        });
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(BUNDLE_STATE_BOAT,mBoat);
         outState.putString(BUNDLE_STATE_BOAT_OWNER,mBoatOwner);
-        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,mButton.isEnabled());
+        outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,showNext);
 
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
@@ -176,7 +167,8 @@ public class dataInputBoat extends AppCompatActivity {
                 }
                 break;
         }
-        mButton.setEnabled(true);
+        showNext = true;
+        invalidateOptionsMenu();
     }
 
     public void onCheckboxClicked(View view) {
@@ -192,6 +184,41 @@ public class dataInputBoat extends AppCompatActivity {
                 break;
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.datainput_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_data_input_menu_next).setVisible(showNext);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.activity_data_input_menu_next:
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+
+                ContentValues boatValues = new ContentValues();
+                boatValues.put(TrackContentProvider.Schema.COL_BOAT,mBoat);
+                boatValues.put(TrackContentProvider.Schema.COL_BOAT_OWNER,mBoatOwner);
+
+                getContentResolver().update(trackUri, boatValues, null, null);
+
+                Intent NextIntent = new Intent(dataInputBoat.this, dataInputCrew.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                startActivity(NextIntent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public static dataInputBoat getInstance(){
         return   boatAct;
     }

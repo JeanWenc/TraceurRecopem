@@ -297,6 +297,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                                 }
                             }).create().show();
                 }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

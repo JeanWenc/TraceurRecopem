@@ -108,8 +108,6 @@ public class MenuActivity extends AppCompatActivity {
                     // New track
                     currentTrackId = createNewTrack();
 
-                    cancelDailyNotification(getApplicationContext());
-
                     i.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, currentTrackId);
                     startActivity(i);
                 }catch (CreateTrackException cte) {
@@ -123,7 +121,6 @@ public class MenuActivity extends AppCompatActivity {
         mAddManualTrackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancelDailyNotification(getApplicationContext());
 
                 Intent mapAloneActivityIntent = new Intent(MenuActivity.this,ManualTrackActivity.class);
                 startActivity(mapAloneActivityIntent);
@@ -141,7 +138,6 @@ public class MenuActivity extends AppCompatActivity {
         mSimpleMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancelDailyNotification(getApplicationContext());
 
                 Intent MapAloneActivityIntent = new Intent(MenuActivity.this, MapAloneActivity.class);
                 startActivity(MapAloneActivityIntent);
@@ -239,17 +235,6 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         return trackGPXExportDirectory;
-    }
-
-    public static void cancelDailyNotification(Context ctx) {
-
-        Intent intent = new Intent(ctx, Notification_receiver.class);
-        AlarmManager alarmManager =(AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getService(ctx, recopemValues.REQUEST_CODE_DAILY_NOTIFICATION, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-        if (pendingIntent != null && alarmManager != null) {
-            alarmManager.cancel(pendingIntent);
-        }
     }
 
     @Override

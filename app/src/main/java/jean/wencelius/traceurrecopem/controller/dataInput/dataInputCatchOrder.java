@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -57,7 +59,6 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
     private boolean mNewPicAdded;
 
     //Views
-    private Button mButton;
     private TextView mPicOrderQuestion;
     private RelativeLayout mCatchOrderQuantityFrame;
     private LinearLayout mCatchOrderPicFrame;
@@ -82,6 +83,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
     private boolean priceValid;
     private boolean whereValid;
     private boolean picValid;
+    private boolean showNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +94,6 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         orderAct = this;
-
-        mButton = (Button) findViewById(R.id.activity_data_input_catch_order_next_btn);
 
         mPicOrderQuestion = (TextView) findViewById(R.id.activity_data_input_catch_order_question_pic);
 
@@ -251,7 +251,8 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         whereValid = mCatchOrderWhereInt!=0;
         picValid = mCatchOrderPicAns.equals("true") || mCatchOrderPicAns.equals("false");
 
-        mButton.setEnabled(mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
+        showNext = mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+        invalidateOptionsMenu();
 
         if(mCatchOrderAns.equals("true")){
             mCatchOrderQuantityFrame.setVisibility(View.VISIBLE);
@@ -263,37 +264,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
 
         if(mCatchSalePicAns.equals("true")) mPicOrderQuestion.setText(R.string.data_input_catch_order_question_pic_if_sale_pic);
 
-
-
         setTitle("Question 6/8");
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCatchOrderDetails = mCatchOrderInputDetails.getText().toString();
-
-                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
-
-                ContentValues catchOrderValues = new ContentValues();
-                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER,mCatchOrderAns);
-                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_N,mCatchOrderN);
-                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_TYPE,mCatchOrderType);
-                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_PRICE,mCatchOrderPrice);
-                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_WHERE,mCatchOrderWhere);
-                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_DETAILS,mCatchOrderDetails);
-                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_PIC,mCatchOrderPicAns);
-
-                getContentResolver().update(trackUri, catchOrderValues, null, null);
-
-                Intent NextIntent = new Intent(dataInputCatchOrder.this, dataInputCatchGive.class);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-
-                NextIntent.putExtra(recopemValues.BUNDLE_STATE_SALE_PIC_ANS, mCatchSalePicAns);
-                NextIntent.putExtra(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
-                startActivity(NextIntent);
-            }
-        });
     }
 
     public void onRadioButtonClicked(View view) {
@@ -303,7 +274,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
             case R.id.activity_data_input_catch_order_question_no:
                 if (checked) {
                     mCatchOrderAns="false";
-                    mButton.setEnabled(true);
+                    showNext = true;
                     mCatchOrderQuantityFrame.setVisibility(View.INVISIBLE);
                     mCatchOrderPicFrame.setVisibility(View.INVISIBLE);
                     mCatchOrderN = 0;
@@ -319,7 +290,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
             case R.id.activity_data_input_catch_order_question_yes:
                 if (checked) {
                     mCatchOrderAns="true";
-                    mButton.setEnabled(false);
+                    showNext = false;
                     mCatchOrderQuantityFrame.setVisibility(View.VISIBLE);
                     mCatchOrderPicFrame.setVisibility(View.VISIBLE);
                 }
@@ -328,7 +299,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
                 if (checked) {
                     mCatchOrderPicAns = "false";
                     picValid=true;
-                    mButton.setEnabled(mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
+                    showNext = mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
                     LaunchFishCaughtIntent();
                 }
                 break;
@@ -336,11 +307,12 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
                 if (checked) {
                     mCatchOrderPicAns = "true";
                     picValid=true;
-                    mButton.setEnabled(mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
+                   showNext = mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
                     if(mCatchSalePicAns.equals("true")) LaunchFishCaughtIntent();
                 }
                 break;
         }
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -352,18 +324,20 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
             mCatchOrderPrice = prices[position];
             mCatchOrderPriceInt=position;
             priceValid = !mCatchOrderPrice.equals(prices[0]);
-            mButton.setEnabled(mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
+            showNext = mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
         }else{
             mCatchOrderWhere = places[position];
             mCatchOrderWhereInt=position;
             whereValid = !mCatchOrderWhere.equals(places[0]);
-            mButton.setEnabled(mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
+            showNext = mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
         }
+        invalidateOptionsMenu();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        mButton.setEnabled(false);
+        showNext = false;
+        invalidateOptionsMenu();
     }
 
     class nPicker implements NumberPicker.OnValueChangeListener{
@@ -371,8 +345,8 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
             mCatchOrderN = newVal;
             nValid = mCatchOrderN!=0;
-            mButton.setEnabled(mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
-
+           showNext = mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+           invalidateOptionsMenu();
         }
     }
 
@@ -382,7 +356,8 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
             mCatchOrderType = type[newVal];
             mCatchOrderTypeInt = newVal;
             typeValid = !mCatchOrderType.equals(type[0]);
-            mButton.setEnabled(mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
+            showNext = mCatchOrderAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid);
+            invalidateOptionsMenu();
         }
     }
 
@@ -408,6 +383,50 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
         fishCaughtIntent.putExtra(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
         startActivity(fishCaughtIntent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.datainput_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_data_input_menu_next).setVisible(showNext);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.activity_data_input_menu_next:
+                mCatchOrderDetails = mCatchOrderInputDetails.getText().toString();
+
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+
+                ContentValues catchOrderValues = new ContentValues();
+                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER,mCatchOrderAns);
+                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_N,mCatchOrderN);
+                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_TYPE,mCatchOrderType);
+                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_PRICE,mCatchOrderPrice);
+                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_WHERE,mCatchOrderWhere);
+                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_DETAILS,mCatchOrderDetails);
+                catchOrderValues.put(TrackContentProvider.Schema.COL_CATCH_ORDER_PIC,mCatchOrderPicAns);
+
+                getContentResolver().update(trackUri, catchOrderValues, null, null);
+
+                Intent NextIntent = new Intent(dataInputCatchOrder.this, dataInputCatchGive.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+
+                NextIntent.putExtra(recopemValues.BUNDLE_STATE_SALE_PIC_ANS, mCatchSalePicAns);
+                NextIntent.putExtra(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
+                startActivity(NextIntent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static dataInputCatchOrder getInstance(){

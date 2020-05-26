@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -43,12 +45,13 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
     private static final String BUNDLE_STATE_CREW_WHO = "crewWho";
 
     //Views
-    private Button mButton;
     private TextView mCrewQuestionN;
     private NumberPicker mCrewInputN;
     private TextView mCrewQuestionWho;
     private TextView mCrewQuestionWhoDetails;
     private EditText mCrewInputWho;
+
+    private boolean showNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +62,6 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         crewAct = this;
-
-        mButton = (Button) findViewById(R.id.activity_data_input_crew_next_btn);
 
         mCrewQuestionN = (TextView) findViewById(R.id.activity_data_input_crew_question_N);
         mCrewQuestionWho = (TextView) findViewById(R.id.activity_data_input_crew_question_who);
@@ -136,35 +137,15 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
             mCrewInputN.setVisibility(View.INVISIBLE);
         }
 
-        mButton.setEnabled(false);
+        showNext = false;
         if(mCrewAlone.equals("true")){
-            mButton.setEnabled(true);
+            showNext = true;
         }else if(mCrewAlone.equals("false")){
-            if(mCrewN!=0) mButton.setEnabled(true);
+            if(mCrewN!=0) showNext = true;
         }
+        invalidateOptionsMenu();
 
         setTitle("Question 3/8");
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String crewWho = mCrewInputWho.getText().toString();
-
-                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
-
-                ContentValues crewValues = new ContentValues();
-                crewValues.put(TrackContentProvider.Schema.COL_CREW_ALONE,mCrewAlone);
-                crewValues.put(TrackContentProvider.Schema.COL_CREW_N,mCrewN);
-                crewValues.put(TrackContentProvider.Schema.COL_CREW_WHO,crewWho);
-
-                getContentResolver().update(trackUri, crewValues, null, null);
-
-                Intent NextIntent = new Intent(dataInputCrew.this, dataInputWind.class);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-                startActivity(NextIntent);
-            }
-        });
     }
 
     @Override
@@ -185,7 +166,7 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
             case R.id.activity_data_input_crew_question_yes:
                 if (checked) {
                     mCrewAlone="true";
-                    mButton.setEnabled(true);
+                    showNext = true;
                     mCrewQuestionN.setVisibility(View.INVISIBLE);
                     mCrewQuestionWho.setVisibility(View.INVISIBLE);
                     mCrewQuestionWhoDetails.setVisibility(View.INVISIBLE);
@@ -196,11 +177,9 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
             case R.id.activity_data_input_crew_question_no:
                 if (checked) {
                     mCrewAlone="false";
-                    if(mCrewN!=0){
-                        mButton.setEnabled(true);
-                    }else{
-                        mButton.setEnabled(false);
-                    }
+
+                    showNext = mCrewN!=0;
+
                     mCrewQuestionN.setVisibility(View.VISIBLE);
                     mCrewQuestionWho.setVisibility(View.VISIBLE);
                     mCrewQuestionWhoDetails.setVisibility(View.VISIBLE);
@@ -209,12 +188,52 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
                 }
                 break;
         }
+        invalidateOptionsMenu();
     }
 
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         mCrewN = newVal;
-        mButton.setEnabled(newVal!=0);
+        showNext = newVal!=0;
+
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.datainput_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_data_input_menu_next).setVisible(showNext);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.activity_data_input_menu_next:
+                String crewWho = mCrewInputWho.getText().toString();
+
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+
+                ContentValues crewValues = new ContentValues();
+                crewValues.put(TrackContentProvider.Schema.COL_CREW_ALONE,mCrewAlone);
+                crewValues.put(TrackContentProvider.Schema.COL_CREW_N,mCrewN);
+                crewValues.put(TrackContentProvider.Schema.COL_CREW_WHO,crewWho);
+
+                getContentResolver().update(trackUri, crewValues, null, null);
+
+                Intent NextIntent = new Intent(dataInputCrew.this, dataInputWind.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                startActivity(NextIntent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static dataInputCrew getInstance(){

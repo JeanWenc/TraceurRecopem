@@ -2,8 +2,10 @@ package jean.wencelius.traceurrecopem.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -48,6 +50,8 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private User mUser;
 
+    public static Context mContext;
+
     public LoginActivity() {
     }
 
@@ -55,6 +59,8 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mContext = LoginActivity.this;
 
         mFisherNameInput = (EditText) findViewById(R.id.activity_login_name_input);
         mFisherIdInput = (EditText) findViewById(R.id.activity_login_id_input);
@@ -127,18 +133,15 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
 
                 Calendar alarmStartTime = Calendar.getInstance();
                 Calendar now = Calendar.getInstance();
-                alarmStartTime.set(Calendar.HOUR_OF_DAY,11);
+                alarmStartTime.set(Calendar.HOUR_OF_DAY,16);
                 alarmStartTime.set(Calendar.MINUTE,30);
-                if(now.after(alarmStartTime)){
-                    alarmStartTime.add(Calendar.MINUTE,15);
-                }
+                alarmStartTime.add(Calendar.DATE,2);
 
-                Intent notificationIntent = new Intent(getApplicationContext(), Notification_receiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),recopemValues.REQUEST_CODE_DAILY_NOTIFICATION,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                Intent notificationIntent = new Intent(LoginActivity.this, Notification_receiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(LoginActivity.this,recopemValues.REQUEST_CODE_DAILY_NOTIFICATION,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-                AlarmManager alarmManager =(AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
-                //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),2*AlarmManager.INTERVAL_DAY,pendingIntent);
+                AlarmManager alarmManager =(AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(),2*AlarmManager.INTERVAL_DAY,pendingIntent);
 
                 //User clicked button
                 Intent menuActivityIntent = new Intent(LoginActivity.this, MenuActivity.class);
@@ -180,5 +183,9 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 }
                 break;
         }
+    }
+
+    public static Context getContext(){
+        return mContext;
     }
 }

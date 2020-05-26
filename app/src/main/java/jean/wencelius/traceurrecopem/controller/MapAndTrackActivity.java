@@ -195,7 +195,7 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if(AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_NAME,getApplicationContext()).equals(recopemValues.USER_NAME_JEROME)) menu.findItem(R.id.activity_map_and_track_jerome).setVisible(true);
+        if(!AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_NAME,getApplicationContext()).equals(recopemValues.USER_NAME_JEROME)) menu.findItem(R.id.activity_map_and_track_jerome).setVisible(false);
         return super.onPrepareOptionsMenu(menu);
     }
 

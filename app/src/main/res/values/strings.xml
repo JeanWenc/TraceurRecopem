@@ -123,6 +123,8 @@
 
 
     <!--DATA INPUT-->
+    <!--MENU-->
+    <string name="data_input_menu_next">Suivant</string>
     <!--GEAR-->
     <string name="data_input_gear_question">Quel type de pêche ?"</string>
     <string name="data_input_gear_question_detail">Plusieurs choix possibles"</string>
@@ -146,15 +148,15 @@
 
     <!--WIND-->
     <string name="data_input_wind_question">Force du vent ?"</string>
-    <string name="data_input_wind_question_1">1 - Faible</string>
-    <string name="data_input_wind_question_2">2 - Moyen</string>
-    <string name="data_input_wind_question_3">3 - Fort</string>
+    <string name="data_input_wind_question_1">1\nFaible</string>
+    <string name="data_input_wind_question_2">2\nMoyen</string>
+    <string name="data_input_wind_question_3">3\nFort</string>
 
     <!--WIND-->
     <string name="data_input_current_question">Force du courant ?"</string>
-    <string name="data_input_current_question_1">1 - Faible</string>
-    <string name="data_input_current_question_2">2 - Moyen</string>
-    <string name="data_input_current_question_3">3 - Fort</string>
+    <string name="data_input_current_question_1">1\nFaible</string>
+    <string name="data_input_current_question_2">2\nMoyen</string>
+    <string name="data_input_current_question_3">3\nFort</string>
 
     <!--CREW-->
     <string name="data_input_crew_question">Es-tu parti pêcher seul ?"</string>

@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -56,7 +58,6 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
     private boolean mNewPicAdded;
 
     //Views
-    private Button mButton;
     private TextView mPicGiveQuestion;
     private RelativeLayout mCatchGiveQuantityFrame;
     private LinearLayout mCatchGivePicFrame;
@@ -78,6 +79,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
     private boolean typeValid;
     private boolean whereValid;
     private boolean picValid;
+    private boolean showNext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +90,6 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         giveAct = this;
-
-        mButton = (Button) findViewById(R.id.activity_data_input_catch_give_next_btn);
 
         mPicGiveQuestion = (TextView) findViewById(R.id.activity_data_input_catch_give_question_pic);
 
@@ -228,7 +228,8 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
         whereValid = mCatchGiveWhereInt!=0;
         picValid = mCatchGivePicAns.equals("true") || mCatchGivePicAns.equals("false");
 
-        mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
+       showNext = mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid);
+       invalidateOptionsMenu();
 
         if(mCatchGiveAns.equals("true")){
             mCatchGiveQuantityFrame.setVisibility(View.VISIBLE);
@@ -239,34 +240,6 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
         }
 
         setTitle("Question 7/8");
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCatchGiveDetails = mCatchGiveInputDetails.getText().toString();
-
-                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
-
-                ContentValues catchGiveValues = new ContentValues();
-                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE,mCatchGiveAns);
-                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_N,mCatchGiveN);
-                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_TYPE,mCatchGiveType);
-                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_WHERE,mCatchGiveWhere);
-                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_DETAILS,mCatchGiveDetails);
-                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_PIC,mCatchGivePicAns);
-
-                getContentResolver().update(trackUri, catchGiveValues, null, null);
-
-                Intent NextIntent = new Intent(dataInputCatchGive.this, dataInputCatchCons.class);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
-
-                NextIntent.putExtra(recopemValues.BUNDLE_STATE_SALE_PIC_ANS, mCatchSalePicAns);
-                NextIntent.putExtra(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
-                NextIntent.putExtra(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS,mCatchGivePicAns);
-                startActivity(NextIntent);
-            }
-        });
     }
 
     public void onRadioButtonClicked(View view) {
@@ -276,7 +249,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
             case R.id.activity_data_input_catch_give_question_no:
                 if (checked) {
                     mCatchGiveAns="false";
-                    mButton.setEnabled(true);
+                    showNext = true;
                     mCatchGiveQuantityFrame.setVisibility(View.INVISIBLE);
                     mCatchGivePicFrame.setVisibility(View.INVISIBLE);
                     mCatchGiveN = 0;
@@ -290,7 +263,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
             case R.id.activity_data_input_catch_give_question_yes:
                 if (checked) {
                     mCatchGiveAns="true";
-                    mButton.setEnabled(false);
+                    showNext = false;
                     mCatchGiveQuantityFrame.setVisibility(View.VISIBLE);
                     mCatchGivePicFrame.setVisibility(View.VISIBLE);
                 }
@@ -299,7 +272,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
                 if (checked) {
                     mCatchGivePicAns = "false";
                     picValid=true;
-                    mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
+                    showNext = mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid);
                     LaunchFishCaughtIntent();
                 }
                 break;
@@ -307,11 +280,12 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
                 if (checked) {
                     mCatchGivePicAns = "true";
                     picValid=true;
-                    mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
+                    showNext = mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid);
                     if(mCatchSalePicAns.equals("true") || mCatchOrderPicAns.equals("true")) LaunchFishCaughtIntent();
                 }
                 break;
         }
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -320,12 +294,14 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
         mCatchGiveWhere = places[position];
         mCatchGiveWhereInt=position;
         whereValid = !mCatchGiveWhere.equals(places[0]);
-        mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
+        showNext = mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid);
+        invalidateOptionsMenu();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        mButton.setEnabled(false);
+        showNext = false;
+        invalidateOptionsMenu();
     }
 
     class nPicker implements NumberPicker.OnValueChangeListener{
@@ -333,7 +309,8 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
         public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
             mCatchGiveN = newVal;
             nValid = mCatchGiveN!=0;
-            mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
+            showNext = mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid);
+            invalidateOptionsMenu();
         }
     }
 
@@ -343,7 +320,8 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
             mCatchGiveType = type[newVal];
             mCatchGiveTypeInt = newVal;
             typeValid = !mCatchGiveType.equals(type[0]);
-            mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
+            showNext = mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid);
+            invalidateOptionsMenu();
         }
     }
 
@@ -370,6 +348,50 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
         fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
         fishCaughtIntent.putExtra(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
         startActivity(fishCaughtIntent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.datainput_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.activity_data_input_menu_next).setVisible(showNext);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.activity_data_input_menu_next:
+                mCatchGiveDetails = mCatchGiveInputDetails.getText().toString();
+
+                Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
+
+                ContentValues catchGiveValues = new ContentValues();
+                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE,mCatchGiveAns);
+                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_N,mCatchGiveN);
+                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_TYPE,mCatchGiveType);
+                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_WHERE,mCatchGiveWhere);
+                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_DETAILS,mCatchGiveDetails);
+                catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_PIC,mCatchGivePicAns);
+
+                getContentResolver().update(trackUri, catchGiveValues, null, null);
+
+                Intent NextIntent = new Intent(dataInputCatchGive.this, dataInputCatchCons.class);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+
+                NextIntent.putExtra(recopemValues.BUNDLE_STATE_SALE_PIC_ANS, mCatchSalePicAns);
+                NextIntent.putExtra(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
+                NextIntent.putExtra(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS,mCatchGivePicAns);
+                startActivity(NextIntent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static dataInputCatchGive getInstance(){

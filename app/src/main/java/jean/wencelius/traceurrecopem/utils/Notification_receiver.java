@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.view.Menu;
 
 import androidx.core.app.NotificationCompat;
 
@@ -22,7 +23,8 @@ public class Notification_receiver extends BroadcastReceiver {
         Intent MenuActivityIntent = new Intent(context, MenuActivity.class);
         MenuActivityIntent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, recopemValues.REQUEST_CODE_DAILY_NOTIFICATION, MenuActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, recopemValues.REQUEST_CODE_DAILY_NOTIFICATION, null, PendingIntent.FLAG_UPDATE_CURRENT);
+        //PendingIntent pendingIntent = PendingIntent.getActivity(context, recopemValues.REQUEST_CODE_DAILY_NOTIFICATION, MenuActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)

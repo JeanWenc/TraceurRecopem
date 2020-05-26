@@ -127,15 +127,6 @@
                 </RadioGroup>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/activity_data_input_catch_cons_next_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="30dp"
-                android:layout_marginBottom="10dp"
-                android:text="Suivant"/>
-
         </LinearLayout>
 
     </ScrollView>
