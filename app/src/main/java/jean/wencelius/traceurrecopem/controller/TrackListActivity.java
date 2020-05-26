@@ -21,7 +21,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 
 public class TrackListActivity extends ListActivity {
 
-    private ImageButton mBtnAddManualTrack;
     private ImageButton mBtnBack;
 
     @Override
@@ -31,15 +30,8 @@ public class TrackListActivity extends ListActivity {
 
         getListView().setEmptyView(findViewById(R.id.activity_tracklist_empty));
 
-        mBtnAddManualTrack = (ImageButton) findViewById(R.id.activity_tracklist_add_track_manual);
         mBtnBack = (ImageButton)  findViewById(R.id.activity_tracklist_home);
-        mBtnAddManualTrack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mapAloneActivityIntent = new Intent(TrackListActivity.this,ManualTrackActivity.class);
-                startActivity(mapAloneActivityIntent);
-            }
-        });
+
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -79,6 +79,8 @@ public class recopemValues {
 
     public static final int MAX_TRACK_ID = 99999;
 
+    public static final int REQUEST_CODE_DAILY_NOTIFICATION = 100;
+
     public static final String BUNDLE_STATE_SHOW_BEACON = "showBeacon";
     public static final String BUNDLE_STATE_SHOW_WAYPOINTS = "showWaypoints";
     public static final String BUNDLE_STATE_SHOW_CURRENT_TRACK = "showCurrentTrack";

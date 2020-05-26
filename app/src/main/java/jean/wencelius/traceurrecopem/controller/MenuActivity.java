@@ -5,8 +5,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -31,18 +34,20 @@ import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.exception.ExportTrackException;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
+import jean.wencelius.traceurrecopem.utils.Notification_receiver;
 
 public class MenuActivity extends AppCompatActivity {
 
-    public Button mTrackingButton;
-    public Button mMyTracksButton;
-    public Button mSimpleMapButton;
+    private Button mTrackingButton;
+    private Button mAddManualTrackButton;
+    private Button mMyTracksButton;
+    private Button mSimpleMapButton;
 
-    public Calendar mCalendar;
+    private Calendar mCalendar;
 
-    public static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
+    private static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
 
-    public long currentTrackId;
+    private long currentTrackId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +57,12 @@ public class MenuActivity extends AppCompatActivity {
         mCalendar = Calendar.getInstance();
 
         mTrackingButton = (Button) findViewById(R.id.activity_menu_start_tracking);
+        mAddManualTrackButton = (Button) findViewById(R.id.activity_menu_start_manual_track);
         mMyTracksButton = (Button) findViewById(R.id.activity_menu_see_my_tracks);
         mSimpleMapButton = (Button) findViewById(R.id.activity_menu_see_simple_map);
 
         mTrackingButton.setEnabled(false);
+        mAddManualTrackButton.setEnabled(false);
         mMyTracksButton.setEnabled(false);
         mSimpleMapButton.setEnabled(false);
 
@@ -88,6 +95,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void AddListenersToButtons() {
         mTrackingButton.setEnabled(true);
+        mAddManualTrackButton.setEnabled(true);
         mMyTracksButton.setEnabled(true);
         mSimpleMapButton.setEnabled(true);
 
@@ -98,6 +106,9 @@ public class MenuActivity extends AppCompatActivity {
                     Intent i = new Intent(MenuActivity.this, MapAndTrackActivity.class);
                     // New track
                     currentTrackId = createNewTrack();
+
+                    cancelDailyNotification(getApplicationContext());
+
                     i.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, currentTrackId);
                     startActivity(i);
                 }catch (CreateTrackException cte) {
@@ -106,6 +117,15 @@ public class MenuActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG)
                             .show();
                 }
+            }
+        });
+        mAddManualTrackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelDailyNotification(getApplicationContext());
+
+                Intent mapAloneActivityIntent = new Intent(MenuActivity.this,ManualTrackActivity.class);
+                startActivity(mapAloneActivityIntent);
             }
         });
 
@@ -120,6 +140,8 @@ public class MenuActivity extends AppCompatActivity {
         mSimpleMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cancelDailyNotification(getApplicationContext());
+
                 Intent MapAloneActivityIntent = new Intent(MenuActivity.this, MapAloneActivity.class);
                 startActivity(MapAloneActivityIntent);
             }
@@ -216,6 +238,16 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         return trackGPXExportDirectory;
+    }
+
+    public static void cancelDailyNotification(Context ctx) {
+        Intent intent = new Intent(ctx, Notification_receiver.class);
+        AlarmManager alarmManager =(AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getService(ctx, recopemValues.REQUEST_CODE_DAILY_NOTIFICATION, intent,
+                        PendingIntent.FLAG_NO_CREATE);
+        if (pendingIntent != null && alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
     @Override

@@ -463,11 +463,14 @@ public class MapAndTrackActivity extends AppCompatActivity {
             final double sou = sfpo.getBoundingBox().getLatSouth();
             final double eas = sfpo.getBoundingBox().getLonEast();
             final double wes = sfpo.getBoundingBox().getLonWest();
+            c.moveToLast();
+            final GeoPoint lastGeoPoint = new GeoPoint(c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LATITUDE)),c.getDouble(c.getColumnIndex(TrackContentProvider.Schema.COL_LONGITUDE)));
             mMap.post(new Runnable() {
                 @Override
                 public void run() {
                     mapController.zoomToSpan((int) (nor-sou), (int) (eas-wes));
-                    mapController.setCenter(new GeoPoint((nor + sou) / 2, (eas + wes) / 2));
+                    mapController.setCenter(lastGeoPoint);
+                    //mapController.setCenter(new GeoPoint((nor + sou) / 2, (eas + wes) / 2));
                 }
             });
         }

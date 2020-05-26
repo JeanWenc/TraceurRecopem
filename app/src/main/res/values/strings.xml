@@ -24,6 +24,12 @@
     <string name="main_notification_title">Traceur ReCoPeM</string>
     <string name="main_notification_message">Es-tu allé à la pêche?</string>
 
+    <!--MENU ACTIVITY-->
+    <string name="activity_menu_start_tracking_btn">"Je vais à la peche\n\nLancer traceur"</string>
+    <string name="activity_menu_start_manual_track_btn">Tracé manuel sur carte\n(Sortie de pêche sans GPS)</string>
+    <string name="activity_menu_track_list_btn">"Liste de mes tracés"</string>
+    <string name="activity_menu_map_alone_btn">"Regarder la carte\n\nSans lancer traceur"</string>
+
     <!--MAP AND TRACK ACTIVITY-->
     <string name="activity_map_and_track_waypoint_dialog_title">Mon marqueur</string>
     <string name="activity_map_and_track_waypoint_dialog_delete_title">Supprimer le marqueur?</string>

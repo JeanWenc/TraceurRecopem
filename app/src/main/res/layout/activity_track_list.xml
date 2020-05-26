@@ -14,17 +14,6 @@
 
         <ImageButton
             android:layout_height="wrap_content"
-            android:id="@+id/activity_tracklist_add_track_manual"
-            android:layout_width="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="60dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/activity_tracklist_add_track_manual"
-            android:src="@android:drawable/ic_menu_add"
-            android:tint="@android:color/white"
-            android:background="@color/colorPrimary"/>
-        <ImageButton
-            android:layout_height="wrap_content"
             android:id="@+id/activity_tracklist_home"
             android:layout_width="wrap_content"
             android:layout_alignParentRight="true"

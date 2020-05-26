@@ -126,12 +126,14 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.HOUR_OF_DAY,17);
+                calendar.set(Calendar.MINUTE,00);
 
                 Intent notificationIntent = new Intent(getApplicationContext(), Notification_receiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),100,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),recopemValues.REQUEST_CODE_DAILY_NOTIFICATION,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
                 AlarmManager alarmManager =(AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_FIFTEEN_MINUTES,pendingIntent);
+                //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),2*AlarmManager.INTERVAL_DAY,pendingIntent);
 
                 //User clicked button
                 Intent menuActivityIntent = new Intent(LoginActivity.this, MenuActivity.class);
