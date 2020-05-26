@@ -146,7 +146,7 @@ public class gpsLogger extends Service implements LocationListener {
 
         pointCount=0;
 
-        gpsLoggingInterval = 5000;
+        gpsLoggingInterval = 10000;
         gpsLoggingMinDistance=5;
 
         // Register our broadcast receiver
