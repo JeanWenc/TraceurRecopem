@@ -65,7 +65,6 @@ public class ShowPictureActivity extends AppCompatActivity {
                 File imageFile = new File(mImagePath);
                 boolean deleted = imageFile.delete();
 
-                //Toast.makeText(this, mImageUuid, Toast.LENGTH_SHORT).show();
                 Toast.makeText(this, R.string.activity_show_picture_deleting_image, Toast.LENGTH_LONG).show();
 
                 new Handler().postDelayed(new Runnable() {

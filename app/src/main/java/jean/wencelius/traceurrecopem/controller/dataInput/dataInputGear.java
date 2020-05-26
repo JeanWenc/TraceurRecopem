@@ -114,11 +114,6 @@ public class dataInputGear extends AppCompatActivity {
 
                 getContentResolver().update(trackUri, gearValues, null, null);
 
-                String textToDisplay ="Gear Type = " + mGear + "\n" +
-                        "Other Details = " +  mOtherDetail;
-
-                Toast.makeText(dataInputGear.this, textToDisplay, Toast.LENGTH_SHORT).show();
-
                 Intent NextIntent = new Intent(dataInputGear.this, dataInputBoat.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);

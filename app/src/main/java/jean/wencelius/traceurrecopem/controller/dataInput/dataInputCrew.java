@@ -159,12 +159,6 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
 
                 getContentResolver().update(trackUri, crewValues, null, null);
 
-                String textToDisplay ="Crew Alone = " + mCrewAlone + "\n" +
-                        "Crew N = " +  mCrewN+ "\n" +
-                        "Crew Who = " +  crewWho + "\n";
-
-                Toast.makeText(dataInputCrew.this, textToDisplay, Toast.LENGTH_SHORT).show();
-
                 Intent NextIntent = new Intent(dataInputCrew.this, dataInputWind.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);

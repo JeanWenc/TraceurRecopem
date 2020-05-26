@@ -198,8 +198,6 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
             }
         }
 
-        Toast.makeText(this, "Query count = "+Integer.toString(mCursorFishCaught.getCount()), Toast.LENGTH_SHORT).show();
-
         mCursorFishCaught.close();
     }
 

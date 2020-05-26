@@ -120,11 +120,6 @@ public class dataInputBoat extends AppCompatActivity {
 
                 getContentResolver().update(trackUri, boatValues, null, null);
 
-                String textToDisplay ="Boat Type = " + mBoat + "\n" +
-                        "Boat Owner = " +  mBoatOwner;
-
-                Toast.makeText(dataInputBoat.this, textToDisplay, Toast.LENGTH_SHORT).show();
-
                 Intent NextIntent = new Intent(dataInputBoat.this, dataInputCrew.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);

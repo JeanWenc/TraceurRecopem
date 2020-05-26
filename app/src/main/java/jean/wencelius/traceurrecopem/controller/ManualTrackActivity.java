@@ -178,7 +178,6 @@ public class ManualTrackActivity extends AppCompatActivity{
             mDay = sdf.format(mDayCal.getTime());
         }
         mArrTime = mDay+"_"+mArrTime;
-        Toast.makeText(this, mDepTime+"\n"+mArrTime, Toast.LENGTH_LONG).show();
     }
 
     private void FillInDB() {
@@ -207,7 +206,7 @@ public class ManualTrackActivity extends AppCompatActivity{
             values.put(TrackContentProvider.Schema.COL_GPS_METHOD,"Manual");
             values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDayOfWeek);
             values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
-            values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"none"); // other value should be "true"
+            values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"false"); // other value should be "true"
             values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");
             values.put(TrackContentProvider.Schema.COL_SENT_EMAIL,"false");
             values.put(TrackContentProvider.Schema.COL_DIR,saveDirectory);

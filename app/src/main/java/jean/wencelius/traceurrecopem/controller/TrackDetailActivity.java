@@ -123,10 +123,9 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         }else{
             mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
+            mNewPicAdded= getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("true");
 
-            mNewPicAdded=false;
-
-            mPicEmpty = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("none");
+            mPicEmpty = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("false");
             mDataAdded = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED).equals("true");
             mExported = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_EXPORTED).equals("true");
             mSentEmail = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_SENT_EMAIL).equals("true");
@@ -334,8 +333,6 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
             // Error occurred while creating the File
             Toast.makeText(this, "Error creating file", Toast.LENGTH_SHORT).show();
         }
-        // Continue only if the File was successfully created
-        Toast.makeText(this, photoFile.toString(), Toast.LENGTH_LONG).show();
 
         if (photoFile != null) {
             getNewPictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));

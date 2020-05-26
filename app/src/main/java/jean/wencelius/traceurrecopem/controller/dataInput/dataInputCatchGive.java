@@ -221,14 +221,6 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
             mCatchGiveInputDetails.setSelection(mCatchGiveDetails.length());
         }
 
-        if(mCatchGiveAns.equals("true")){
-            mCatchGiveQuantityFrame.setVisibility(View.VISIBLE);
-            mCatchGivePicFrame.setVisibility(View.VISIBLE);
-        }else{
-            mCatchGiveQuantityFrame.setVisibility(View.INVISIBLE);
-            mCatchGivePicFrame.setVisibility(View.INVISIBLE);
-        }
-
         if(mCatchSalePicAns.equals("true") || mCatchOrderPicAns.equals("true")) mPicGiveQuestion.setText(R.string.data_input_catch_give_question_pic_if_sale_pic);
 
         nValid = mCatchGiveN!=0;
@@ -236,7 +228,15 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
         whereValid = mCatchGiveWhereInt!=0;
         picValid = mCatchGivePicAns.equals("true") || mCatchGivePicAns.equals("false");
 
-        mButton.setEnabled(nValid && typeValid && whereValid && picValid);
+        mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
+
+        if(mCatchGiveAns.equals("true")){
+            mCatchGiveQuantityFrame.setVisibility(View.VISIBLE);
+            mCatchGivePicFrame.setVisibility(View.VISIBLE);
+        }else{
+            mCatchGiveQuantityFrame.setVisibility(View.INVISIBLE);
+            mCatchGivePicFrame.setVisibility(View.INVISIBLE);
+        }
 
         setTitle("Question 7/8");
 
@@ -256,14 +256,6 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
                 catchGiveValues.put(TrackContentProvider.Schema.COL_CATCH_GIVE_PIC,mCatchGivePicAns);
 
                 getContentResolver().update(trackUri, catchGiveValues, null, null);
-
-                String textToDisplay ="Sold Give Catch = " + mCatchGiveAns + "\n" +
-                        "Sold N = " +  mCatchGiveN + " - " + mCatchGiveType +"\n" +
-                        "Sold in = "+  mCatchGiveWhere +"\n" +
-                        "Details = " + mCatchGiveDetails +"\n" +
-                        "Pictures = " + mCatchGivePicAns;
-
-                Toast.makeText(dataInputCatchGive.this, textToDisplay, Toast.LENGTH_LONG).show();
 
                 Intent NextIntent = new Intent(dataInputCatchGive.this, dataInputCatchCons.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
@@ -307,7 +299,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
                 if (checked) {
                     mCatchGivePicAns = "false";
                     picValid=true;
-                    mButton.setEnabled(nValid && typeValid && whereValid && picValid);
+                    mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
                     LaunchFishCaughtIntent();
                 }
                 break;
@@ -315,7 +307,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
                 if (checked) {
                     mCatchGivePicAns = "true";
                     picValid=true;
-                    mButton.setEnabled(nValid && typeValid && whereValid && picValid);
+                    mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
                     if(mCatchSalePicAns.equals("true") || mCatchOrderPicAns.equals("true")) LaunchFishCaughtIntent();
                 }
                 break;
@@ -328,7 +320,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
         mCatchGiveWhere = places[position];
         mCatchGiveWhereInt=position;
         whereValid = !mCatchGiveWhere.equals(places[0]);
-        mButton.setEnabled(nValid && typeValid && whereValid && picValid);
+        mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
     }
 
     @Override
@@ -341,7 +333,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
         public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
             mCatchGiveN = newVal;
             nValid = mCatchGiveN!=0;
-            mButton.setEnabled(nValid && typeValid && whereValid && picValid);
+            mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
         }
     }
 
@@ -351,7 +343,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
             mCatchGiveType = type[newVal];
             mCatchGiveTypeInt = newVal;
             typeValid = !mCatchGiveType.equals(type[0]);
-            mButton.setEnabled(nValid && typeValid && whereValid && picValid);
+            mButton.setEnabled(mCatchGiveAns.equals("false") || (nValid && typeValid && whereValid && picValid));
         }
     }
 

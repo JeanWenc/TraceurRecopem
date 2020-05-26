@@ -118,11 +118,6 @@ public class dataInputWind extends AppCompatActivity {
 
                 getContentResolver().update(trackUri, windValues, null, null);
 
-                String textToDisplay ="Wind = " + mWindEstFisher + "\n" +
-                        "Current = " +  mCurrentEstFisher+ "\n";
-
-                Toast.makeText(dataInputWind.this, textToDisplay, Toast.LENGTH_SHORT).show();
-
                 Intent NextIntent = new Intent(dataInputWind.this, dataInputCatchSale.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);

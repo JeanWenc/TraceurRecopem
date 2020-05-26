@@ -34,10 +34,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 
 public class MenuActivity extends AppCompatActivity {
 
-    /**
-     * TODO: Activer les autres boutons (myTracks et DisplayMap)
-     */
-
     public Button mTrackingButton;
     public Button mMyTracksButton;
     public Button mSimpleMapButton;
@@ -83,7 +79,7 @@ public class MenuActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     AddListenersToButtons();
                 } else {
-                    //** TODO: MENU_ACTIVITY: Gérer éventualité où utilisateur refuse autorisations.*/
+                    //TODO: MENU_ACTIVITY: Gérer éventualité où utilisateur refuse autorisations.
                 }
                 return;
             }
@@ -161,7 +157,7 @@ public class MenuActivity extends AppCompatActivity {
         values.put(TrackContentProvider.Schema.COL_GPS_METHOD,"GPS");
         values.put(TrackContentProvider.Schema.COL_WEEKDAY,recopemValues.getWeekdayString(mDay));
         values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
-        values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"none"); // other value should be "true"
+        values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"false"); // other value should be "true"
         values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");
         values.put(TrackContentProvider.Schema.COL_SENT_EMAIL,"false");
         values.put(TrackContentProvider.Schema.COL_DIR,saveDirectory);

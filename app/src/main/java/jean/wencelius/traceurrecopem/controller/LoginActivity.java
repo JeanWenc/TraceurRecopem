@@ -136,10 +136,8 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         Spinner spin = (Spinner) parent;
 
         if (spin.getId() == R.id.activity_login_boat) {
-            Toast.makeText(this, "Your choice :" + boats[position], Toast.LENGTH_SHORT).show();
             mBoat = boats[position];
         } else {
-            Toast.makeText(this, "Your choice :" + locations[position], Toast.LENGTH_SHORT).show();
             mLocation = locations[position];
         }
     }
@@ -161,6 +159,5 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 }
                 break;
         }
-        Toast.makeText(this, "Boat Owner = " + mBoatOwner, Toast.LENGTH_SHORT).show();
     }
 }

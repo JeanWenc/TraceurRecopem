@@ -236,6 +236,14 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
             mCatchSaleInputDetails.setSelection(mCatchSaleDetails.length());
         }
 
+        nValid = mCatchSaleN!=0;
+        typeValid = mCatchSaleTypeInt!=0;
+        priceValid = mCatchSalePriceInt!=0;
+        whereValid = mCatchSaleWhereInt!=0;
+        picValid = mCatchSalePicAns.equals("true") || mCatchSalePicAns.equals("false");
+
+        mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
+
         if(mCatchSaleAns.equals("true")){
             mCatchSaleQuantityFrame.setVisibility(View.VISIBLE);
             mCatchSalePicFrame.setVisibility(View.VISIBLE);
@@ -243,14 +251,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
             mCatchSaleQuantityFrame.setVisibility(View.INVISIBLE);
             mCatchSalePicFrame.setVisibility(View.INVISIBLE);
         }
-
-        nValid = mCatchSaleN!=0;
-        typeValid = mCatchSaleTypeInt!=0;
-        priceValid = mCatchSalePriceInt!=0;
-        whereValid = mCatchSaleWhereInt!=0;
-        picValid = mCatchSalePicAns.equals("true") || mCatchSalePicAns.equals("false");
-
-        mButton.setEnabled(nValid && typeValid && priceValid && whereValid && picValid);
 
         setTitle("Question 5/8");
 
@@ -271,15 +271,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                 catchSaleValues.put(TrackContentProvider.Schema.COL_CATCH_SALE_PIC,mCatchSalePicAns);
 
                 getContentResolver().update(trackUri, catchSaleValues, null, null);
-
-                String textToDisplay ="Sold Catch = " + mCatchSaleAns + "\n" +
-                        "Sold N = " +  mCatchSaleN + " - " + mCatchSaleType +"\n" +
-                        "Price = " + mCatchSalePrice +"\n" +
-                        "Sold in = "+  mCatchSaleWhere +"\n" +
-                        "Details = " + mCatchSaleDetails +"\n" +
-                        "Pictures = " + mCatchSalePicAns;
-
-                Toast.makeText(dataInputCatchSale.this, textToDisplay, Toast.LENGTH_LONG).show();
 
                 Intent NextIntent = new Intent(dataInputCatchSale.this, dataInputCatchOrder.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
@@ -323,7 +314,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                     mCatchSalePicAns = "false";
                     picValid=true;
 
-                    mButton.setEnabled(nValid && typeValid && priceValid && whereValid && picValid);
+                    mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
 
                     Intent fishCaughtIntent = new Intent(dataInputCatchSale.this, dataInputFishCaught.class);
                     fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
@@ -336,7 +327,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
                 if (checked) {
                     mCatchSalePicAns = "true";
                     picValid=true;
-                    mButton.setEnabled(nValid && typeValid && priceValid && whereValid && picValid);
+                    mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
                 }
                 break;
         }
@@ -353,14 +344,14 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
 
             priceValid = !mCatchSalePrice.equals(prices[0]);
 
-            mButton.setEnabled(nValid && typeValid && priceValid && whereValid && picValid);
+            mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
         }else{
             mCatchSaleWhere = places[position];
             mCatchSaleWhereInt=position;
 
             whereValid = !mCatchSaleWhere.equals(places[0]);
 
-            mButton.setEnabled(nValid && typeValid && priceValid && whereValid && picValid);
+            mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
         }
     }
 
@@ -374,7 +365,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
             mCatchSaleN = newVal;
             nValid = mCatchSaleN!=0;
-            mButton.setEnabled(nValid && typeValid && priceValid && whereValid && picValid);
+            mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
         }
     }
 
@@ -384,7 +375,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
             mCatchSaleType = type[newVal];
             mCatchSaleTypeInt = newVal;
             typeValid = !mCatchSaleType.equals(type[0]);
-            mButton.setEnabled(nValid && typeValid && priceValid && whereValid && picValid);
+            mButton.setEnabled(mCatchSaleAns.equals("false") || (nValid && typeValid && priceValid && whereValid && picValid));
         }
     }
 

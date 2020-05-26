@@ -32,7 +32,6 @@
         <activity android:name=".controller.dataInput.dataInputWind" />
         <activity android:name=".controller.dataInput.dataInputBoat" />
         <activity android:name=".controller.dataInput.dataInputGear" />
-        <activity android:name=".controller.AddDataActivity" />
         <activity android:name=".controller.ShowPictureActivity" />
         <activity android:name=".controller.TrackDetailActivity" />
         <activity android:name=".controller.MapAloneActivity" />

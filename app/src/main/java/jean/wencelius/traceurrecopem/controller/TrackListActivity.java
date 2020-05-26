@@ -107,6 +107,6 @@ public class TrackListActivity extends ListActivity {
 
        startActivity(TrackListDetailIntent);
 
-        Toast.makeText(this, "Track # "+Long.toString(id), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Track # "+Long.toString(id), Toast.LENGTH_SHORT).show();
     }
 }

@@ -6,7 +6,7 @@ import android.content.Context;
  * Created by Jean Wencélius on 18/05/2020.
  */
 public class ExportZip extends CreateZipTask {
-
+    //TODO: Status of emailSent in TrackDetailActivity not satisfying because appears as true even if action cancelled by user.
     public ExportZip(Context context, String saveDir) {
         super(context, saveDir);
     }
