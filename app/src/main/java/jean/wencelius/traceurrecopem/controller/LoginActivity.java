@@ -132,9 +132,8 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_LOCATION_SALE_PREF,location,getApplicationContext());
 
                 Calendar alarmStartTime = Calendar.getInstance();
-                Calendar now = Calendar.getInstance();
                 alarmStartTime.set(Calendar.HOUR_OF_DAY,16);
-                alarmStartTime.set(Calendar.MINUTE,30);
+                alarmStartTime.set(Calendar.MINUTE,02);
                 alarmStartTime.add(Calendar.DATE,2);
 
                 Intent notificationIntent = new Intent(LoginActivity.this, Notification_receiver.class);

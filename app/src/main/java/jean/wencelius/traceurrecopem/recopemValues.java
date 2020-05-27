@@ -72,7 +72,7 @@ public class recopemValues {
     public static final String EXPORT_TRACK_DATA = "exportTrackData";
     public static final String EXPORT_CAUGHT_FISH = "exportCaughtFish";
 
-    public static final String EMAIL_RECIPIENT = "jeanwencelius@gmail.com";
+    public static final String EMAIL_RECIPIENT = "recopem.reports@gmail.com";
 
     public static final String BUNDLE_EXTRA_CREATE_MANUAL_TRACK="createManualTrack";
     public static final String BUNDLE_EXTRA_CREATE_MANUAL_TRACK_ID="createManualTrackId";
