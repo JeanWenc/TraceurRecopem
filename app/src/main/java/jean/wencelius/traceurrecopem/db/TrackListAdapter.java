@@ -91,7 +91,11 @@ public class TrackListAdapter extends CursorAdapter {
         if(mPicAdded.equals("true")){
             vPicAdded.setText(R.string.answer_yes);
         }else{
-            vPicAdded.setText(R.string.answer_no);
+            if(mCaughtFishDetails.equals("true")){
+                vPicAdded.setText(R.string.track_item_caught_fish_details);
+            }else{
+                vPicAdded.setText(R.string.answer_no);
+            }
         }
         if(mExported.equals("true")){
             vExported.setText(R.string.answer_yes);
@@ -104,11 +108,14 @@ public class TrackListAdapter extends CursorAdapter {
             vSentEmail.setText(R.string.answer_no);
         }
 
+        //if(mDataAdded.equals("false") && mPicAdded.equals("false")){
         if(mDataAdded.equals("false") && mPicAdded.equals("false") && mCaughtFishDetails.equals("false")){
             vMainLayout.setBackgroundColor(Color.parseColor("#F21A00"));
+        //}else if(mDataAdded.equals("true") && mPicAdded.equals("false")){
         }else if(mDataAdded.equals("true") && mPicAdded.equals("false") && mCaughtFishDetails.equals("false")){
             vMainLayout.setBackgroundColor(Color.parseColor("#E1AF00"));
-        }else if(mDataAdded.equals("false") && (!mPicAdded.equals("false")) || !mCaughtFishDetails.equals("false")){
+        //}else if(mDataAdded.equals("false") && !mPicAdded.equals("false")){
+        }else if(mDataAdded.equals("false") && (!mPicAdded.equals("false") || !mCaughtFishDetails.equals("false"))){
             vMainLayout.setBackgroundColor(Color.parseColor("#E1AF00"));
         }else{
             if(mExported.equals("false") && mSentEmail.equals("false")){

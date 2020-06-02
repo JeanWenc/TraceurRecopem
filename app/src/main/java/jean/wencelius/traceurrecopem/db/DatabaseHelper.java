@@ -110,7 +110,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * SQL for creating table TRACK
      * @since 5
      */
-    @SuppressWarnings("deprecation")
     private static final String SQL_CREATE_TABLE_TRACK = ""
             + "create table " + TrackContentProvider.Schema.TBL_TRACK + " ("
             + TrackContentProvider.Schema.COL_ID + " integer primary key autoincrement,"

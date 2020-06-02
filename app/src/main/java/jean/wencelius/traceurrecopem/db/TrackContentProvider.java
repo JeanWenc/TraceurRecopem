@@ -44,6 +44,7 @@ public class TrackContentProvider extends ContentProvider {
     /**the projection to be used to get the important informations of a track*/
     private static final String[] TRACK_TABLES_PROJECTION = {
             Schema.TBL_TRACK + "." + Schema.COL_ID + " as " + Schema.COL_ID,
+            Schema.COL_NAME,
             Schema.COL_ACTIVE,
             Schema.COL_DIR,
             Schema.COL_INF_ID,

@@ -55,7 +55,8 @@
     <string name="activity_track_list_empty">Aucun tracé enregistré</string>
 
     <!-- TRACKLIST ITEM -->
-    <string name="track_item_trackpoints_count">Trackpoints: </string>
+    <string name="track_item_trackpoints_count">Nb de points: </string>
+    <string name = "track_item_caught_fish_details">Détails poissons</string>
 
     <!--TRACKLIST MENU-->
     <string name="menu_newtrack">Ajouter un tracé manuellement</string>

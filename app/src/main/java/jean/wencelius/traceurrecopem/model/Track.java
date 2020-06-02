@@ -58,6 +58,7 @@ public class Track {
         out.weekday = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_WEEKDAY));
 
         out.name = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_NAME));
+
         out.trackDate = tc.getLong(tc.getColumnIndex(TrackContentProvider.Schema.COL_START_DATE));
 
         out.gpsMethod = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_GPS_METHOD));
@@ -122,7 +123,7 @@ public class Track {
         this.picAdded = picAdded;
     }
 
-    public void setCaughtFishDetails(String caughtFishDetails){this.caughtFishDetails = caughtFishDetails;}
+    public void setCaughtFishDetails (String caughtFishDetails) {this.caughtFishDetails = caughtFishDetails;}
 
     public void setWeekday(String weekday) {
         this.weekday = weekday;

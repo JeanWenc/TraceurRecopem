@@ -364,6 +364,7 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
     private String [] returnTrackValues(Cursor cursor, String startDate){
         String arrStr [] = {
                 cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_ID)),
+                cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_NAME)),
                 Integer.toString(cursor.getInt(cursor.getColumnIndex(TrackContentProvider.Schema.COL_ACTIVE))),
                 cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_DIR)),
                 cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_INF_ID)),
