@@ -26,6 +26,7 @@ public class Track {
     private String recopemId;
     private String dataAdded;
     private String picAdded;
+    private String caughtFishDetails;
     private String mExported;
     private String mSentEmail;
 
@@ -66,6 +67,8 @@ public class Track {
         out.dataAdded = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
 
         out.picAdded = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
+
+        out.caughtFishDetails = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS));
 
         out.mExported = tc.getString(tc.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED));
 
@@ -118,6 +121,8 @@ public class Track {
     public void setPicAdded (String picAdded){
         this.picAdded = picAdded;
     }
+
+    public void setCaughtFishDetails(String caughtFishDetails){this.caughtFishDetails = caughtFishDetails;}
 
     public void setWeekday(String weekday) {
         this.weekday = weekday;
@@ -207,6 +212,8 @@ public class Track {
     public String getPicAdded(){
         return picAdded;
     }
+
+    public String getCaughtFishDetails() {return caughtFishDetails;}
 
     public String getDescription() {
         return description;

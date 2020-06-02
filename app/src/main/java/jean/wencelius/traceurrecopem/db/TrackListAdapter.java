@@ -79,6 +79,7 @@ public class TrackListAdapter extends CursorAdapter {
 
         String mDataAdded = t.getDataAdded();
         String mPicAdded = t.getPicAdded();
+        String mCaughtFishDetails = t.getCaughtFishDetails();
         String mExported = t.getExported();
         String mSentEmail = t.getSentEmail();
 
@@ -103,11 +104,11 @@ public class TrackListAdapter extends CursorAdapter {
             vSentEmail.setText(R.string.answer_no);
         }
 
-        if(mDataAdded.equals("false") && mPicAdded.equals("false")){
+        if(mDataAdded.equals("false") && mPicAdded.equals("false") && mCaughtFishDetails.equals("false")){
             vMainLayout.setBackgroundColor(Color.parseColor("#F21A00"));
-        }else if(mDataAdded.equals("true") && mPicAdded.equals("false")){
+        }else if(mDataAdded.equals("true") && mPicAdded.equals("false") && mCaughtFishDetails.equals("false")){
             vMainLayout.setBackgroundColor(Color.parseColor("#E1AF00"));
-        }else if(mDataAdded.equals("false") && !mPicAdded.equals("false")){
+        }else if(mDataAdded.equals("false") && (!mPicAdded.equals("false")) || !mCaughtFishDetails.equals("false")){
             vMainLayout.setBackgroundColor(Color.parseColor("#E1AF00"));
         }else{
             if(mExported.equals("false") && mSentEmail.equals("false")){

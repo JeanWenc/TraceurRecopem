@@ -46,12 +46,13 @@ public class TrackContentProvider extends ContentProvider {
             Schema.TBL_TRACK + "." + Schema.COL_ID + " as " + Schema.COL_ID,
             Schema.COL_ACTIVE,
             Schema.COL_DIR,
-            Schema.TBL_TRACK + "." + Schema.COL_NAME + " as "+ Schema.COL_NAME,
+            Schema.COL_INF_ID,
             Schema.COL_RECOPEM_TRACK_ID,
             Schema.COL_TRACK_DATA_ADDED,
             Schema.COL_EXPORTED,
             Schema.COL_SENT_EMAIL,
             Schema.COL_PIC_ADDED,
+            Schema.COL_CAUGHT_FISH_DETAILS,
             Schema.COL_START_DATE,
             Schema.COL_HOUR_START,
             Schema.COL_HOUR_END,
@@ -581,7 +582,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_ACCURACY = "accuracy"; // In DataHelper (called by gpsLogger) TBL_TRACKPOINTS
         public static final String COL_TIMESTAMP = "point_timestamp"; // In DataHelper (called by gpsLogger) TBL_TRACKPOINTS
         public static final String COL_NAME = "name";// In MenuActiviy TBL_TRACK but not used ; // In DataHelper (called by gpsLogger) TBL_WAYPOINTS
-        public static final String COL_START_DATE = "start_date"; // MenuActivity TBL_TRACK
+        public static final String COL_START_DATE = "Day"; // MenuActivity TBL_TRACK
 
         //TBL_PICTURES
         public static final String COL_PIC_PATH ="path_to_pictures"; // MenuActivity TBL_PICTURES
@@ -598,7 +599,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_GPS_METHOD = "GPS_data_coll_method"; // MenuActivity TBL_TRACK
         public static final String COL_WEEKDAY = "Weekday"; // MenuActivity TBL_TRACK
         public static final String COL_GEAR = "Gear"; // DataInputGear TBL_TRACK
-        public static final String COL_GEAR_OTHER_DETAILS = "Gear_other_details";// DataInputGear TBL_TRACK
+        public static final String COL_GEAR_OTHER_DETAILS = "Gear_details";// DataInputGear TBL_TRACK
         public static final String COL_HOUR_START = "Hour_st";
         public static final String COL_HOUR_END = "Hour_end";
         public static final String COL_BOAT = "Boat"; //DataInputBoat TBL_TRACK
@@ -634,6 +635,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final String COL_CATCH_GIVE_DETAILS = "Catch_give_details";//DataInputCatchGive TBL_TRACK
         public static final String COL_CATCH_GIVE_PIC = "Catch_give_pic";//DataInputCatchGive TBL_TRACK
         public static final String COL_PIC_ADDED = "Pic_added"; // MenuActivity TBL_TRACK
+        public static final String COL_CAUGHT_FISH_DETAILS = "Caught_fish_details";// MenuActivity TBL_TRA
         public static final String COL_TRACK_DATA_ADDED = "Track_data_added"; // MenuActivity TBL_TRACK
         public static final String COL_EXPORTED = "Exported"; // MenuActivity TBL_TRACK
         public static final String COL_SENT_EMAIL = "emailSent"; //MenuActivity TBL_TRACK

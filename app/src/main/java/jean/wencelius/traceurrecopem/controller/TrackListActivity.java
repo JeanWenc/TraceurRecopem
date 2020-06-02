@@ -81,6 +81,7 @@ public class TrackListActivity extends ListActivity {
        cursor.moveToPosition(0);
 
        String picAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_PIC_ADDED));
+       String caughtFishDetails = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS));
        String dataAdded = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED));
        String exported = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_EXPORTED));
        String sentEmail = cursor.getString(cursor.getColumnIndex(TrackContentProvider.Schema.COL_SENT_EMAIL));
@@ -88,16 +89,17 @@ public class TrackListActivity extends ListActivity {
 
        cursor.close();
 
-       Intent TrackListDetailIntent = new Intent(TrackListActivity.this,TrackDetailActivity.class);
+       Intent TrackDetailIntent = new Intent(TrackListActivity.this,TrackDetailActivity.class);
 
-       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, id);
-       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED,picAdded);
-       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED, dataAdded);
-       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_EXPORTED, exported);
-       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_DIR,saveDir);
-       TrackListDetailIntent.putExtra(TrackContentProvider.Schema.COL_SENT_EMAIL,sentEmail);
+       TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, id);
+       TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED,picAdded);
+       TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS,caughtFishDetails);
+       TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED, dataAdded);
+       TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_EXPORTED, exported);
+       TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_DIR,saveDir);
+       TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_SENT_EMAIL,sentEmail);
 
-       startActivity(TrackListDetailIntent);
+       startActivity(TrackDetailIntent);
 
         Toast.makeText(this, "Track # "+Long.toString(id), Toast.LENGTH_SHORT).show();
     }

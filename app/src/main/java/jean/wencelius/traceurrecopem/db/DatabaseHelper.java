@@ -160,6 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TrackContentProvider.Schema.COL_PIC_PATH + " text,"
             + TrackContentProvider.Schema.COL_TRACK_DATA_ADDED + " text,"
             + TrackContentProvider.Schema.COL_PIC_ADDED + " text,"
+            + TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS + " text,"
             + TrackContentProvider.Schema.COL_EXPORTED + " text,"
             + TrackContentProvider.Schema.COL_SENT_EMAIL + " text,"
             + TrackContentProvider.Schema.COL_DEVICE + " text,"

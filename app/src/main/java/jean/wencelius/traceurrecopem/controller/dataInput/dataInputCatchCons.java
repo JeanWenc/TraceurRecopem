@@ -319,13 +319,11 @@ public class dataInputCatchCons extends AppCompatActivity{
             case R.id.activity_data_input_menu_next:
                 mCatchConsDetails = mCatchConsInputDetails.getText().toString();
 
-                boolean addedFishCaughtInfo = false;
-                if(!mNewPicAdded){
-                    Cursor mCursorFishCaught = getContentResolver().query(TrackContentProvider.poissonsUri(trackId), null,
+                Cursor mCursorFishCaught = getContentResolver().query(TrackContentProvider.poissonsUri(trackId), null,
                             null, null, null);
-                    addedFishCaughtInfo= mCursorFishCaught.getCount()>0;
-                    mCursorFishCaught.close();
-                }
+                boolean addedFishCaughtInfo= mCursorFishCaught.getCount()>0;
+                mCursorFishCaught.close();
+
 
                 Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
 
@@ -336,7 +334,7 @@ public class dataInputCatchCons extends AppCompatActivity{
                 catchConsValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_DETAILS,mCatchConsDetails);
                 catchConsValues.put(TrackContentProvider.Schema.COL_CATCH_CONS_PIC,mCatchConsPicAns);
                 catchConsValues.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"true");
-                if(!mNewPicAdded) catchConsValues.put(TrackContentProvider.Schema.COL_PIC_ADDED,Boolean.toString(addedFishCaughtInfo));
+                catchConsValues.put(TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS,Boolean.toString(addedFishCaughtInfo));
 
                 getContentResolver().update(trackUri, catchConsValues, null, null);
 

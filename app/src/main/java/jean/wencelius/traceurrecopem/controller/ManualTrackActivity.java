@@ -197,7 +197,6 @@ public class ManualTrackActivity extends AppCompatActivity{
 
             // Create entry in TRACK table
             ContentValues values = new ContentValues();
-            values.put(TrackContentProvider.Schema.COL_NAME, "");
             values.put(TrackContentProvider.Schema.COL_INF_ID, fisherId);
             values.put(TrackContentProvider.Schema.COL_START_DATE, startDate.getTime());
             values.put(TrackContentProvider.Schema.COL_HOUR_START,mDepTime);
@@ -207,6 +206,7 @@ public class ManualTrackActivity extends AppCompatActivity{
             values.put(TrackContentProvider.Schema.COL_WEEKDAY,mDayOfWeek);
             values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
             values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"false"); // other value should be "true"
+            values.put(TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS,"false");
             values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");
             values.put(TrackContentProvider.Schema.COL_SENT_EMAIL,"false");
             values.put(TrackContentProvider.Schema.COL_DIR,saveDirectory);

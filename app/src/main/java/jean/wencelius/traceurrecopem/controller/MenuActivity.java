@@ -1,26 +1,20 @@
 package jean.wencelius.traceurrecopem.controller;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,12 +24,10 @@ import java.util.Date;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.DataHelper;
-import jean.wencelius.traceurrecopem.exception.CreateTrackException;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
-import jean.wencelius.traceurrecopem.exception.ExportTrackException;
+import jean.wencelius.traceurrecopem.exception.CreateTrackException;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
-import jean.wencelius.traceurrecopem.utils.Notification_receiver;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -167,7 +159,6 @@ public class MenuActivity extends AppCompatActivity {
 
         // Create entry in TRACK table
         ContentValues values = new ContentValues();
-        values.put(TrackContentProvider.Schema.COL_NAME, "");
         values.put(TrackContentProvider.Schema.COL_INF_ID, fisherId);
         values.put(TrackContentProvider.Schema.COL_START_DATE, startDate.getTime());
         values.put(TrackContentProvider.Schema.COL_HOUR_START,"");
@@ -177,6 +168,7 @@ public class MenuActivity extends AppCompatActivity {
         values.put(TrackContentProvider.Schema.COL_WEEKDAY,recopemValues.getWeekdayString(mDay));
         values.put(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED,"false");
         values.put(TrackContentProvider.Schema.COL_PIC_ADDED,"false"); // other value should be "true"
+        values.put(TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS,"false");
         values.put(TrackContentProvider.Schema.COL_EXPORTED,"false");
         values.put(TrackContentProvider.Schema.COL_SENT_EMAIL,"false");
         values.put(TrackContentProvider.Schema.COL_DIR,saveDirectory);

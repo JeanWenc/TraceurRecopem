@@ -71,6 +71,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
     public Boolean mPicEmpty;
     private Boolean mNewPicAdded;
+    private boolean mCaughtFishDetails;
     public Boolean mDataAdded;
     public Boolean mExported;
     public Boolean mSentEmail;
@@ -83,6 +84,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     private static final String BUNDLE_STATE_EXPORTED = "stateExported";
     private static final String BUNDLE_STATE_DATA = "stateData";
     private static final String BUNDLE_STATE_PIC = "statePic";
+    private static final String BUNDLE_STATE_CAUGHT_FISH_DETAILS = "caughtFishDetails";
     private static final String BUNDLE_STATE_SENT_EMAIL = "stateSentEmail";
     private static final String BUNDLE_STATE_CURRENT_IMAGE_FILE ="stateCurrentImageFile";
 
@@ -113,6 +115,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
             mNewPicAdded=savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
             mPicEmpty=savedInstanceState.getBoolean(BUNDLE_STATE_PIC);
+            mCaughtFishDetails = savedInstanceState.getBoolean(BUNDLE_STATE_CAUGHT_FISH_DETAILS);
             mDataAdded = savedInstanceState.getBoolean(BUNDLE_STATE_DATA);
             mExported=savedInstanceState.getBoolean(BUNDLE_STATE_EXPORTED);
             mSentEmail=savedInstanceState.getBoolean(BUNDLE_STATE_SENT_EMAIL);
@@ -124,8 +127,10 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
             mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded= getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("true");
-
             mPicEmpty = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_ADDED).equals("false");
+
+            mCaughtFishDetails = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS).equals("true");
+
             mDataAdded = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED).equals("true");
             mExported = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_EXPORTED).equals("true");
             mSentEmail = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_SENT_EMAIL).equals("true");
@@ -187,6 +192,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
         outState.putBoolean(BUNDLE_STATE_PIC,mPicEmpty);
+        outState.putBoolean(BUNDLE_STATE_CAUGHT_FISH_DETAILS,mCaughtFishDetails);
         outState.putBoolean(BUNDLE_STATE_DATA,mDataAdded);
         outState.putBoolean(BUNDLE_STATE_EXPORTED,mExported);
         outState.putBoolean(BUNDLE_STATE_SENT_EMAIL,mSentEmail);
@@ -243,7 +249,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.trackdetail_menu_export).setVisible(mDataAdded && !mPicEmpty);
+        menu.findItem(R.id.trackdetail_menu_export).setVisible(mDataAdded && (!mPicEmpty || mCaughtFishDetails));
         menu.findItem(R.id.trackdetail_menu_email).setVisible(mExported);
         return super.onPrepareOptionsMenu(menu);
     }
