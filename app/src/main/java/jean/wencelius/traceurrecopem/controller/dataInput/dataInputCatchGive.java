@@ -1,9 +1,5 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -16,7 +12,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -24,12 +19,13 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Arrays;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.TrackListActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
@@ -37,9 +33,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 public class dataInputCatchGive extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     static dataInputCatchGive giveAct;
-
-    private ContentResolver mCr;
-    private Cursor mTrackCursor;
 
     private String mCatchGiveAns;
     private int mCatchGiveN;
@@ -58,18 +51,9 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
     private boolean mNewPicAdded;
 
     //Views
-    private TextView mPicGiveQuestion;
     private RelativeLayout mCatchGiveQuantityFrame;
     private LinearLayout mCatchGivePicFrame;
 
-    private RadioButton mCatchGiveInputAnsY;
-    private RadioButton mCatchGiveInputAnsN;
-    private RadioButton mCatchGiveInputPicAnsY;
-    private RadioButton mCatchGiveInputPicAnsN;
-
-    private NumberPicker mCatchGiveInputN;
-    private NumberPicker mCatchGiveInputType;
-    private Spinner mCatchGiveInputWhere;
     private EditText mCatchGiveInputDetails;
 
     private String [] places;
@@ -91,22 +75,22 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
 
         giveAct = this;
 
-        mPicGiveQuestion = (TextView) findViewById(R.id.activity_data_input_catch_give_question_pic);
-
         mCatchGiveQuantityFrame = (RelativeLayout) findViewById(R.id.activity_catch_give_quantity_frame);
         mCatchGivePicFrame = (LinearLayout) findViewById(R.id.activity_catch_give_pic_frame);
-
-        mCatchGiveInputAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_give_question_yes);
-        mCatchGiveInputAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_give_question_no);
-        mCatchGiveInputPicAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_give_question_pic_yes);
-        mCatchGiveInputPicAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_give_question_pic_no);
-
-        mCatchGiveInputN = (NumberPicker) findViewById(R.id.activity_data_input_catch_give_input_N);
-        mCatchGiveInputType = (NumberPicker) findViewById(R.id.activity_data_input_catch_give_input_type);
-        mCatchGiveInputWhere = (Spinner) findViewById(R.id.activity_data_input_catch_give_input_where);
         mCatchGiveInputDetails = (EditText) findViewById(R.id.activity_data_input_catch_give_input_details);
 
         mCatchDestination = "give";
+
+        TextView mPicGiveQuestion = (TextView) findViewById(R.id.activity_data_input_catch_give_question_pic);
+
+        RadioButton mCatchGiveInputAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_give_question_yes);
+        RadioButton mCatchGiveInputAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_give_question_no);
+        RadioButton mCatchGiveInputPicAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_give_question_pic_yes);
+        RadioButton mCatchGiveInputPicAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_give_question_pic_no);
+
+        NumberPicker mCatchGiveInputN = (NumberPicker) findViewById(R.id.activity_data_input_catch_give_input_N);
+        NumberPicker mCatchGiveInputType = (NumberPicker) findViewById(R.id.activity_data_input_catch_give_input_type);
+        Spinner mCatchGiveInputWhere = (Spinner) findViewById(R.id.activity_data_input_catch_give_input_where);
 
         mCatchGiveInputN.setMinValue(0);
         mCatchGiveInputN.setMaxValue(100);
@@ -158,8 +142,7 @@ public class dataInputCatchGive extends AppCompatActivity implements AdapterView
             mCatchSalePicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS);
             mCatchOrderPicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS);
 
-            mCr = getContentResolver();
-            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
+            Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
             mTrackCursor.moveToPosition(0);
 
             String catchGiveAns = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_GIVE));

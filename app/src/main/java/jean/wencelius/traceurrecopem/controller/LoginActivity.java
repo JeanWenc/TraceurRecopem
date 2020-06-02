@@ -34,9 +34,6 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private EditText mFisherNameInput;
     private EditText mFisherIdInput;
-    private Spinner mBoatSpinner;
-    private Spinner mSaleLocationSpinner;
-    private CheckBox mBoatOwnerInput;
 
     private String mBoat;
     private String mBoatOwner;
@@ -64,10 +61,10 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
 
         mFisherNameInput = (EditText) findViewById(R.id.activity_login_name_input);
         mFisherIdInput = (EditText) findViewById(R.id.activity_login_id_input);
-        mBoatSpinner = (Spinner) findViewById(R.id.activity_login_boat);
-        mBoatOwnerInput = (CheckBox) findViewById(R.id.activity_login_boat_owner);
-        mSaleLocationSpinner = (Spinner) findViewById(R.id.activity_login_where_sale);
         mSubmitButton = (Button) findViewById(R.id.activity_login_submit_btn);
+
+        Spinner mBoatSpinner = (Spinner) findViewById(R.id.activity_login_boat);
+        Spinner mSaleLocationSpinner = (Spinner) findViewById(R.id.activity_login_where_sale);
 
         mUser = new User();
 

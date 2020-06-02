@@ -1,7 +1,5 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -14,10 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,9 +25,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 public class dataInputGear extends AppCompatActivity {
 
     static dataInputGear gearAct;
-
-    private ContentResolver mCr;
-    private Cursor mTrackCursor;
 
     private EditText mInputOtherDetail;
     private String mGear;
@@ -68,8 +61,7 @@ public class dataInputGear extends AppCompatActivity {
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
 
-            mCr = getContentResolver();
-            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK,trackId),null,null,null,null);
+            Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK,trackId),null,null,null,null);
             mTrackCursor.moveToPosition(0);
             String gear = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_GEAR));
             String otherDetail = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_GEAR_OTHER_DETAILS));

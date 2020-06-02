@@ -46,15 +46,11 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
     private String selectionIn;
     private String [] selectionArgsList;
 
-    private TextView mDialogFishName;
     private Button mOkButton;
-    private Button mCancelButton;
     private EditText mInputOtherFish;
 
-    private NumberPicker mPickerCatchN;
     private int mCatchN;
 
-    private NumberPicker mPickerCatchType;
     private String mCatchType;
 
     private boolean mInputOtherFishValid;
@@ -109,7 +105,7 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mDialogFishName = (TextView) view.findViewById(R.id.dialog_fish_picker_tahitian_name);
+        TextView mDialogFishName = (TextView) view.findViewById(R.id.dialog_fish_picker_tahitian_name);
         mDialogFishName.setText(mFishTahitian);
 
         mInputOtherFish = (EditText) view.findViewById(R.id.dialog_fish_picker_input_other_fish);
@@ -136,13 +132,13 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
             mInputOtherFish.setVisibility(View.INVISIBLE);
         }
 
-        mPickerCatchN = (NumberPicker) view.findViewById(R.id.dialog_fish_picker_N);
+        NumberPicker mPickerCatchN = (NumberPicker) view.findViewById(R.id.dialog_fish_picker_N);
         mPickerCatchN.setMinValue(0);
         mPickerCatchN.setMaxValue(100);
         mPickerCatchN.setOnValueChangedListener(this);
         mPickerCatchN.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
-        mPickerCatchType = (NumberPicker) view.findViewById(R.id.dialog_fish_picker_type);
+        NumberPicker mPickerCatchType = (NumberPicker) view.findViewById(R.id.dialog_fish_picker_type);
         type = getResources().getStringArray(R.array.data_input_catch_sale_type);
         mPickerCatchType.setMinValue(0);
         mPickerCatchType.setMaxValue(type.length-1);
@@ -158,7 +154,7 @@ public class FishPickerDialog extends DialogFragment implements NumberPicker.OnV
 
         mOkButton = (Button) view.findViewById(R.id.dialog_fish_picker_button_ok);
         mOkButton.setEnabled(mCatchNValid && mCatchTypeValid && mInputOtherFishValid);
-        mCancelButton = (Button) view.findViewById(R.id.dialog_fish_picker_button_cancel);
+        Button mCancelButton = (Button) view.findViewById(R.id.dialog_fish_picker_button_cancel);
 
         mOkButton.setOnClickListener(new View.OnClickListener() {
             @Override

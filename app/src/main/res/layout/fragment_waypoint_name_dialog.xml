@@ -38,7 +38,7 @@
             android:layout_gravity="left"
             android:layout_margin="5dp"
             android:padding="10dp"
-            android:text="OK"
+            android:text="@string/answer_Ok"
             android:background="@color/zissouBlueLight"/>
         <Space
             android:layout_width="0dp"
@@ -52,7 +52,7 @@
             android:layout_margin="5dp"
             android:padding="10dp"
             android:background="@color/zissouRed"
-            android:text="ANNULER"/>
+            android:text="@string/answer_Cancel"/>
 
     </LinearLayout>
 

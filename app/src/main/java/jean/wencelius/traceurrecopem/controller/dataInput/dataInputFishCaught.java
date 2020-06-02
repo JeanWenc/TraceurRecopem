@@ -32,8 +32,6 @@ import jean.wencelius.traceurrecopem.utils.MapTileProvider;
 
 public class dataInputFishCaught extends AppCompatActivity implements ImageFishAdapter.OnImageListener{
 
-    private ImageView mImageView;
-
     private TextView mOtherFishIntro;
     private TextView mOtherFishDetail;
 
@@ -105,7 +103,6 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
     protected void onResume() {
         super.onResume();
 
-        mImageView = (ImageView) findViewById(R.id.image_fish_item_id);
         recyclerView = (RecyclerView) findViewById(R.id.activity_data_input_fish_caught_recyclerView);
         gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);

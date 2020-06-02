@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/tracklist_menu_newtrack"
+    <item
+        android:id="@+id/tracklist_menu_newtrack"
         android:title="@string/menu_newtrack"
         android:icon="@android:drawable/ic_menu_add"
-        app:showAsAction="ifRoom|withText"></item>
-    <item android:id="@+id/tracklist_menu_exportall"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/tracklist_menu_exportall"
         android:title="@string/menu_exportall"
-        android:icon="@android:drawable/ic_menu_set_as"></item>
+        android:icon="@android:drawable/ic_menu_set_as" />
 
 </menu>

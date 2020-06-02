@@ -1,6 +1,5 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -10,9 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,9 +22,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 public class dataInputWind extends AppCompatActivity {
 
     static dataInputWind windAct;
-
-    private ContentResolver mCr;
-    private Cursor mTrackCursor;
 
     public String mWindEstFisher;
     public String mCurrentEstFisher;
@@ -60,8 +54,7 @@ public class dataInputWind extends AppCompatActivity {
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
 
-            mCr = getContentResolver();
-            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
+            Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
             mTrackCursor.moveToPosition(0);
             String windEstFisher = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_WIND_FISHER));
             String currentEstFisher = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CURRENT_FISHER));

@@ -31,8 +31,6 @@ public class WaypointNameDialog extends DialogFragment{
 
     private Button mOkButton;
 
-    private Button mCancelButton;
-
     public WaypointNameDialog(){}
 
     public static WaypointNameDialog newInstance(long trackId) {
@@ -63,8 +61,9 @@ public class WaypointNameDialog extends DialogFragment{
 
        mInputWaypointName = (EditText) view.findViewById(R.id.dialog_waypoint_name_input);
        mOkButton = (Button) view.findViewById(R.id.dialog_waypoint_name_button_ok);
-       mCancelButton = (Button) view.findViewById(R.id.dialog_waypoint_name_button_cancel);
        mOkButton.setEnabled(false);
+
+       Button mCancelButton = (Button) view.findViewById(R.id.dialog_waypoint_name_button_cancel);
 
        mInputWaypointName.addTextChangedListener(new TextWatcher() {
                 @Override

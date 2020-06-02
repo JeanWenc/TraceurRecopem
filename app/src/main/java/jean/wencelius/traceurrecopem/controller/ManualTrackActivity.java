@@ -159,7 +159,7 @@ public class ManualTrackActivity extends AppCompatActivity{
 
 
        int hourDep = Integer.parseInt(mDepTime.substring(0,2));
-       int hourArr = Integer.parseInt(mArrTime.substring(0,2));;
+       int hourArr = Integer.parseInt(mArrTime.substring(0,2));
 
        boolean addDay = false;
 

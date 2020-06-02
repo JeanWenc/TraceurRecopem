@@ -27,8 +27,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
  */
 public abstract class CreateZipTask extends AsyncTask<Void, Long, Boolean> {
 
-    private String saveDir;
-
     private ProgressDialog dialog;
 
     protected Context context;
@@ -46,7 +44,6 @@ public abstract class CreateZipTask extends AsyncTask<Void, Long, Boolean> {
     static final int ZIP_MAX_SIZE = 10000;
 
     public CreateZipTask(Context context, String saveDir) {
-        this.saveDir = saveDir;
         this.context = context;
 
         this.zipExportDirectory = new File(saveDir);
@@ -134,7 +131,7 @@ public abstract class CreateZipTask extends AsyncTask<Void, Long, Boolean> {
                 FileOutputStream dest = new FileOutputStream(_zipFile[j]);
                 ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
 
-                byte data[] = new byte[BUFFER];
+                byte[] data = new byte[BUFFER];
 
                 int jFileSize = 0;
 

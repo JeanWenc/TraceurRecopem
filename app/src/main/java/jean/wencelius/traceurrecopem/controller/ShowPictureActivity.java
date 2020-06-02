@@ -1,18 +1,15 @@
 package jean.wencelius.traceurrecopem.controller;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 
@@ -21,11 +18,9 @@ import java.io.File;
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
-import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
 
 public class ShowPictureActivity extends AppCompatActivity {
 
-    private ImageView mImage;
     private String mImagePath;
     private String mImageUuid;
     private DataHelper mDataHelper;
@@ -37,7 +32,7 @@ public class ShowPictureActivity extends AppCompatActivity {
 
         mDataHelper = new DataHelper(this);
 
-        mImage = findViewById(R.id.activity_show_picture_image);
+        ImageView mImage = findViewById(R.id.activity_show_picture_image);
 
         mImagePath = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_PIC_PATH);
         mImageUuid = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_UUID);

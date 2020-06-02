@@ -21,8 +21,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 
 public class TrackListActivity extends ListActivity {
 
-    private ImageButton mBtnBack;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +28,7 @@ public class TrackListActivity extends ListActivity {
 
         getListView().setEmptyView(findViewById(R.id.activity_tracklist_empty));
 
-        mBtnBack = (ImageButton)  findViewById(R.id.activity_tracklist_home);
+        ImageButton mBtnBack = (ImageButton)  findViewById(R.id.activity_tracklist_home);
 
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override

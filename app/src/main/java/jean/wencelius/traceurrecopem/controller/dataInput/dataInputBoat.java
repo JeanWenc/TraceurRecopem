@@ -1,40 +1,28 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.TrackDetailActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
-import jean.wencelius.traceurrecopem.gpx.ExportToStorageTask;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputBoat extends AppCompatActivity {
 
     static dataInputBoat boatAct;
-
-    private ContentResolver mCr;
-    private Cursor mTrackCursor;
 
     public String mBoat;
     public String mBoatOwner;
@@ -44,10 +32,6 @@ public class dataInputBoat extends AppCompatActivity {
 
 
     private CheckBox mCheckBox;
-    private RadioButton radioMotorboat;
-    private RadioButton radioOutrigger;
-    private RadioButton radioSwim;
-    private RadioButton radioShore;
 
     private static final String BUNDLE_STATE_BOAT = "boatType";
     private static final String BUNDLE_STATE_BOAT_OWNER = "boatOwner";
@@ -62,10 +46,11 @@ public class dataInputBoat extends AppCompatActivity {
         boatAct = this;
 
         mCheckBox = (CheckBox) findViewById(R.id.activity_data_input_boat_boat_owner);
-        radioMotorboat = (RadioButton) findViewById(R.id.activity_data_input_boat_motor);
-        radioOutrigger = (RadioButton) findViewById(R.id.activity_data_input_boat_pirogue);
-        radioSwim = (RadioButton) findViewById(R.id.activity_data_input_boat_nage);
-        radioShore = (RadioButton) findViewById(R.id.activity_data_input_boat_shore);
+
+        RadioButton radioMotorboat = (RadioButton) findViewById(R.id.activity_data_input_boat_motor);
+        RadioButton radioOutrigger = (RadioButton) findViewById(R.id.activity_data_input_boat_pirogue);
+        RadioButton radioSwim = (RadioButton) findViewById(R.id.activity_data_input_boat_nage);
+        RadioButton radioShore = (RadioButton) findViewById(R.id.activity_data_input_boat_shore);
 
         if(savedInstanceState!=null){
             showNext = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_BUTTON);
@@ -78,8 +63,7 @@ public class dataInputBoat extends AppCompatActivity {
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
 
-            mCr = getContentResolver();
-            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK,trackId),null,null,null,null);
+            Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK,trackId),null,null,null,null);
             mTrackCursor.moveToPosition(0);
             String boat = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_BOAT));
             String boatOwner = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_BOAT_OWNER));

@@ -36,9 +36,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 
 public class dataInputCatchCons extends AppCompatActivity{
 
-    private ContentResolver mCr;
-    private Cursor mTrackCursor;
-
     private String mCatchConsAns;
     private int mCatchConsN;
     private String mCatchConsType;
@@ -55,17 +52,9 @@ public class dataInputCatchCons extends AppCompatActivity{
     private boolean mNewPicAdded;
 
     //Views
-    private TextView mPicConsQuestion;
     private RelativeLayout mCatchConsQuantityFrame;
     private LinearLayout mCatchConsPicFrame;
 
-    private RadioButton mCatchConsInputAnsY;
-    private RadioButton mCatchConsInputAnsN;
-    private RadioButton mCatchConsInputPicAnsY;
-    private RadioButton mCatchConsInputPicAnsN;
-
-    private NumberPicker mCatchConsInputN;
-    private NumberPicker mCatchConsInputType;
     private EditText mCatchConsInputDetails;
 
     private String [] type;
@@ -83,18 +72,18 @@ public class dataInputCatchCons extends AppCompatActivity{
         //Prevent keyboard from showing up on activity start
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        mPicConsQuestion = (TextView) findViewById(R.id.activity_data_input_catch_cons_question_pic);
+        TextView mPicConsQuestion = (TextView) findViewById(R.id.activity_data_input_catch_cons_question_pic);
 
         mCatchConsQuantityFrame = (RelativeLayout) findViewById(R.id.activity_catch_cons_quantity_frame);
         mCatchConsPicFrame = (LinearLayout) findViewById(R.id.activity_catch_cons_pic_frame);
 
-        mCatchConsInputAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_cons_question_yes);
-        mCatchConsInputAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_cons_question_no);
-        mCatchConsInputPicAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_cons_question_pic_yes);
-        mCatchConsInputPicAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_cons_question_pic_no);
+        RadioButton mCatchConsInputAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_cons_question_yes);
+        RadioButton mCatchConsInputAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_cons_question_no);
+        RadioButton mCatchConsInputPicAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_cons_question_pic_yes);
+        RadioButton mCatchConsInputPicAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_cons_question_pic_no);
 
-        mCatchConsInputN = (NumberPicker) findViewById(R.id.activity_data_input_catch_cons_input_N);
-        mCatchConsInputType = (NumberPicker) findViewById(R.id.activity_data_input_catch_cons_input_type);
+        NumberPicker mCatchConsInputN = (NumberPicker) findViewById(R.id.activity_data_input_catch_cons_input_N);
+        NumberPicker mCatchConsInputType = (NumberPicker) findViewById(R.id.activity_data_input_catch_cons_input_type);
         mCatchConsInputDetails = (EditText) findViewById(R.id.activity_data_input_catch_cons_input_details);
 
         mCatchDestination = "cons";
@@ -140,8 +129,7 @@ public class dataInputCatchCons extends AppCompatActivity{
             mCatchOrderPicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS);
             mCatchGivePicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS);
 
-            mCr = getContentResolver();
-            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
+            Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
             mTrackCursor.moveToPosition(0);
 
             String catchConsAns = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_CONS));
@@ -201,8 +189,6 @@ public class dataInputCatchCons extends AppCompatActivity{
         }
 
         if(mCatchSalePicAns.equals("true") || mCatchOrderPicAns.equals("true") || mCatchGivePicAns.equals("true")) mPicConsQuestion.setText(R.string.data_input_catch_cons_question_pic_if_sale_pic);
-
-
 
         setTitle("Question 8/8");
     }

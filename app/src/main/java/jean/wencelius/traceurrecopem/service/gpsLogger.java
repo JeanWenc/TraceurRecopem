@@ -46,15 +46,8 @@ public class gpsLogger extends Service implements LocationListener {
     /**Current Track ID*/
     private long currentTrackId = -1;
 
-    /**the interval (in ms) to log GPS fixes defined in the preferences*/
-    private long gpsLoggingInterval;
-    private long gpsLoggingMinDistance;
-
     /**Last known location*/
     private Location lastLocation;
-
-    /**the timestamp of the last GPS fix we used*/
-    private long lastGPSTimestamp = 0;
 
     /**System notification id.*/
     private static final int NOTIFICATION_ID = 1;
@@ -146,8 +139,8 @@ public class gpsLogger extends Service implements LocationListener {
 
         pointCount=0;
 
-        gpsLoggingInterval = 10000;
-        gpsLoggingMinDistance=5;
+        long gpsLoggingInterval = 10000;
+        long gpsLoggingMinDistance=5;
 
         // Register our broadcast receiver
         IntentFilter filter = new IntentFilter();
@@ -171,17 +164,13 @@ public class gpsLogger extends Service implements LocationListener {
         // We're receiving location, so GPS is enabled
         isGpsEnabled = true;
 
-        // first of all we check if the time from the last used fix to the current fix is greater than the logging interval
-        //if((lastGPSTimestamp + gpsLoggingInterval) < System.currentTimeMillis()){
-            lastGPSTimestamp = System.currentTimeMillis(); // save the time of this fix
+        lastLocation = location;
 
-            lastLocation = location;
+        if (isTracking) {
+            dataHelper.track(currentTrackId, location);
+            pointCount++;
+        }
 
-            if (isTracking) {
-                dataHelper.track(currentTrackId, location);
-                pointCount++;
-            }
-        //}
     }
 
     @Override

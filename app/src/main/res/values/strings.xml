@@ -1,9 +1,17 @@
 <resources>
     <string name="app_name">TraceurRecopem</string>
     <string name="app_name_w_space">Traceur Recopem</string>
+    <string name ="app_name_w_version">Traceur GPS v1.0</string>
 
     <string name="answer_yes">Oui</string>
     <string name="answer_no">Non</string>
+    <string name = "answer_validate">Valider</string>
+    <string name = "answer_next">Suivant</string>
+    <string name = "answer_Ok">OK</string>
+    <string name = "answer_Cancel">Annuler</string>
+    <string name = "answer_Delete">SUPPRIMER</string>
+
+
 
     <string name ="thank_you_message">"Tracé enregistré. Mauruuru maita'i !"</string>
     <!-- MAIN ACTIVITY -->
@@ -35,6 +43,11 @@
     <!--MAP AND TRACK ACTIVITY-->
     <string name="activity_map_and_track_waypoint_dialog_title">Mon marqueur</string>
     <string name="activity_map_and_track_waypoint_dialog_delete_title">Supprimer le marqueur?</string>
+
+    <!--MAP AND TRACK MENU-->
+    <string name="activity_map_and_track_menu_navionics">JEROME</string>
+    <string name="activity_map_and_track_menu_stop_tracking">Arrêter Tracé</string>
+
     <!--WAYPOINT NAME DIALOG-->
     <string name="dialog_waypoint_name_text">Nom du marqueur</string>
     <string name="dialog_waypoint_name_input_hint">Donne un nom à ton marqueur</string>
@@ -55,6 +68,11 @@
     <string name="activity_track_list_empty">Aucun tracé enregistré</string>
 
     <!-- TRACKLIST ITEM -->
+    <string name="track_item_track_method">Méth. tracé = </string>
+    <string name="track_item_data_added">Questions = </string>
+    <string name="track_item_pic_added">Photos = </string>
+    <string name="track_item_exported">Exporté = </string>
+    <string name="track_item_emailed">Envoyé (email) = </string>
     <string name="track_item_trackpoints_count">Nb de points: </string>
     <string name = "track_item_caught_fish_details">Détails poissons</string>
 
@@ -240,6 +258,7 @@
     <string name="dialog_fish_picker_text">Quantités pêchées</string>
     <string name="dialog_fish_picker_input_other_fish_hint">Ecris le nom du poisson</string>
     <!--FISH CAUGHT-->
+    <string name="activity_data_input_fish_caught_main_menu">Menu principal</string>
     <string-array name="data_input_fish_caught_fish_file_list">
         <item>fish_new_fish.png</item>
         <item>fish_pahoro.jpg</item>

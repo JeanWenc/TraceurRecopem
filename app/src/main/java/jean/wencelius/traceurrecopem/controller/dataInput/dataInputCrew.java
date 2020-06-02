@@ -1,6 +1,5 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -11,18 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.TrackListActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
@@ -30,12 +26,8 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
 
     static dataInputCrew crewAct;
 
-    private ContentResolver mCr;
-    private Cursor mTrackCursor;
-
     private String mCrewAlone;
     private int mCrewN;
-    private String mCrewWho;
 
     private long trackId;
     private boolean mNewPicAdded;
@@ -74,6 +66,8 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
         mCrewInputN.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         mCrewInputN.setOnValueChangedListener(this);
 
+        String mCrewWho = "";
+
         if(savedInstanceState!=null){
             mCrewAlone = savedInstanceState.getString(BUNDLE_STATE_CREW_ANS);
             mCrewN = savedInstanceState.getInt(BUNDLE_STATE_CREW_N);
@@ -85,8 +79,7 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
 
-            mCr = getContentResolver();
-            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
+            Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
             mTrackCursor.moveToPosition(0);
 
             String crewAlone = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CREW_ALONE));

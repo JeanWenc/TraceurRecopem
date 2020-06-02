@@ -66,7 +66,7 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
      * Very simple data format (year - month - day) for filename of .gpx (folder name kept with hour and minutes in case several tracks same day)
      */
 
-    private SimpleDateFormat yearMonthDayDateFormatter = new SimpleDateFormat("yyyy-MM-dd");;
+    private SimpleDateFormat yearMonthDayDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * {@link Context} to get resources

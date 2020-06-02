@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/activity_map_and_track_jerome"
-        android:title="JEROME"
+        android:title="@string/activity_map_and_track_menu_navionics"
         app:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/activity_map_and_track_stop_recording"
-        android:title="Arrêter Tracé"
+        android:title="@string/activity_map_and_track_menu_stop_tracking"
         android:icon="@android:drawable/ic_lock_power_off"
         app:showAsAction="ifRoom"/>
 </menu>

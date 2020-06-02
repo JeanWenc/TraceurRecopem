@@ -12,8 +12,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mGreetingText;
-
     private int SPLASH_TIME = 3000;
 
     private String mFisherName;
@@ -26,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        mGreetingText = (TextView) findViewById(R.id.activity_main_greeting_text);
+        TextView mGreetingText = (TextView) findViewById(R.id.activity_main_greeting_text);
 
         mFisherName = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_NAME,getApplicationContext());
         mPrefLocSale = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_LOCATION_SALE_PREF, getApplicationContext());

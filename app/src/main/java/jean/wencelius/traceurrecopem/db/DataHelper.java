@@ -17,9 +17,6 @@ import jean.wencelius.traceurrecopem.controller.MapAndTrackActivity;
 public class DataHelper {
     private static final String TAG = DataHelper.class.getSimpleName();
 
-    /**Context*/
-    private Context context;
-
     /*** ContentResolver to interact with content provider*/
     private ContentResolver contentResolver;
 
@@ -44,7 +41,6 @@ public class DataHelper {
      @param c Application context.
      */
     public DataHelper(Context c) {
-        context = c;
         contentResolver = c.getContentResolver();
     }
 

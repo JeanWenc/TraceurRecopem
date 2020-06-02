@@ -1,9 +1,5 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -16,7 +12,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -24,12 +19,13 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Arrays;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.TrackListActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
@@ -37,9 +33,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 public class dataInputCatchOrder extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     static dataInputCatchOrder orderAct;
-
-    private ContentResolver mCr;
-    private Cursor mTrackCursor;
 
     private String mCatchOrderAns;
     private int mCatchOrderN;
@@ -59,19 +52,9 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
     private boolean mNewPicAdded;
 
     //Views
-    private TextView mPicOrderQuestion;
     private RelativeLayout mCatchOrderQuantityFrame;
     private LinearLayout mCatchOrderPicFrame;
 
-    private RadioButton mCatchOrderInputAnsY;
-    private RadioButton mCatchOrderInputAnsN;
-    private RadioButton mCatchOrderInputPicAnsY;
-    private RadioButton mCatchOrderInputPicAnsN;
-
-    private NumberPicker mCatchOrderInputN;
-    private NumberPicker mCatchOrderInputType;
-    private Spinner mCatchOrderInputPrice;
-    private Spinner mCatchOrderInputWhere;
     private EditText mCatchOrderInputDetails;
 
     private String [] places;
@@ -95,23 +78,24 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
 
         orderAct = this;
 
-        mPicOrderQuestion = (TextView) findViewById(R.id.activity_data_input_catch_order_question_pic);
-
         mCatchOrderQuantityFrame = (RelativeLayout) findViewById(R.id.activity_catch_order_quantity_frame);
         mCatchOrderPicFrame = (LinearLayout) findViewById(R.id.activity_catch_order_pic_frame);
 
-        mCatchOrderInputAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_order_question_yes);
-        mCatchOrderInputAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_order_question_no);
-        mCatchOrderInputPicAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_order_question_pic_yes);
-        mCatchOrderInputPicAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_order_question_pic_no);
-
-        mCatchOrderInputN = (NumberPicker) findViewById(R.id.activity_data_input_catch_order_input_N);
-        mCatchOrderInputType = (NumberPicker) findViewById(R.id.activity_data_input_catch_order_input_type);
-        mCatchOrderInputPrice = (Spinner) findViewById(R.id.activity_data_input_catch_order_input_price);
-        mCatchOrderInputWhere = (Spinner) findViewById(R.id.activity_data_input_catch_order_input_where);
         mCatchOrderInputDetails = (EditText) findViewById(R.id.activity_data_input_catch_order_input_details);
 
         mCatchDestination = "order";
+
+        TextView mPicOrderQuestion = (TextView) findViewById(R.id.activity_data_input_catch_order_question_pic);
+
+        RadioButton mCatchOrderInputAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_order_question_yes);
+        RadioButton mCatchOrderInputAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_order_question_no);
+        RadioButton mCatchOrderInputPicAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_order_question_pic_yes);
+        RadioButton mCatchOrderInputPicAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_order_question_pic_no);
+
+        NumberPicker mCatchOrderInputN = (NumberPicker) findViewById(R.id.activity_data_input_catch_order_input_N);
+        NumberPicker mCatchOrderInputType = (NumberPicker) findViewById(R.id.activity_data_input_catch_order_input_type);
+        Spinner mCatchOrderInputPrice = (Spinner) findViewById(R.id.activity_data_input_catch_order_input_price);
+        Spinner mCatchOrderInputWhere = (Spinner) findViewById(R.id.activity_data_input_catch_order_input_where);
 
         mCatchOrderInputN.setMinValue(0);
         mCatchOrderInputN.setMaxValue(100);
@@ -171,8 +155,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
             mCatchSalePicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS);
 
-            mCr = getContentResolver();
-            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
+            Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
             mTrackCursor.moveToPosition(0);
 
             String catchOrderAns = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_ORDER));

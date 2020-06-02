@@ -1,6 +1,5 @@
 package jean.wencelius.traceurrecopem.controller.dataInput;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -13,14 +12,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Arrays;
 
 import jean.wencelius.traceurrecopem.R;
-import jean.wencelius.traceurrecopem.controller.TrackListActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.recopemValues;
@@ -36,9 +32,6 @@ import jean.wencelius.traceurrecopem.recopemValues;
 public class dataInputCatchSale extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     static dataInputCatchSale saleAct;
-
-    private ContentResolver mCr;
-    private Cursor mTrackCursor;
 
     private String mCatchSaleAns;
     private int mCatchSaleN;
@@ -59,15 +52,6 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
     private RelativeLayout mCatchSaleQuantityFrame;
     private LinearLayout mCatchSalePicFrame;
 
-    private RadioButton mCatchSaleInputAnsY;
-    private RadioButton mCatchSaleInputAnsN;
-    private RadioButton mCatchSaleInputPicAnsY;
-    private RadioButton mCatchSaleInputPicAnsN;
-
-    private NumberPicker mCatchSaleInputN;
-    private NumberPicker mCatchSaleInputType;
-    private Spinner mCatchSaleInputPrice;
-    private Spinner mCatchSaleInputWhere;
     private EditText mCatchSaleInputDetails;
 
     private String [] places;
@@ -95,18 +79,19 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
         mCatchSaleQuantityFrame = (RelativeLayout) findViewById(R.id.activity_catch_sale_quantity_frame);
         mCatchSalePicFrame = (LinearLayout) findViewById(R.id.activity_catch_sale_pic_frame);
 
-        mCatchSaleInputAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_yes);
-        mCatchSaleInputAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_no);
-        mCatchSaleInputPicAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_pic_yes);
-        mCatchSaleInputPicAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_pic_no);
-
-        mCatchSaleInputN = (NumberPicker) findViewById(R.id.activity_data_input_catch_sale_input_N);
-        mCatchSaleInputType = (NumberPicker) findViewById(R.id.activity_data_input_catch_sale_input_type);
-        mCatchSaleInputPrice = (Spinner) findViewById(R.id.activity_data_input_catch_sale_input_price);
-        mCatchSaleInputWhere = (Spinner) findViewById(R.id.activity_data_input_catch_sale_input_where);
         mCatchSaleInputDetails = (EditText) findViewById(R.id.activity_data_input_catch_sale_input_details);
 
         mCatchDestination = "sale";
+
+        RadioButton mCatchSaleInputAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_yes);
+        RadioButton mCatchSaleInputAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_no);
+        RadioButton mCatchSaleInputPicAnsY = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_pic_yes);
+        RadioButton mCatchSaleInputPicAnsN = (RadioButton) findViewById(R.id.activity_data_input_catch_sale_question_pic_no);
+
+        NumberPicker mCatchSaleInputN = (NumberPicker) findViewById(R.id.activity_data_input_catch_sale_input_N);
+        NumberPicker mCatchSaleInputType = (NumberPicker) findViewById(R.id.activity_data_input_catch_sale_input_type);
+        Spinner mCatchSaleInputPrice = (Spinner) findViewById(R.id.activity_data_input_catch_sale_input_price);
+        Spinner mCatchSaleInputWhere = (Spinner) findViewById(R.id.activity_data_input_catch_sale_input_where);
 
         mCatchSaleInputN.setMinValue(0);
         mCatchSaleInputN.setMaxValue(100);
@@ -163,8 +148,7 @@ public class dataInputCatchSale extends AppCompatActivity implements AdapterView
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
 
-            mCr = getContentResolver();
-            mTrackCursor = mCr.query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
+            Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
             mTrackCursor.moveToPosition(0);
 
             String catchSaleAns = mTrackCursor.getString(mTrackCursor.getColumnIndex(TrackContentProvider.Schema.COL_CATCH_SALE));
