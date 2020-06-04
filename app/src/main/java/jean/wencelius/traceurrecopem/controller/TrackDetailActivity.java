@@ -486,12 +486,6 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        super.onBackPressed();
-    }
-
     public static TrackDetailActivity getInstance(){
         return trackDetailActivity;
     }
