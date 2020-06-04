@@ -187,7 +187,18 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
     private void exportTrackAsGpx(long trackId) throws ExportTrackException {
 
-        File sdRoot = Environment.getExternalStorageDirectory();
+        File sdRoot = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            sdRoot = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+            assert sdRoot!= null;
+            if(!sdRoot.exists()){
+                if(sdRoot.mkdirs()){
+                }
+            }
+        }else{
+            sdRoot = Environment.getExternalStorageDirectory();
+        }
+
         ContentResolver cr = context.getContentResolver();
         Uri trackUri = ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId);
 

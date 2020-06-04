@@ -7,16 +7,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,9 +32,10 @@ import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -361,6 +362,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         switch(requestCode) {
             case REQUEST_TAKE_PHOTO:
                 if(resultCode == RESULT_OK) {
+
                     imageFile = popImageFile();
                     imageUuid = UUID.randomUUID().toString();
                     picVal.put(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
@@ -448,9 +450,10 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     }
 
     private void copyFile(File sourceFile, File destFile) throws IOException {
-        if (!sourceFile.exists()) {
+     /*   if (!sourceFile.exists()) {
             return;
         }
+
         FileChannel source = null;
         FileChannel destination = null;
         source = new FileInputStream(sourceFile).getChannel();
@@ -463,7 +466,46 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         }
         if (destination != null) {
             destination.close();
+        }*/
+
+        if (null != destFile && null != sourceFile) {
+            FileInputStream inputStream = null;
+            FileOutputStream outputStream = null;
+            byte[] dataBuffer = new byte[1024];
+            try {
+                inputStream = new FileInputStream(sourceFile);
+                outputStream = new FileOutputStream(destFile);
+
+                try {
+                    int bytesRead = inputStream.read(dataBuffer);
+                    while (-1 != bytesRead) {
+                        outputStream.write(dataBuffer, 0, bytesRead);
+                        bytesRead = inputStream.read(dataBuffer);
+                    }
+
+                    // No errors copying the file, look like we're good
+                } catch (IOException e) {
+                    /*String txtToDisplay = "IOException trying to write copy file ["
+                            + sourceFile.getAbsolutePath() + "] to ["
+                            + destFile.getAbsolutePath() +"]: ["
+                            + e.getMessage() + "]";
+                    Toast.makeText(this, txtToDisplay, Toast.LENGTH_LONG).show();*/
+                }
+            } catch (FileNotFoundException e) {
+                Toast.makeText(this, "Source = "+destFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                /*String txtToDisplay2 = "File not found exception trying to write copy file ["
+                        + sourceFile.getAbsolutePath() + "] to ["
+                        + destFile.getAbsolutePath() +"]: ["
+                        + e.getMessage() + "]";
+                Toast.makeText(this, txtToDisplay2, Toast.LENGTH_LONG).show();*/
+            }
         }
+
+
+
+
+
+
     }
 
 }

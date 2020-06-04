@@ -1,34 +1,28 @@
 package jean.wencelius.traceurrecopem.controller;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import java.util.Calendar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
 import jean.wencelius.traceurrecopem.model.User;
 import jean.wencelius.traceurrecopem.recopemValues;
-import jean.wencelius.traceurrecopem.utils.Notification_receiver;
 
 public class LoginActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -47,8 +41,6 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private User mUser;
 
-    public static Context mContext;
-
     public LoginActivity() {
     }
 
@@ -56,8 +48,6 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        mContext = LoginActivity.this;
 
         mFisherNameInput = (EditText) findViewById(R.id.activity_login_name_input);
         mFisherIdInput = (EditText) findViewById(R.id.activity_login_id_input);
@@ -92,9 +82,6 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         mSaleLocationSpinner.setAdapter(locationAdapter);
         mSaleLocationSpinner.setOnItemSelectedListener(this);
 
-
-
-
         mFisherIdInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -109,6 +96,13 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
             public void afterTextChanged(Editable s) {
             }
         });
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //Permission not yet granted => Request permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE},
+                    recopemValues.MY_DANGEROUS_PERMISSIONS_REQUESTS);
+        }
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,22 +122,28 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT_OWNER,boatOwner,getApplicationContext());
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_LOCATION_SALE_PREF,location,getApplicationContext());
 
-                Calendar alarmStartTime = Calendar.getInstance();
-                alarmStartTime.set(Calendar.HOUR_OF_DAY,16);
-                alarmStartTime.set(Calendar.MINUTE,02);
-                alarmStartTime.add(Calendar.DATE,2);
-
-                Intent notificationIntent = new Intent(LoginActivity.this, Notification_receiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(LoginActivity.this,recopemValues.REQUEST_CODE_DAILY_NOTIFICATION,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-
-                AlarmManager alarmManager =(AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartTime.getTimeInMillis(),2*AlarmManager.INTERVAL_DAY,pendingIntent);
-
                 //User clicked button
                 Intent menuActivityIntent = new Intent(LoginActivity.this, MenuActivity.class);
                 startActivity(menuActivityIntent);
             }
         });
+    }
+
+    //What happens after requesting permission? (Optional)
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case recopemValues.MY_DANGEROUS_PERMISSIONS_REQUESTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                    //TODO: MENU_ACTIVITY: Gérer éventualité où utilisateur refuse autorisations.
+                    mSubmitButton.setEnabled(false);
+                }
+                return;
+            }
+        }
     }
 
     @Override
@@ -179,9 +179,5 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 }
                 break;
         }
-    }
-
-    public static Context getContext(){
-        return mContext;
     }
 }

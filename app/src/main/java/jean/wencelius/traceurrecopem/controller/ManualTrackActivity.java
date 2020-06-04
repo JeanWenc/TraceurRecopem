@@ -6,6 +6,7 @@ import androidx.fragment.app.DialogFragment;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,6 +55,8 @@ public class ManualTrackActivity extends AppCompatActivity{
     private final SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
     private final SimpleDateFormat time = new SimpleDateFormat("HH:mm");
 
+    private Context mContext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,8 @@ public class ManualTrackActivity extends AppCompatActivity{
         setContentView(R.layout.activity_manual_track);
 
         setTitle(R.string.activity_manual_track_title);
+
+        mContext = this;
 
         mNxtBtn = (Button) findViewById(R.id.activity_manual_track_next_btn);
 
@@ -190,7 +195,7 @@ public class ManualTrackActivity extends AppCompatActivity{
         }
 
         if(startDate!=null){
-            String saveDirectory = MenuActivity.getDataTrackDirectory(startDate);
+            String saveDirectory = MenuActivity.getDataTrackDirectory(startDate,mContext);
             String fisherId = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_ID,getApplicationContext());
 
             String mRecopemId = fisherId + "_" + mDay;

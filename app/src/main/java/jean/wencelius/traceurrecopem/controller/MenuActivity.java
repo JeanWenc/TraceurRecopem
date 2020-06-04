@@ -3,6 +3,7 @@ package jean.wencelius.traceurrecopem.controller;
 import android.Manifest;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -38,14 +39,16 @@ public class MenuActivity extends AppCompatActivity {
 
     private Calendar mCalendar;
 
-    private static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
-
     private long currentTrackId;
+
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        mContext = this;
 
         mCalendar = Calendar.getInstance();
 
@@ -63,8 +66,8 @@ public class MenuActivity extends AppCompatActivity {
             //Permission not yet granted => Request permission
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_DANGEROUS_PERMISSIONS_REQUESTS);
-        } else {
+                    recopemValues.MY_DANGEROUS_PERMISSIONS_REQUESTS);
+        }else{
             AddListenersToButtons();
         }
     }
@@ -73,7 +76,7 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case MY_DANGEROUS_PERMISSIONS_REQUESTS: {
+            case recopemValues.MY_DANGEROUS_PERMISSIONS_REQUESTS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -152,7 +155,7 @@ public class MenuActivity extends AppCompatActivity {
         if(strDay.length()==1) strDay = "0"+strDay;
         String mSimpleDate = strYear+"-"+strMonth+"-"+strDay;
 
-        String saveDirectory = getDataTrackDirectory(startDate);
+        String saveDirectory = getDataTrackDirectory(startDate, mContext);
 
         String fisherId = AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_ID,getApplicationContext());
         String mRecopemId = fisherId + "_" + mSimpleDate;
@@ -191,8 +194,19 @@ public class MenuActivity extends AppCompatActivity {
         return trackId;
     }
 
-    public static String getDataTrackDirectory(Date startDate){
-        File sdRoot = Environment.getExternalStorageDirectory();
+    public static String getDataTrackDirectory(Date startDate, Context ctx){
+
+        File sdRoot = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            sdRoot = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+            assert sdRoot!= null;
+            if(!sdRoot.exists()){
+                if(sdRoot.mkdirs()){
+                }
+            }
+        }else{
+            sdRoot = Environment.getExternalStorageDirectory();
+        }
 
         // The location that the user has specified gpx files and associated content to be written
         String userGPXExportDirectoryName = recopemValues.VAL_STORAGE_DIR;

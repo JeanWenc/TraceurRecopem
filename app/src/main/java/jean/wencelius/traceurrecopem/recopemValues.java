@@ -95,6 +95,8 @@ public class recopemValues {
     public static final String USER_NAME_JEROME = "Jérôme";
     public static final String BUNDLE_STATE_SEL_TILE_PROVIDER = "selTileProvider";
 
+    public static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;
+
     public static String getWeekdayString (int intWeekday){
         String mWeekdayString = new String();
         switch (intWeekday){
