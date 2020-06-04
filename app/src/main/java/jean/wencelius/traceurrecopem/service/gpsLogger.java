@@ -55,6 +55,7 @@ public class gpsLogger extends Service{
 
     private static long gpsLoggingInterval = 10000;
     private static long gpsLoggingIntervalFastest = 5000;
+    private static long gpsMaxWaitTime = 5*60*1000;
 
     private static final int NOTIFICATION_ID = 1;
     private static String CHANNEL_ID = "recopemTraceur_Channel";
@@ -151,6 +152,7 @@ public class gpsLogger extends Service{
         mLocationRequest.setInterval(gpsLoggingInterval);
         mLocationRequest.setFastestInterval(gpsLoggingIntervalFastest);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setMaxWaitTime(gpsMaxWaitTime);
     }
 
     public void getLastLocation() {
