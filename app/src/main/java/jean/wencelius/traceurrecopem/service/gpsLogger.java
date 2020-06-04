@@ -1,6 +1,7 @@
 package jean.wencelius.traceurrecopem.service;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,9 +19,18 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Looper;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import jean.wencelius.traceurrecopem.R;
 import jean.wencelius.traceurrecopem.controller.MapAndTrackActivity;
@@ -28,28 +38,24 @@ import jean.wencelius.traceurrecopem.db.DataHelper;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.recopemValues;
 
-public class gpsLogger extends Service implements LocationListener {
+public class gpsLogger extends Service{
 
     public int pointCount;
 
-    /**Data helper.*/
     private DataHelper dataHelper;
 
-    /** LocationManager*/
-    private LocationManager lmgr;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationRequest mLocationRequest;
+    private LocationCallback mLocationCallBack;
+    private Location mLastLocation;
 
-    /** Are we currently tracking ?*/
     private boolean isTracking = false;
-    /**Is GPS enabled ?*/
-    private boolean isGpsEnabled = false;
 
-    /**Current Track ID*/
     private long currentTrackId = -1;
 
-    /**Last known location*/
-    private Location lastLocation;
+    private static long gpsLoggingInterval = 10000;
+    private static long gpsLoggingIntervalFastest = 5000;
 
-    /**System notification id.*/
     private static final int NOTIFICATION_ID = 1;
     private static String CHANNEL_ID = "recopemTraceur_Channel";
 
@@ -86,12 +92,6 @@ public class gpsLogger extends Service implements LocationListener {
         }
     }
 
-    /**Getter for gpsEnabled
-     * @return true if GPS is enabled, otherwise false.*/
-    public boolean isGpsEnabled() {
-        return isGpsEnabled;
-    }
-
     /**Getter for isTracking
      * @return true if we're currently tracking, otherwise false.*/
     public boolean isTracking() {
@@ -107,21 +107,16 @@ public class gpsLogger extends Service implements LocationListener {
                 // Track a way point
                 Bundle extras = intent.getExtras();
                 if (extras != null) {
-                    // because of the gps logging interval our last fix could be very old
-                    // so we'll request the last known location from the gps provider
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        lastLocation = lmgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        if (lastLocation != null) {
+
+                        if(mLastLocation!=null){
                             Long trackId = extras.getLong(TrackContentProvider.Schema.COL_TRACK_ID);
                             String uuid = extras.getString(recopemValues.INTENT_KEY_UUID);
                             String name = extras.getString(recopemValues.INTENT_KEY_NAME);
 
-                            dataHelper.wayPoint(trackId, lastLocation, name, uuid);
+                            dataHelper.wayPoint(trackId, mLastLocation, name, uuid);
                         }
-                    }
                 }
-            } else
-            if (recopemValues.INTENT_START_TRACKING.equals(intent.getAction()) ) {
+            }else if (recopemValues.INTENT_START_TRACKING.equals(intent.getAction()) ) {
                 Bundle extras = intent.getExtras();
                 if (extras != null) {
                     long trackId = extras.getLong(TrackContentProvider.Schema.COL_TRACK_ID);
@@ -137,10 +132,9 @@ public class gpsLogger extends Service implements LocationListener {
     public void onCreate() {
         dataHelper = new DataHelper(this);
 
-        pointCount=0;
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        long gpsLoggingInterval = 10000;
-        long gpsLoggingMinDistance=5;
+        pointCount=0;
 
         // Register our broadcast receiver
         IntentFilter filter = new IntentFilter();
@@ -149,36 +143,29 @@ public class gpsLogger extends Service implements LocationListener {
         filter.addAction(recopemValues.INTENT_STOP_TRACKING);
         registerReceiver(receiver, filter);
 
-        // Register ourselves for location updates
-        lmgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            lmgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, gpsLoggingInterval, gpsLoggingMinDistance, this);
-        }
-
         super.onCreate();
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        // We're receiving location, so GPS is enabled
-        isGpsEnabled = true;
-
-        lastLocation = location;
-
-        if (isTracking) {
-            dataHelper.track(currentTrackId, location);
-            pointCount++;
-        }
-
+    protected void createLocationRequest() {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(gpsLoggingInterval);
+        mLocationRequest.setFastestInterval(gpsLoggingIntervalFastest);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        createNotificationChannel();
-        startForeground(NOTIFICATION_ID, getNotification());
+    public void getLastLocation() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    mLastLocation = location;
+                }
+            });
+        }
+    }
 
-        return super.onStartCommand(intent, flags, startId);
+    private void startLocationUpdates(){
+        fusedLocationClient.requestLocationUpdates(mLocationRequest,mLocationCallBack, Looper.getMainLooper());
     }
 
     @Override
@@ -188,50 +175,49 @@ public class gpsLogger extends Service implements LocationListener {
             stopTrackingAndSave();
         }
         // Unregister listener
-        lmgr.removeUpdates(this);
+        fusedLocationClient.removeLocationUpdates(mLocationCallBack);
         // Unregister broadcast receiver
         unregisterReceiver(receiver);
-        // Cancel any existing notification
+
         stopNotifyBackgroundService();
         super.onDestroy();
     }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        // Not interested in provider status
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        isGpsEnabled = true;
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        isGpsEnabled = false;
-    }
-
-    /**
-     * Start GPS tracking.
-     */
     private void startTracking(long trackId) {
         currentTrackId = trackId;
 
-        // Refresh notification with correct Track ID
-        NotificationManager nmgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        createLocationRequest();
+        getLastLocation();
+
+        mLocationCallBack = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult){
+                if (locationResult == null){
+                    return;
+                }
+                for(Location location:locationResult.getLocations()){
+                    mLastLocation = location;
+                    if (isTracking) {
+                        dataHelper.track(currentTrackId, location);
+                        pointCount++;
+                    }
+                }
+            }
+        };
+        startLocationUpdates();
+
+        createNotificationChannel();
+        NotificationManagerCompat nmgr = NotificationManagerCompat.from(this);
         nmgr.notify(NOTIFICATION_ID, getNotification());
+
         isTracking = true;
     }
 
-    /**
-     * Stops GPS Logging
-     */
     private void stopTrackingAndSave() {
         isTracking = false;
         dataHelper.stopTracking(currentTrackId);
         this.stopSelf();
     }
-
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
@@ -244,12 +230,12 @@ public class gpsLogger extends Service implements LocationListener {
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
-            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            //NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
-    /**Builds the notification to display when tracking in background.*/
     private Notification getNotification() {
 
         Intent startDisplayMapActivity = new Intent(this, MapAndTrackActivity.class);
@@ -261,19 +247,18 @@ public class gpsLogger extends Service implements LocationListener {
                 .setSmallIcon(R.drawable.ic_recopem)
                 .setContentTitle(getResources().getString(R.string.tracking_notification_title) +currentTrackId)
                 .setContentText(getResources().getString(R.string.tracking_notification_content))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
         return mBuilder.build();
     }
 
     private void stopNotifyBackgroundService() {
-        NotificationManager nmgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat nmgr = NotificationManagerCompat.from(this);
         nmgr.cancel(NOTIFICATION_ID);
     }
 
     public int getPointCount() {
         return this.pointCount;
     }
-
 }

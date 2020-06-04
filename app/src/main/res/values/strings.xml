@@ -50,7 +50,7 @@
 
     <!--WAYPOINT NAME DIALOG-->
     <string name="dialog_waypoint_name_text">Nom du marqueur</string>
-    <string name="dialog_waypoint_name_input_hint">Donne un nom à ton marqueur</string>
+    <string name="dialog_waypoint_name_input_hint">Ecris un nom !</string>
 
     <!--MAP ALONE ACTIVITY MENU-->
     <string name="activity_map_alone_menu_back">Retour</string>
