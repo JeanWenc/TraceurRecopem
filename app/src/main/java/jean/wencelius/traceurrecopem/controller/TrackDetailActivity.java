@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -16,7 +15,6 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,7 +29,6 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,6 +52,8 @@ import jean.wencelius.traceurrecopem.utils.MapTileProvider;
 import jean.wencelius.traceurrecopem.utils.OverlayTrackPoints;
 
 public class TrackDetailActivity extends AppCompatActivity implements ImageAdapter.OnImageListener {
+
+    static TrackDetailActivity trackDetailActivity;
 
     public MapView mMapView;
     public IMapController mMapViewController;
@@ -101,6 +100,8 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_detail);
+
+        trackDetailActivity = this;
 
         mMapView = (MapView) findViewById(R.id.activity_track_detail_display_track);
         mMapView.setMultiTouchControls(true);
@@ -377,26 +378,27 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                 break;
             case REQUEST_BROWSE_PHOTO:
                 if(resultCode == RESULT_OK) {
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    //Would be useful in case of multiple image selection from Gallery
-                    //ArrayList imagesEncodedList = new ArrayList<Uri>();
+                    String[] fileIdColumn = {MediaStore.Images.Media._ID};
                     if (data.getData() != null) {
+
+                        //Source file
                         Uri mImageUri = data.getData();
-                        // Get the cursor
-                        Cursor cursor = getContentResolver().query(mImageUri,
-                                filePathColumn, null, null, null);
-                        // Move to first row
-                        cursor.moveToFirst();
 
-                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                        String imageString = cursor.getString(columnIndex);
+                        Cursor c = getContentResolver().query(mImageUri,
+                                fileIdColumn, null, null, null);
 
-                        cursor.close();
+                        c.moveToFirst();
+                        int columnIndex = c.getColumnIndexOrThrow(fileIdColumn[0]);
+                        Long imageId = c.getLong(columnIndex);
+                        c.close();
 
+                        Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,imageId);
+
+                        //Destination File
                         imageFile = popImageFile();
 
                         try {
-                            copyFile(new File(imageString), imageFile);
+                            copyFile(contentUri, imageFile);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -449,31 +451,13 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         return imageFile;
     }
 
-    private void copyFile(File sourceFile, File destFile) throws IOException {
-     /*   if (!sourceFile.exists()) {
-            return;
-        }
-
-        FileChannel source = null;
-        FileChannel destination = null;
-        source = new FileInputStream(sourceFile).getChannel();
-        destination = new FileOutputStream(destFile).getChannel();
-        if (destination != null && source != null) {
-            destination.transferFrom(source, 0, source.size());
-        }
-        if (source != null) {
-            source.close();
-        }
-        if (destination != null) {
-            destination.close();
-        }*/
-
+    private void copyFile(Uri sourceFile, File destFile) throws IOException {
         if (null != destFile && null != sourceFile) {
-            FileInputStream inputStream = null;
+            InputStream inputStream = null;
             FileOutputStream outputStream = null;
             byte[] dataBuffer = new byte[1024];
             try {
-                inputStream = new FileInputStream(sourceFile);
+                inputStream = getContentResolver().openInputStream(sourceFile);
                 outputStream = new FileOutputStream(destFile);
 
                 try {
@@ -485,27 +469,30 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
                     // No errors copying the file, look like we're good
                 } catch (IOException e) {
-                    /*String txtToDisplay = "IOException trying to write copy file ["
-                            + sourceFile.getAbsolutePath() + "] to ["
+                    String txtToDisplay = "IOException trying to write copy file ["
+                            + sourceFile.getPath() + "] to ["
                             + destFile.getAbsolutePath() +"]: ["
                             + e.getMessage() + "]";
-                    Toast.makeText(this, txtToDisplay, Toast.LENGTH_LONG).show();*/
+                    Toast.makeText(this, txtToDisplay, Toast.LENGTH_LONG).show();
                 }
             } catch (FileNotFoundException e) {
                 Toast.makeText(this, "Source = "+destFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
-                /*String txtToDisplay2 = "File not found exception trying to write copy file ["
-                        + sourceFile.getAbsolutePath() + "] to ["
+                String txtToDisplay2 = "File not found exception trying to write copy file ["
+                        + sourceFile.getPath() + "] to ["
                         + destFile.getAbsolutePath() +"]: ["
                         + e.getMessage() + "]";
-                Toast.makeText(this, txtToDisplay2, Toast.LENGTH_LONG).show();*/
+                Toast.makeText(this, txtToDisplay2, Toast.LENGTH_LONG).show();
             }
         }
-
-
-
-
-
-
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
+
+    public static TrackDetailActivity getInstance(){
+        return trackDetailActivity;
+    }
 }

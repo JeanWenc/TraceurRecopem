@@ -101,4 +101,11 @@ public class TrackListActivity extends ListActivity {
 
         Toast.makeText(this, "Track # "+Long.toString(id), Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent MenuActivityIntent = new Intent(TrackListActivity.this,MenuActivity.class);
+        startActivity(MenuActivityIntent);
+        super.onBackPressed();
+    }
 }

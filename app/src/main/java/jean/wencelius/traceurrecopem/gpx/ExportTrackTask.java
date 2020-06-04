@@ -189,7 +189,7 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
         File sdRoot = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            sdRoot = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+            sdRoot = context.getExternalFilesDir(null);
             assert sdRoot!= null;
             if(!sdRoot.exists()){
                 if(sdRoot.mkdirs()){
@@ -207,7 +207,7 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
             if (sdRoot.canWrite()) {
 
-                File trackExportDirectory = new File(saveDir);
+                File perTrackExportDirectory = new File(saveDir);
 
                 String startDateYearMonthDay = saveDir.substring(saveDir.length()-19);
                 startDateYearMonthDay = startDateYearMonthDay.substring(0,10);
@@ -216,9 +216,9 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
                 String filenameBaseTrackCsv= startDateYearMonthDay + DataHelper.EXTENSION_CSV;
                 String filenameBaseFishCsv= startDateYearMonthDay +"_fish_caught"+ DataHelper.EXTENSION_CSV;
 
-                File trackFile = new File(trackExportDirectory, filenameBaseGpx);
-                File trackCsvFile = new File(trackExportDirectory,filenameBaseTrackCsv);
-                File fishCsvFile = new File(trackExportDirectory,filenameBaseFishCsv);
+                File trackFile = new File(perTrackExportDirectory, filenameBaseGpx);
+                File trackCsvFile = new File(perTrackExportDirectory,filenameBaseTrackCsv);
+                File fishCsvFile = new File(perTrackExportDirectory,filenameBaseFishCsv);
 
                 Cursor cTrackPoints = cr.query(TrackContentProvider.trackPointsUri(trackId), null,
                         null, null, TrackContentProvider.Schema.COL_TIMESTAMP + " asc");
@@ -264,7 +264,7 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
                     // Force rescan of directory
                     ArrayList<String> files = new ArrayList<String>();
-                    for (File file : trackExportDirectory.listFiles()) {
+                    for (File file : perTrackExportDirectory.listFiles()) {
                         files.add(file.getAbsolutePath());
                     }
                     MediaScannerConnection.scanFile(context, files.toArray(new String[0]), null, null);

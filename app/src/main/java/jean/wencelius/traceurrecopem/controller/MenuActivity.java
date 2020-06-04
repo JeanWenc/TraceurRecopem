@@ -198,7 +198,7 @@ public class MenuActivity extends AppCompatActivity {
 
         File sdRoot = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            sdRoot = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+            sdRoot = ctx.getExternalFilesDir(null);
             assert sdRoot!= null;
             if(!sdRoot.exists()){
                 if(sdRoot.mkdirs()){
@@ -208,20 +208,15 @@ public class MenuActivity extends AppCompatActivity {
             sdRoot = Environment.getExternalStorageDirectory();
         }
 
-        // The location that the user has specified gpx files and associated content to be written
-        String userGPXExportDirectoryName = recopemValues.VAL_STORAGE_DIR;
-
-        // Create the path to the directory to which we will be writing
-        String exportDirectoryPath = File.separator + userGPXExportDirectoryName.trim();
         String perTrackDirectory = File.separator + DataHelper.FILENAME_FORMATTER.format(startDate);
 
         String trackGPXExportDirectory = new String();
         if (android.os.Build.MODEL.equals(recopemValues.Devices.NEXUS_S)) {
             // exportDirectoryPath always starts with "/"
-            trackGPXExportDirectory = exportDirectoryPath + perTrackDirectory;
+            trackGPXExportDirectory = perTrackDirectory;
         }else{
             // Create a file based on the path we've generated above
-            trackGPXExportDirectory = sdRoot + exportDirectoryPath + perTrackDirectory;
+            trackGPXExportDirectory = sdRoot + perTrackDirectory;
         }
 
         File storageDir = new File(trackGPXExportDirectory);

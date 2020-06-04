@@ -29,6 +29,7 @@ import android.widget.Toast;
 import java.util.Arrays;
 
 import jean.wencelius.traceurrecopem.R;
+import jean.wencelius.traceurrecopem.controller.TrackDetailActivity;
 import jean.wencelius.traceurrecopem.controller.TrackListActivity;
 import jean.wencelius.traceurrecopem.db.TrackContentProvider;
 import jean.wencelius.traceurrecopem.model.AppPreferences;
@@ -332,6 +333,7 @@ public class dataInputCatchCons extends AppCompatActivity{
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS,mCatchGivePicAns);
                 startActivity(NextIntent);
+                TrackDetailActivity.getInstance().finish();
                 dataInputGear.getInstance().finish();
                 dataInputBoat.getInstance().finish();
                 dataInputCrew.getInstance().finish();
