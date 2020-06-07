@@ -244,7 +244,7 @@ public class dataInputGear extends AppCompatActivity {
             else
                 showNext =true;
         }else{
-           showNext = mGear!="empty";
+           showNext = !mGear.equals("empty");
         }
         invalidateOptionsMenu();
     }

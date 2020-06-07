@@ -161,7 +161,7 @@
     <string name="data_input_boat_question_motor">Bateau à moteur</string>
     <string name="data_input_boat_question_pirogue">Pirogue</string>
     <string name="data_input_boat_question_nage">Nage/Boston</string>
-    <string name="data_input_boat_question_shore">Aucun, depuis le bord (tatahi)</string>
+    <string name="data_input_boat_question_shore">Aucun, depuis le bord (tahatai)</string>
     <string name="data_input_boat_question_boat_owner">Es-tu propriétaire du bateau ?</string>
     <string name="data_input_boat_question_boat_owner_outrigger">Es-tu propriétaire de la pirogue ?</string>
 
