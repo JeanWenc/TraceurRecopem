@@ -333,7 +333,7 @@ public class dataInputCatchCons extends AppCompatActivity{
                 Intent TrackDetailIntent = new Intent(dataInputCatchCons.this,TrackDetailActivity.class);
 
                 TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
-                TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED,mNewPicAdded);
+                TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED,Boolean.toString(mNewPicAdded));
                 TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS,Boolean.toString(addedFishCaughtInfo));
                 TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED, "true");
                 TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_EXPORTED, "false");
@@ -352,6 +352,8 @@ public class dataInputCatchCons extends AppCompatActivity{
                 //TrackDetailActivity.getInstance().finish();
                 //JW: NEW
                 startActivity(TrackDetailIntent);
+
+                TrackDetailActivity.getInstance().finish();
                 dataInputGear.getInstance().finish();
                 dataInputBoat.getInstance().finish();
                 dataInputCrew.getInstance().finish();
