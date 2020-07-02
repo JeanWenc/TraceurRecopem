@@ -253,6 +253,8 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.trackdetail_menu_export).setVisible(mDataAdded && (!mPicEmpty || mCaughtFishDetails));
         menu.findItem(R.id.trackdetail_menu_email).setVisible(mExported);
+        menu.findItem(R.id.trackdetail_menu_delete).setVisible(mSentEmail);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -282,8 +284,8 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
                 Toast.makeText(this, R.string.activity_track_detail_export_message_success, Toast.LENGTH_SHORT).show();
                 break;
+                
             case R.id.trackdetail_menu_email:
-
                 ConnectivityManager connManager = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
                 NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                 if (mWifi.isConnected()) {
@@ -306,8 +308,53 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                             }).create().show();
                 }
                 break;
+                
+                case R.id.trackdetail_menu_delete:
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.activity_track_detail_delete_dialog_title)
+                        .setMessage(getResources().getString(R.string.activity_track_detail_delete_dialog_message))
+                        .setCancelable(true)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteTrack(trackId);
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        }).create().show();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    private void deleteTrack(long trackId) {
+        getContentResolver().delete(
+                ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId),
+                null, null);
+
+        // Delete any data stored for the track we're deleting
+        File trackStorageDirectory = new File(mSaveDir);
+        if (trackStorageDirectory.exists()) {
+            boolean deleted = false;
+
+            //If it's a directory and we should delete it recursively, try to delete all childs
+            if(trackStorageDirectory.isDirectory()){
+                for(File child:trackStorageDirectory.listFiles()){
+                    deleted = child.delete();
+                }
+            }
+            deleted = trackStorageDirectory.delete();
+        }
+
+        Intent TrackListActivityIntent = new Intent(TrackDetailActivity.this,TrackListActivity.class);
+        startActivity(TrackListActivityIntent);
+        finish();
     }
 
     private void zipAndEmail(Context ctx, String saveDir){

@@ -530,11 +530,8 @@ public class MapAndTrackActivity extends AppCompatActivity {
     }
 
     private void stopTrackLoggerForNewTrack(){
-        System.out.println("TrackRecordingStopped");
-        if (mGpsLogger.isTracking()) {
-            Intent intent = new Intent(recopemValues.INTENT_STOP_TRACKING);
-            sendBroadcast(intent);
-        }
+        Intent intent = new Intent(recopemValues.INTENT_STOP_TRACKING);
+        sendBroadcast(intent);
     }
 
     public long getCurrentTrackId() {

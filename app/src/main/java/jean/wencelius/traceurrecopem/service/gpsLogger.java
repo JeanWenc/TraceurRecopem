@@ -218,6 +218,7 @@ public class gpsLogger extends Service{
     private void stopTrackingAndSave() {
         isTracking = false;
         dataHelper.stopTracking(currentTrackId);
+
         this.stopSelf();
     }
 

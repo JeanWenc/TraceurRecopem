@@ -84,6 +84,11 @@
     <string name="activity_track_detail_export_message_success">"Photos et questionnaire enregistrés\nMauruuru!"</string>
     <string name="activity_track_detail_zip_task_msg_error">"Erreur"</string>
     <string name="activity_track_detail_zip_email">"Préparation de l'envoi..."</string>
+    <string name="menu_delete">Supprimer tracé</string>
+
+    <!--TRACKDETAIL_ACTIVITY_DELETE-->
+    <string name="activity_track_detail_delete_dialog_title">SUPPRESSION TRACE</string>
+    <string name="activity_track_detail_delete_dialog_message">Veux tu supprimer ce tracé de façon définitive ?</string>
 
     <!--TRACKDETAIL MENU-->
     <string name="menu_adddata">Remplir Questionnaire</string>
