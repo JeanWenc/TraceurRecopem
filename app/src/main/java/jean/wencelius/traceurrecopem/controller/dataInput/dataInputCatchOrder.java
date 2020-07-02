@@ -50,6 +50,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
     private String mCatchDestination;
     private long trackId;
     private boolean mNewPicAdded;
+    private String mSaveDir;
 
     //Views
     private RelativeLayout mCatchOrderQuantityFrame;
@@ -149,11 +150,13 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
 
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
+            mSaveDir = savedInstanceState.getString(recopemValues.BUNDLE_STATE_SAVE_DIR);
 
         }else{
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
             mCatchSalePicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS);
+            mSaveDir = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_SAVE_DIR);
 
             Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
             mTrackCursor.moveToPosition(0);
@@ -357,6 +360,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
         outState.putString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS,mCatchSalePicAns);
+        outState.putString(recopemValues.BUNDLE_STATE_SAVE_DIR,mSaveDir);
         super.onSaveInstanceState(outState);
     }
 
@@ -365,6 +369,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
         fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
         fishCaughtIntent.putExtra(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
+        fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_DIR,mSaveDir);
         startActivity(fishCaughtIntent);
     }
 
@@ -403,6 +408,7 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
                 Intent NextIntent = new Intent(dataInputCatchOrder.this, dataInputCatchGive.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_DIR,mSaveDir);
 
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_SALE_PIC_ANS, mCatchSalePicAns);
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);

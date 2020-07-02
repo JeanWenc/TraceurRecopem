@@ -80,7 +80,6 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
 
     private File currentImageFile;
 
-    private static final String BUNDLE_STATE_SAVE_DIR = "stateSaveDir";
     private static final String BUNDLE_STATE_EXPORTED = "stateExported";
     private static final String BUNDLE_STATE_DATA = "stateData";
     private static final String BUNDLE_STATE_PIC = "statePic";
@@ -111,7 +110,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
         mMapViewController.setZoom(13);
 
         if(savedInstanceState!=null){
-            mSaveDir = savedInstanceState.getString(BUNDLE_STATE_SAVE_DIR);
+            mSaveDir = savedInstanceState.getString(recopemValues.BUNDLE_STATE_SAVE_DIR);
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
 
 
@@ -190,7 +189,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
-        outState.putString(BUNDLE_STATE_SAVE_DIR,mSaveDir);
+        outState.putString(recopemValues.BUNDLE_STATE_SAVE_DIR,mSaveDir);
 
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
         outState.putBoolean(BUNDLE_STATE_PIC,mPicEmpty);
@@ -266,6 +265,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                 Intent AddDataIntent = new Intent(TrackDetailActivity.this, dataInputGear.class);
                 AddDataIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 AddDataIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                AddDataIntent.putExtra(TrackContentProvider.Schema.COL_DIR,mSaveDir);
                 startActivity(AddDataIntent);
                 break;
 

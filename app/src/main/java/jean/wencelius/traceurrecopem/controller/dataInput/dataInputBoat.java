@@ -29,6 +29,7 @@ public class dataInputBoat extends AppCompatActivity {
 
     private long trackId;
     private boolean mNewPicAdded;
+    private String mSaveDir;
 
 
     private CheckBox mCheckBox;
@@ -58,10 +59,12 @@ public class dataInputBoat extends AppCompatActivity {
             mBoatOwner = savedInstanceState.getString(BUNDLE_STATE_BOAT_OWNER);
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
+            mSaveDir=savedInstanceState.getString(recopemValues.BUNDLE_STATE_SAVE_DIR);
 
         }else{
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
+            mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
 
             Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK,trackId),null,null,null,null);
             mTrackCursor.moveToPosition(0);
@@ -108,6 +111,7 @@ public class dataInputBoat extends AppCompatActivity {
         outState.putString(BUNDLE_STATE_BOAT,mBoat);
         outState.putString(BUNDLE_STATE_BOAT_OWNER,mBoatOwner);
         outState.putBoolean(recopemValues.BUNDLE_STATE_BUTTON,showNext);
+        outState.putString(recopemValues.BUNDLE_STATE_SAVE_DIR,mSaveDir);
 
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
@@ -197,6 +201,7 @@ public class dataInputBoat extends AppCompatActivity {
                 Intent NextIntent = new Intent(dataInputBoat.this, dataInputCrew.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_DIR,mSaveDir);
                 startActivity(NextIntent);
                 break;
         }

@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
@@ -521,9 +522,13 @@ public class MapAndTrackActivity extends AppCompatActivity {
          mGpsLoggerServiceIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID,currentTrackId);
 
          // Start GPS Logger service
-         startService(mGpsLoggerServiceIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(mGpsLoggerServiceIntent);
+        }else{
+            startService(mGpsLoggerServiceIntent);
+        }
 
-         // Bind to GPS service.
+        // Bind to GPS service.
          // We can't use BIND_AUTO_CREATE here, because when we'll ubound
          // later, we want to keep the service alive in background
          bindService(mGpsLoggerServiceIntent, gpsLoggerConnection, 0);

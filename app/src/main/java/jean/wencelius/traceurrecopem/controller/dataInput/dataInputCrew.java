@@ -31,6 +31,7 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
 
     private long trackId;
     private boolean mNewPicAdded;
+    private String mSaveDir;
 
     private static final String BUNDLE_STATE_CREW_ANS = "crewAns";
     private static final String BUNDLE_STATE_CREW_N = "crewN";
@@ -75,9 +76,11 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
 
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
+            mSaveDir = savedInstanceState.getString(recopemValues.BUNDLE_STATE_SAVE_DIR);
         }else{
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
+            mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
 
             Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
             mTrackCursor.moveToPosition(0);
@@ -149,6 +152,7 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
 
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+        outState.putString(recopemValues.BUNDLE_STATE_SAVE_DIR,mSaveDir);
         super.onSaveInstanceState(outState);
     }
 
@@ -223,6 +227,7 @@ public class dataInputCrew extends AppCompatActivity implements NumberPicker.OnV
                 Intent NextIntent = new Intent(dataInputCrew.this, dataInputWind.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
+                NextIntent.putExtra(TrackContentProvider.Schema.COL_DIR,mSaveDir);
                 startActivity(NextIntent);
                 break;
         }

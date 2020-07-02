@@ -7,9 +7,7 @@ import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,6 +49,7 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
     private long trackId;
     private boolean mNewPicAdded;
     private String mCatchDestination;
+    private String mSaveDir;
     
     private Parcelable glmState;
 
@@ -79,6 +78,7 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
         if(savedInstanceState!=null){
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
+            mSaveDir = savedInstanceState.getString(recopemValues.BUNDLE_STATE_SAVE_DIR);
             mCatchDestination = savedInstanceState.getString(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION);
             mSelImage = savedInstanceState.getInt(BUNDLE_STATE_LAST_SELECTED_IMAGE);
             mFishCountList = new ArrayList<String>(Arrays.asList(savedInstanceState.getStringArray(BUNDLE_STATE_FISH_COUNT_LIST)));
@@ -88,6 +88,7 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
         }else{
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
+            mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
             mCatchDestination = getIntent().getExtras().getString(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION);
             mFishTahitianList = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.data_input_fish_caught_fish_tahitian_list)));
             mSelImage = -1;
@@ -122,6 +123,7 @@ public class dataInputFishCaught extends AppCompatActivity implements ImageFishA
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+        outState.putString(recopemValues.BUNDLE_STATE_SAVE_DIR,mSaveDir);
         outState.putString(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
         outState.putInt(BUNDLE_STATE_LAST_SELECTED_IMAGE,mSelImage);
         outState.putString(BUNDLE_STATE_OTHER_CAUGHT_FISH,mOtherCaughtFish);

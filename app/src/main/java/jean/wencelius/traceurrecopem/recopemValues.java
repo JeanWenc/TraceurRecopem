@@ -63,6 +63,7 @@ public class recopemValues {
     public static final String BUNDLE_STATE_BUTTON = "nxtButton";
     public static final String BUNDLE_STATE_TRACK_ID = "trackId";
     public static final String BUNDLE_STATE_NEW_PIC_ADDED = "newPicAdded";
+    public static final String BUNDLE_STATE_SAVE_DIR = "stateSaveDir";
     public static final String BUNDLE_EXTRA_CATCH_DESTINATION = "catchDestination";
 
     public static final String BUNDLE_STATE_SALE_PIC_ANS = "salePicAnswer";

@@ -51,6 +51,7 @@ public class dataInputCatchCons extends AppCompatActivity{
     private String mCatchDestination;
     private long trackId;
     private boolean mNewPicAdded;
+    private String mSaveDir;
 
     //Views
     private RelativeLayout mCatchConsQuantityFrame;
@@ -121,10 +122,12 @@ public class dataInputCatchCons extends AppCompatActivity{
 
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
             mNewPicAdded = savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
+            mSaveDir = savedInstanceState.getString(recopemValues.BUNDLE_STATE_SAVE_DIR);
 
         }else{
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
+            mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
 
             mCatchSalePicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS);
             mCatchOrderPicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS);
@@ -272,6 +275,7 @@ public class dataInputCatchCons extends AppCompatActivity{
 
         outState.putLong(recopemValues.BUNDLE_STATE_TRACK_ID,trackId);
         outState.putBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED,mNewPicAdded);
+        outState.putString(recopemValues.BUNDLE_STATE_SAVE_DIR,mSaveDir);
 
         outState.putString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS,mCatchSalePicAns);
         outState.putString(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
@@ -284,6 +288,7 @@ public class dataInputCatchCons extends AppCompatActivity{
         fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
         fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
         fishCaughtIntent.putExtra(recopemValues.BUNDLE_EXTRA_CATCH_DESTINATION,mCatchDestination);
+        fishCaughtIntent.putExtra(TrackContentProvider.Schema.COL_DIR,mSaveDir);
         startActivity(fishCaughtIntent);
     }
 
@@ -325,15 +330,28 @@ public class dataInputCatchCons extends AppCompatActivity{
 
                 getContentResolver().update(trackUri, catchConsValues, null, null);
 
-                Intent NextIntent = new Intent(dataInputCatchCons.this, TrackListActivity.class);
+                Intent TrackDetailIntent = new Intent(dataInputCatchCons.this,TrackDetailActivity.class);
+
+                TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
+                TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED,mNewPicAdded);
+                TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_CAUGHT_FISH_DETAILS,Boolean.toString(addedFishCaughtInfo));
+                TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_DATA_ADDED, "true");
+                TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_EXPORTED, "false");
+                TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_DIR,mSaveDir);
+                TrackDetailIntent.putExtra(TrackContentProvider.Schema.COL_SENT_EMAIL,"false");
+
+                /*Intent NextIntent = new Intent(dataInputCatchCons.this, TrackListActivity.class);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID, trackId);
                 NextIntent.putExtra(TrackContentProvider.Schema.COL_PIC_ADDED, mNewPicAdded);
 
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_SALE_PIC_ANS, mCatchSalePicAns);
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_ORDER_PIC_ANS,mCatchOrderPicAns);
                 NextIntent.putExtra(recopemValues.BUNDLE_STATE_GIVE_PIC_ANS,mCatchGivePicAns);
-                startActivity(NextIntent);
-                TrackDetailActivity.getInstance().finish();
+                startActivity(NextIntent);*/
+
+                //TrackDetailActivity.getInstance().finish();
+                //JW: NEW
+                startActivity(TrackDetailIntent);
                 dataInputGear.getInstance().finish();
                 dataInputBoat.getInstance().finish();
                 dataInputCrew.getInstance().finish();
