@@ -113,7 +113,6 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
             mSaveDir = savedInstanceState.getString(recopemValues.BUNDLE_STATE_SAVE_DIR);
             trackId = savedInstanceState.getLong(recopemValues.BUNDLE_STATE_TRACK_ID);
 
-
             mNewPicAdded=savedInstanceState.getBoolean(recopemValues.BUNDLE_STATE_NEW_PIC_ADDED);
             mPicEmpty=savedInstanceState.getBoolean(BUNDLE_STATE_PIC);
             mCaughtFishDetails = savedInstanceState.getBoolean(BUNDLE_STATE_CAUGHT_FISH_DETAILS);
@@ -397,7 +396,6 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
             }
             startActivityForResult(getNewPictureIntent, requestType);
         }
-
     }
 
     @Override

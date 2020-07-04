@@ -155,8 +155,9 @@ public class dataInputCatchOrder extends AppCompatActivity implements AdapterVie
         }else{
             trackId = getIntent().getExtras().getLong(TrackContentProvider.Schema.COL_TRACK_ID);
             mNewPicAdded = getIntent().getExtras().getBoolean(TrackContentProvider.Schema.COL_PIC_ADDED);
+            mSaveDir = getIntent().getExtras().getString(TrackContentProvider.Schema.COL_DIR);
             mCatchSalePicAns = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_SALE_PIC_ANS);
-            mSaveDir = getIntent().getExtras().getString(recopemValues.BUNDLE_STATE_SAVE_DIR);
+
 
             Cursor mTrackCursor = getContentResolver().query(ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId), null, null, null, null);
             mTrackCursor.moveToPosition(0);
