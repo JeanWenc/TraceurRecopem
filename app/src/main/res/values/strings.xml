@@ -29,6 +29,8 @@
         <item>"swim"</item>
         <item>"from_shore"</item>
     </string-array>
+    <string name="activity_login_tetia">Cartes de Tetia et Maiao ?</string>
+    <string name="activity_login_prof">Carte profondeur ?</string>
 
     <!--MAIN NOTIFICATION-->
     <string name="main_notification_title">Traceur ReCoPeM</string>

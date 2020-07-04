@@ -94,6 +94,24 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"/>
 
+            <CheckBox android:id="@+id/activity_login_tetia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_login_tetia"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="10dp"
+                style="@android:style/TextAppearance.Medium"
+                android:onClick="onCheckboxClicked"/>
+
+            <CheckBox android:id="@+id/activity_login_prof"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_login_prof"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="10dp"
+                style="@android:style/TextAppearance.Medium"
+                android:onClick="onCheckboxClicked"/>
+
             <Button
                 android:id="@+id/activity_login_submit_btn"
                 android:layout_width="wrap_content"
@@ -102,6 +120,8 @@
                 android:padding="30dp"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/answer_validate"/>
+
+
 
         </LinearLayout>
     </ScrollView>

@@ -129,9 +129,28 @@ public class gpsLogger extends Service{
         }
     };
 
+   @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+       dataHelper = new DataHelper(this);
+
+       fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+       pointCount=0;
+
+       // Register our broadcast receiver
+       IntentFilter filter = new IntentFilter();
+       filter.addAction(recopemValues.INTENT_TRACK_WP);
+       filter.addAction(recopemValues.INTENT_START_TRACKING);
+       filter.addAction(recopemValues.INTENT_STOP_TRACKING);
+       registerReceiver(receiver, filter);
+
+       return super.onStartCommand(intent, flags, startId);
+    }
+
     @Override
     public void onCreate() {
-        dataHelper = new DataHelper(this);
+        /*dataHelper = new DataHelper(this);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -144,7 +163,7 @@ public class gpsLogger extends Service{
         filter.addAction(recopemValues.INTENT_STOP_TRACKING);
         registerReceiver(receiver, filter);
 
-        super.onCreate();
+        super.onCreate();*/
     }
 
     protected void createLocationRequest() {
@@ -181,7 +200,8 @@ public class gpsLogger extends Service{
         // Unregister broadcast receiver
         unregisterReceiver(receiver);
 
-        stopNotifyBackgroundService();
+        //stopNotifyBackgroundService();
+        stopForeground(Boolean.TRUE);
         super.onDestroy();
     }
 
@@ -209,8 +229,12 @@ public class gpsLogger extends Service{
         startLocationUpdates();
 
         createNotificationChannel();
-        NotificationManagerCompat nmgr = NotificationManagerCompat.from(this);
-        nmgr.notify(NOTIFICATION_ID, getNotification());
+
+        /*NotificationManagerCompat nmgr = NotificationManagerCompat.from(this);
+        nmgr.notify(NOTIFICATION_ID, getNotification());*/
+
+        startForeground(NOTIFICATION_ID,getNotification());
+
 
         isTracking = true;
     }

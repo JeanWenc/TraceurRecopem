@@ -520,13 +520,12 @@ public class MapAndTrackActivity extends AppCompatActivity {
          }
 
          mGpsLoggerServiceIntent.putExtra(TrackContentProvider.Schema.COL_TRACK_ID,currentTrackId);
-
          // Start GPS Logger service
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        //    startForegroundService(mGpsLoggerServiceIntent);
-        //}else{
-        startService(mGpsLoggerServiceIntent);
-        //}
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+             startForegroundService(mGpsLoggerServiceIntent);
+         }else{
+             startService(mGpsLoggerServiceIntent);
+         }
 
         // Bind to GPS service.
          // We can't use BIND_AUTO_CREATE here, because when we'll ubound

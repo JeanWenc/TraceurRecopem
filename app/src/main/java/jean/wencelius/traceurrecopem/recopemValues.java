@@ -52,6 +52,8 @@ public class recopemValues {
     public static final String PREF_KEY_FISHER_BOAT = "PREF_KEY_FISHER_BOAT";
     public static final String PREF_KEY_FISHER_BOAT_OWNER = "PREF_KEY_FISHER_BOAT_OWNER";
     public static final String PREF_KEY_FISHER_LOCATION_SALE_PREF = "PREF_KEY_FISHER_LOCATION_SALE_PREF";
+    public static final String PREF_KEY_TETIA = "PREF_KEY_TETIA";
+    public static final String PREF_KEY_PROF = "PREF_KEY_PROF";
 
     public static final String BUNDLE_STATE_ANS = "mainAnswer";
     public static final String BUNDLE_STATE_CATCH_N = "catchN";

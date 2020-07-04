@@ -32,7 +32,8 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     private String mBoat;
     private String mBoatOwner;
     private String mLocation;
-
+    private Boolean mTetia;
+    private Boolean mProf;
 
     private String [] boats;
     private String [] locations;
@@ -61,6 +62,8 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         mBoat = "None";
         mBoatOwner = "NA";
         mLocation = "Choisi le lieu";
+        mTetia = false;
+        mProf = false;
 
         mSubmitButton.setEnabled(false);
 
@@ -112,6 +115,8 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 String boat = mBoat;
                 String boatOwner = mBoatOwner;
                 String location = mLocation;
+                String tetia = mTetia.toString();
+                String prof = mProf.toString();
 
                 mUser.setFisherName(fishername);
                 mUser.setFisherId(fisherid);
@@ -121,6 +126,8 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT,boat,getApplicationContext());
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_BOAT_OWNER,boatOwner,getApplicationContext());
                 AppPreferences.setDefaultsString(recopemValues.PREF_KEY_FISHER_LOCATION_SALE_PREF,location,getApplicationContext());
+                AppPreferences.setDefaultsString(recopemValues.PREF_KEY_TETIA,tetia,getApplicationContext());
+                AppPreferences.setDefaultsString(recopemValues.PREF_KEY_PROF,prof,getApplicationContext());
 
                 //User clicked button
                 Intent menuActivityIntent = new Intent(LoginActivity.this, MenuActivity.class);
@@ -178,6 +185,11 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                     mBoatOwner = "false";
                 }
                 break;
+            case R.id.activity_login_tetia:
+                mTetia = checked;
+                break;
+            case R.id.activity_login_prof:
+                mProf = checked;
         }
     }
 }
