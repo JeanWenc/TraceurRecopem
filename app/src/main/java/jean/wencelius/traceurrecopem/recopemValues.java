@@ -94,8 +94,9 @@ public class recopemValues {
 
     public static final String MAP_TILE_PROVIDER_MOOREA_SAT ="moorea.mbtiles";
     public static final String MAP_TILE_PROVIDER_NAVIONICS ="navionics.mbtiles";
+    public static final String MAP_TILE_PROVIDER_TETIAROA ="tetiaroa.mbtiles";
+    public static final String MAP_TILE_PROVIDER_MAIAO ="maiao.mbtiles";
 
-    public static final String USER_NAME_JEROME = "Jérôme";
     public static final String BUNDLE_STATE_SEL_TILE_PROVIDER = "selTileProvider";
 
     public static final int MY_DANGEROUS_PERMISSIONS_REQUESTS=42;

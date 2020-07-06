@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/activity_map_and_track_jerome"
-        android:title="@string/activity_map_and_track_menu_navionics"
-        app:showAsAction="ifRoom|withText"/>
     <item android:id="@+id/activity_map_and_track_stop_recording"
         android:title="@string/activity_map_and_track_menu_stop_tracking"
         android:icon="@android:drawable/ic_lock_power_off"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/activity_map_and_track_moorea"
+        android:title="@string/activity_map_and_track_menu_moorea"
+        app:showAsAction="never"/>
+    <item android:id="@+id/activity_map_and_track_prof"
+        android:title="@string/activity_map_and_track_menu_prof"
+        app:showAsAction="never"/>
+    <item android:id="@+id/activity_map_and_track_tetiaroa"
+        android:title="@string/activity_map_and_track_menu_tetia"
+        app:showAsAction="never"/>
+    <item android:id="@+id/activity_map_and_track_maiao"
+        android:title="@string/activity_map_and_track_menu_maiao"
+        app:showAsAction="never"/>
 </menu>

@@ -47,7 +47,10 @@
     <string name="activity_map_and_track_waypoint_dialog_delete_title">Supprimer le marqueur?</string>
 
     <!--MAP AND TRACK MENU-->
-    <string name="activity_map_and_track_menu_navionics">JEROME</string>
+    <string name="activity_map_and_track_menu_prof">Profondeur</string>
+    <string name="activity_map_and_track_menu_tetia">Tetiaroa</string>
+    <string name="activity_map_and_track_menu_maiao">Maiao</string>
+    <string name="activity_map_and_track_menu_moorea">Moorea</string>
     <string name="activity_map_and_track_menu_stop_tracking">Arrêter Tracé</string>
 
     <!--WAYPOINT NAME DIALOG-->

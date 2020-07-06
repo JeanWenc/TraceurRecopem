@@ -86,6 +86,9 @@ public class MapAndTrackActivity extends AppCompatActivity {
     private double mZoomLevel, mCurrentLon, mCurrentLat;
     private final static double mMooreaCenterLon = -149.831712;
     private final static double mMooreaCenterLat = -17.543859;
+    private final static GeoPoint mMooreaCenter = new GeoPoint(mMooreaCenterLat,mMooreaCenterLon);
+    private final static GeoPoint mTetiaCenter = new GeoPoint(-17.008427,-149.559830);
+    private final static GeoPoint mMaiaoCenter = new GeoPoint(-17.657883,-150.629239);
 
     MapView mMap = null;
     private IMapController mapController;
@@ -196,8 +199,16 @@ public class MapAndTrackActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if(!AppPreferences.getDefaultsString(recopemValues.PREF_KEY_FISHER_NAME,getApplicationContext()).equals(recopemValues.USER_NAME_JEROME)) menu.findItem(R.id.activity_map_and_track_jerome).setVisible(false);
-        return super.onPrepareOptionsMenu(menu);
+        if(AppPreferences.getDefaultsString(recopemValues.PREF_KEY_PROF,getApplicationContext()).equals("false")) menu.findItem(R.id.activity_map_and_track_prof).setVisible(false);
+        if(AppPreferences.getDefaultsString(recopemValues.PREF_KEY_TETIA,getApplicationContext()).equals("false")){
+            menu.findItem(R.id.activity_map_and_track_tetiaroa).setVisible(false);
+            menu.findItem(R.id.activity_map_and_track_maiao).setVisible(false);
+        }
+        if(AppPreferences.getDefaultsString(recopemValues.PREF_KEY_PROF,getApplicationContext()).equals("false") &&
+                AppPreferences.getDefaultsString(recopemValues.PREF_KEY_TETIA,getApplicationContext()).equals("false")){
+            menu.findItem(R.id.activity_map_and_track_moorea).setVisible(false);
+        }
+            return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -222,14 +233,28 @@ public class MapAndTrackActivity extends AppCompatActivity {
                 },2000); //LENGTH_SHORT is usually 2 second long
 
                 break;
-            case R.id.activity_map_and_track_jerome:
-                if (selTileProvider.equals(recopemValues.MAP_TILE_PROVIDER_MOOREA_SAT)){
-                    selTileProvider = recopemValues.MAP_TILE_PROVIDER_NAVIONICS;
-                    mMap.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext(),selTileProvider));
-                }else{
-                    selTileProvider = recopemValues.MAP_TILE_PROVIDER_MOOREA_SAT;
-                    mMap.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext(),selTileProvider));
-                }
+            case R.id.activity_map_and_track_moorea:
+                selTileProvider = recopemValues.MAP_TILE_PROVIDER_MOOREA_SAT;
+                mMap.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext(),selTileProvider));
+                mapController.setCenter(mMooreaCenter);
+                break;
+
+            case R.id.activity_map_and_track_prof:
+                selTileProvider = recopemValues.MAP_TILE_PROVIDER_NAVIONICS;
+                mMap.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext(),selTileProvider));
+                mapController.setCenter(mMooreaCenter);
+                break;
+
+            case R.id.activity_map_and_track_tetiaroa:
+                selTileProvider = recopemValues.MAP_TILE_PROVIDER_TETIAROA;
+                mMap.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext(),selTileProvider));
+                mapController.setCenter(mTetiaCenter);
+                break;
+            case R.id.activity_map_and_track_maiao:
+                selTileProvider = recopemValues.MAP_TILE_PROVIDER_MAIAO;
+                mMap.setTileProvider(MapTileProvider.setMapTileProvider(getApplicationContext(),selTileProvider));
+                mapController.setCenter(mMaiaoCenter);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
