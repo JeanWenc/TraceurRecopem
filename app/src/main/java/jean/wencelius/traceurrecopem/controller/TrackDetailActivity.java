@@ -273,7 +273,7 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
                 break;
 
             case R.id.trackdetail_menu_export:
-                new ExportToStorageTask(this, mSaveDir, trackId).execute();
+                new ExportToStorageTask(this, mSaveDir, false,trackId).execute();
                 mExported = true;
                 invalidateOptionsMenu();
 
@@ -333,9 +333,9 @@ public class TrackDetailActivity extends AppCompatActivity implements ImageAdapt
     }
     
     private void deleteTrack(long trackId) {
-        getContentResolver().delete(
-                ContentUris.withAppendedId(TrackContentProvider.CONTENT_URI_TRACK, trackId),
-                null, null);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TrackContentProvider.Schema.COL_SENT_EMAIL,"confirmed");
+        getContentResolver().update(trackUri, contentValues, null, null);
 
         // Delete any data stored for the track we're deleting
         File trackStorageDirectory = new File(mSaveDir);

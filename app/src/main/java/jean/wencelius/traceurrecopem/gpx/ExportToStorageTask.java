@@ -21,8 +21,8 @@ public class ExportToStorageTask extends ExportTrackTask {
 
     private static final String TAG = ExportToStorageTask.class.getSimpleName();
 
-    public ExportToStorageTask(Context context, String saveDir, long... trackId) {
-        super(context, saveDir,trackId);
+    public ExportToStorageTask(Context context, String saveDir, Boolean allExport,long... trackId) {
+        super(context, saveDir,allExport,trackId);
     }
 
     /*@Override

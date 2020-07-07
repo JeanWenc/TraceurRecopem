@@ -80,6 +80,8 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
     protected String saveDir;
 
+    protected Boolean allExport;
+
     /**
      * Dialog to display while exporting
      */
@@ -109,10 +111,11 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
      */
     protected abstract boolean updateExportDate();
 
-    public ExportTrackTask(Context context, String saveDir,long... trackIds) {
+    public ExportTrackTask(Context context, String saveDir,Boolean allExport,long... trackIds) {
         this.context = context;
         this.trackIds = trackIds;
         this.saveDir=saveDir;
+        this.allExport = allExport;
 
         pointDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         yearMonthDayDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -209,8 +212,14 @@ public abstract class ExportTrackTask extends AsyncTask<Void, Long, Boolean> {
 
                 File perTrackExportDirectory = new File(saveDir);
 
-                String startDateYearMonthDay = saveDir.substring(saveDir.length()-19);
-                startDateYearMonthDay = startDateYearMonthDay.substring(0,10);
+                String startDateYearMonthDay = null;
+                if(allExport){
+                    startDateYearMonthDay = saveDir.substring(saveDir.length()-10);
+                }else{
+                    startDateYearMonthDay = saveDir.substring(saveDir.length()-19);
+                    startDateYearMonthDay = startDateYearMonthDay.substring(0,10);
+                }
+
 
                 String filenameBaseGpx = startDateYearMonthDay + DataHelper.EXTENSION_GPX;
                 String filenameBaseTrackCsv= startDateYearMonthDay + DataHelper.EXTENSION_CSV;

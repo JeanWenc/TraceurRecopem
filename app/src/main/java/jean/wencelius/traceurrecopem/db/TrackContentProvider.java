@@ -26,6 +26,10 @@ public class TrackContentProvider extends ContentProvider {
     /** Uri for track*/
     public static final Uri CONTENT_URI_TRACK = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_TRACK);
 
+    /** Uri for trackpoint all*/
+    //TODO:
+    public static final Uri CONTENT_URI_TRACKPOINT = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_TRACKPOINT);
+
     /**Uri for the active track*/
     public static final Uri CONTENT_URI_TRACK_ACTIVE = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_TRACK + "/active");
 
@@ -105,6 +109,7 @@ public class TrackContentProvider extends ContentProvider {
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK, Schema.URI_CODE_TRACK);
+        uriMatcher.addURI(AUTHORITY,Schema.TBL_TRACKPOINT,Schema.URI_CODE_TRACKPOINT);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/active", Schema.URI_CODE_TRACK_ACTIVE);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#", Schema.URI_CODE_TRACK_ID);
         uriMatcher.addURI(AUTHORITY, Schema.TBL_TRACK + "/#/start", Schema.URI_CODE_TRACK_START);
@@ -498,6 +503,9 @@ public class TrackContentProvider extends ContentProvider {
                 selection = Schema.COL_ACTIVE + " = ?";
                 selectionArgs = new String[] {Integer.toString(Schema.VAL_TRACK_ACTIVE)};
                 break;
+            case Schema.URI_CODE_TRACKPOINT:
+                qb.setTables(Schema.TBL_TRACKPOINT);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -661,6 +669,7 @@ public class TrackContentProvider extends ContentProvider {
         public static final int URI_CODE_TRACK_POISSONS = 12;
         public static final int URI_CODE_WAYPOINT_UUID = 13;
         public static final int URI_CODE_TRACKPOINT_UUID = 14;
+        public static final int URI_CODE_TRACKPOINT = 15;
 
         public static final int VAL_TRACK_ACTIVE = 1;
         public static final int VAL_TRACK_INACTIVE = 0;
