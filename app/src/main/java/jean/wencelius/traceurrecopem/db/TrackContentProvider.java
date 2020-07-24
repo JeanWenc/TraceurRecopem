@@ -27,7 +27,6 @@ public class TrackContentProvider extends ContentProvider {
     public static final Uri CONTENT_URI_TRACK = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_TRACK);
 
     /** Uri for trackpoint all*/
-    //TODO:
     public static final Uri CONTENT_URI_TRACKPOINT = Uri.parse("content://" + AUTHORITY + "/" + Schema.TBL_TRACKPOINT);
 
     /**Uri for the active track*/
